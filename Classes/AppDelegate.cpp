@@ -23,8 +23,8 @@
  ****************************************************************************/
 
 #include "AppDelegate.h"
-#include "HelloWorldScene.h"
-
+#include "Scene/StartScene.h"
+#include "Scene/StartLoginScene.h"
 // #define USE_AUDIO_ENGINE 1
 
 #if USE_AUDIO_ENGINE
@@ -34,7 +34,8 @@ using namespace cocos2d::experimental;
 
 USING_NS_CC;
 
-static cocos2d::Size designResolutionSize = cocos2d::Size(480, 320);
+
+static cocos2d::Size designResolutionSize = cocos2d::Size(1024, 768);
 static cocos2d::Size smallResolutionSize = cocos2d::Size(480, 320);
 static cocos2d::Size mediumResolutionSize = cocos2d::Size(1024, 768);
 static cocos2d::Size largeResolutionSize = cocos2d::Size(2048, 1536);
@@ -73,15 +74,15 @@ bool AppDelegate::applicationDidFinishLaunching() {
     auto glview = director->getOpenGLView();
     if(!glview) {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) || (CC_TARGET_PLATFORM == CC_PLATFORM_MAC) || (CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
-        glview = GLViewImpl::createWithRect("brawlstars", cocos2d::Rect(0, 0, designResolutionSize.width, designResolutionSize.height));
+        glview = GLViewImpl::createWithRect("test", cocos2d::Rect(0, 0, designResolutionSize.width, designResolutionSize.height));
 #else
-        glview = GLViewImpl::create("brawlstars");
+        glview = GLViewImpl::create("test");
 #endif
         director->setOpenGLView(glview);
     }
 
-    // turn on display FPS
-    director->setDisplayStats(true);
+    //turn off display FPS
+    director->setDisplayStats(false);
 
     // set FPS. the default value is 1.0/60 if you don't call this
     director->setAnimationInterval(1.0f / 60);
@@ -107,16 +108,18 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
     register_all_packages();
 
-    // create a scene. it's an autorelease object
-    auto scene = HelloWorld::createScene();
+    //run
+    auto startscene = StartScene::createScene();
 
-    // run
-    director->runWithScene(scene);
+    director->runWithScene(startscene);
+
+    //这是需要解决的一个遗留问题，否则startscene只是加载了一瞬间
+    director->replaceScene(TransitionFade::create(1.0f, StartLoginScene::createScene()));
 
     return true;
 }
 
-// This function will be called when the app is inactive. Note, when receiving a phone call it is invoked.
+
 void AppDelegate::applicationDidEnterBackground() {
     Director::getInstance()->stopAnimation();
 

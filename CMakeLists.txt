@@ -61,6 +61,7 @@ list(APPEND GAME_SOURCE
      Classes/Scene/StartLoginScene.cpp
      Classes/Scene/StartMenuScene.cpp
      Classes/Scene/SetScene.cpp
+     Classes/User/UserInfo.cpp
      )
 list(APPEND GAME_HEADER
      Classes/AppDelegate.h
@@ -68,6 +69,7 @@ list(APPEND GAME_HEADER
      Classes/Scene/StartLoginScene.h
      Classes/Scene/StartMenuScene.h
      Classes/Scene/SetScene.h
+     Classes/User/UserInfo.h
      )
 
 if(ANDROID)

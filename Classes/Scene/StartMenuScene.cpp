@@ -5,6 +5,7 @@
 #include "StartMenuScene.h"
 #include "SetScene.h"
 #include "FightScene.h"
+#include "User/UserInfo.h"
 USING_NS_CC;
 
 Scene* StartMenuScene::createScene()
@@ -204,7 +205,7 @@ void StartMenuScene::initUserButton()
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-	auto userButton = cocos2d::MenuItemImage::create("UserYunHe.png", "UserYunHe.png", CC_CALLBACK_1(StartMenuScene::startCallback, this));
+	auto userButton = cocos2d::MenuItemImage::create("UserYunHe.png", "UserYunHe.png", CC_CALLBACK_1(StartMenuScene::userCallback, this));
 	//加入头像，想改成动态的，到时候看看行不行
 	if (userButton == nullptr ||
 		userButton->getContentSize().width <= 0 ||
@@ -229,7 +230,7 @@ void StartMenuScene::initUserButton()
 
 void StartMenuScene::userCallback(cocos2d::Ref* pSender)
 {
-	//Director::getInstance()->replaceScene(UserInfo::createScene());
+	Director::getInstance()->replaceScene(UserInfo::createScene());
 }
 
 /*不理解为什么要提前加载而不是打开新界面之后再加载，我想搞成打开界面后再加载

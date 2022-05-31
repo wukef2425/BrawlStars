@@ -12,7 +12,7 @@ public:
     virtual bool init();
 
     void SetScene::initDecoration();
-
+    
     void SetScene::initRuleBooks();//规则说明
     
     void SetScene::ruleBooksCallback(Ref* pSender);

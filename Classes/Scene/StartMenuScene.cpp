@@ -85,8 +85,8 @@ void StartMenuScene::startCallback(cocos2d::Ref* pSender)
 {
 	//fightScene_->settingLayer_->backgroundMusicID_ = cocos2d::AudioEngine::play2d("audio/bgm_1low.mp3", true, .5);
 	//加了一个背景音乐，目前我们还是不加吧
-	cocos2d::Director::getInstance()->getOpenGLView()->setCursorVisible(false);
-	//Director::getInstance()->replaceScene(FightScene::createScene());
+	//goToFightScene();
+	cocos2d::Director::getInstance()->replaceScene(FightScene::createScene());
 }
 
 /*目前看不懂，是联网状态要考虑的东西

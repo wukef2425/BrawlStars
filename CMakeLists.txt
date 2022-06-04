@@ -64,6 +64,7 @@ list(APPEND GAME_SOURCE
      Classes/Scene/FightScene.cpp
      Classes/Hero/Hero.cpp
      Classes/Hero/Player.cpp
+     Classes/Hero/ChooseHero.cpp
      Classes/User/UserInfo.cpp
      )
 list(APPEND GAME_HEADER
@@ -75,6 +76,8 @@ list(APPEND GAME_HEADER
      Classes/Scene/FightScene.h
      Classes/Hero/Hero.h
      Classes/Hero/Player.h
+     Classes/Hero/ChooseHero.h
+
      Classes/User/UserInfo.h
      )
 

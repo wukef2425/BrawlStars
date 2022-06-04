@@ -141,8 +141,9 @@ void SetScene::initReturnMenu()
         returnButton->setPosition(cocos2d::Vec2(x, y));
     }
     returnButton_ = cocos2d::Menu::create(returnButton, nullptr);
-    this->addChild(returnButton_, 1);
     returnButton_->setPosition(cocos2d::Vec2::ZERO);
+    this->addChild(returnButton_, 1);
+    
 }
 
 void SetScene::menuReturnCallback(Ref* pSender)

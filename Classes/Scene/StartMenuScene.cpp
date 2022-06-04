@@ -2,10 +2,13 @@
 *@file StartMenuScene.cpp
 * @author wyf
 */
+
+#include "cocos2d.h"
 #include "StartMenuScene.h"
 #include "SetScene.h"
-#include "FightScene.h"
 #include "User/UserInfo.h"
+#include "Hero/ChooseHero.h"
+
 USING_NS_CC;
 
 Scene* StartMenuScene::createScene()
@@ -33,9 +36,9 @@ bool StartMenuScene::init()
 	initStartButton();//开始按钮
 	initOnlineButton();//联网开始按钮
 	initExitButton();//离开按钮
-	//loadingFightScene();//斗争地图加载,不太理解的是为什么要提前加载好，不可以去了界面再加吗
+	//preLoadingFightScene();//斗争地图加载
 
-	cocos2d::Director::getInstance()->getOpenGLView()->setCursorVisible(true);//API常用接口，目前我也看不懂
+	cocos2d::Director::getInstance()->getOpenGLView()->setCursorVisible(true);
 
 	return true;
 }
@@ -85,8 +88,13 @@ void StartMenuScene::startCallback(cocos2d::Ref* pSender)
 {
 	//fightScene_->settingLayer_->backgroundMusicID_ = cocos2d::AudioEngine::play2d("audio/bgm_1low.mp3", true, .5);
 	//加了一个背景音乐，目前我们还是不加吧
-	//goToFightScene();
-	cocos2d::Director::getInstance()->replaceScene(FightScene::createScene());
+	// cocos2d::Director::getInstance()->replaceScene(FightScene::createScene());
+	cocos2d::Director::getInstance()->getOpenGLView()->setCursorVisible(false);
+	
+	Director::getInstance()->replaceScene(ChooseHero::createScene());
+	
+	//cocos2d::Director::getInstance()->replaceScene(fightScene_->createScene());
+
 }
 
 /*目前看不懂，是联网状态要考虑的东西
@@ -225,7 +233,6 @@ void StartMenuScene::initUserButton()
 	this->addChild(userButton_, 1);
 	userButton_->setPosition(cocos2d::Vec2::ZERO);
 	//加入用户信息框，可以显示用户的昵称和等级，也是动态的可以改的
-
 }
 
 void StartMenuScene::userCallback(cocos2d::Ref* pSender)
@@ -233,36 +240,29 @@ void StartMenuScene::userCallback(cocos2d::Ref* pSender)
 	Director::getInstance()->replaceScene(UserInfo::createScene());
 }
 
-/*不理解为什么要提前加载而不是打开新界面之后再加载，我想搞成打开界面后再加载
-void StartMenuScene::loadingFightScene()
+/*
+void StartMenuScene::preLoadingFightScene()
 {
-	auto snowMap= TMXTiledMap::create("Map/SnowMap.tmx");
-	snowMap->setPosition(Vec2(0, 0));//位置还需要再次确定一下o
-	addChild(snowMap);
+	auto visibleSize = Director::getInstance()->getVisibleSize();
 
-	snowMap = FightScene::create(_tileMap1, _tileMap2, _tileMap3, Obstacle::createObsSet(1), 1);//添加地图以及障碍物
-	snowMap->bindPlayer(Player::create("MIKU/idle_down/idle_down1.png"));//这个加载了用户
-	snowMap->retain();//先看看是啥
+	Vec2 origin = Director::getInstance()->getVisibleOrigin();
+
+	TMXTiledMap* _tileMap = TMXTiledMap::create("Map/SnowMap.tmx");
+
+	_tileMap->setPosition(origin.x - _tileMap->getContentSize().width / 2, origin.y - _tileMap->getContentSize().height / 2);
+	
+	fightScene_ = FightScene::create(_tileMap);
+	//snowMap->bindPlayer(Player::create("MIKU/idle_down/idle_down1.png"));//这个加载了用户
+	fightScene_->retain();
 
 	//AudioEngine::preload("audio/bgm_1low.mp3");//加载音乐
-}*/
-
-/*void StartMenuScene::loadingFightScene()
-{
-	auto _tileMap1 = TMXTiledMap::create("map/map_1/map/bottomMap.tmx");//这个好像是瓦片地图的槽子哦
-	_tileMap1->setPosition(Vec2(0, 0));
-
-	auto _tileMap2 = TMXTiledMap::create("map/map_1/map/middleMap.tmx");
-	_tileMap2->setPosition(Vec2(0, 50 * 32));
-
-	auto _tileMap3 = TMXTiledMap::create("map/map_1/map/topMap.tmx");
-	_tileMap3->setPosition(Vec2(0, 100 * 32));
-	//学长是把瓦片地图分为三部分来加载，所以载入场景的时候也是三部分载入的
-	fightScene_ = FightScene::create(_tileMap1, _tileMap2, _tileMap3, Obstacle::createObsSet(1), 1);//添加地图以及障碍物
-	fightScene_->bindPlayer(Player::create("MIKU/idle_down/idle_down1.png"));//这个加载了用户
-	fightScene_->retain();//先看看是啥
+}
+*/
 
 
-	AudioEngine::preload("audio/bgm_1low.mp3");//加载音乐
-}*/
+
+
+
+
+
 

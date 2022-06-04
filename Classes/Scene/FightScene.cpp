@@ -15,11 +15,6 @@
 
 USING_NS_CC;
 
-Scene* FightScene::createScene()
-{
-    return FightScene::create();
-}
-
 // Print useful error message instead of segfaulting when files are not there.
 static void problemLoading(const char* filename)
 {
@@ -27,6 +22,54 @@ static void problemLoading(const char* filename)
     printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in HelloWorldScene.cpp\n");
 }
 
+FightScene::FightScene(TMXTiledMap* map): _tileMap(map)
+{
+    currentPlayer = nullptr;
+    //dropNode_ = nullptr;
+    //mainCFightScene::FightScene(TMXTiledMap* map): _tileMap(map)amera_ = nullptr;
+   // touchHolding_ = false;
+};
+
+FightScene* FightScene::create(TMXTiledMap* map)
+{
+    auto pRet = new(std::nothrow) FightScene(map);
+    if (pRet && pRet->init())
+    {
+        pRet->autorelease();
+        return pRet;
+    }
+    else
+    {
+        delete pRet;
+        pRet = nullptr;
+        return nullptr;
+    }
+    return nullptr;
+}
+
+cocos2d::Scene* FightScene::createScene()
+{
+    auto scene = Scene::createWithPhysics();
+    if (scene != nullptr)
+    {
+        scene->addChild(this, 0);
+        scene->getPhysicsWorld()->setAutoStep(true);
+        scene->getPhysicsWorld()->setGravity(cocos2d::Vec2::ZERO);
+        scene->retain();
+        return scene;
+    }
+    return nullptr;
+}
+
+void FightScene::bindPlayer(Player* player)
+{
+    if (player != nullptr && currentPlayer == nullptr)
+    {
+        this->currentPlayer = player;
+        //this->addChild(player);
+    }
+   
+}
 // on "init" you need to initialize your instance
 bool FightScene::init()
 {
@@ -35,25 +78,31 @@ bool FightScene::init()
     {
         return false;
     }
-   //不知道为什么加入tmx的时候老是加载错误，太气人了
-	//auto* SnowMap = TMXTiledMap::create("Map/SnowMap.tmx");
-	//addChild(SnowMap, 0);
-
-    auto winSize = Director::getInstance()->getVisibleSize();
-
-    auto origin = Director::getInstance()->getVisibleOrigin();
-
-    auto background = DrawNode::create();
-
-    /* 目前先放一个纯色背景，四个float参数调一调可以换颜色 */
-    background->drawSolidRect(origin, winSize, cocos2d::Color4F(0.6f, 0.6f, 0.6f, 1.0f));
-
-    this->addChild(background);
-
+   
+    this->addChild(_tileMap, 0);
+   
     listenToUserOperation("Hero/polar-bear.png");
 
     return true;
 }
+
+/*
+void FightScene::loadingFightScene()//加载地图、地图中的障碍物/草坪/英雄、地图中的UI组件
+{
+
+    auto visibleSize = Director::getInstance()->getVisibleSize();
+
+    Vec2 origin = Director::getInstance()->getVisibleOrigin();
+
+    TMXTiledMap* _tileMap = TMXTiledMap::create("Map/SnowMap.tmx");
+
+    _tileMap->setPosition(origin.x - _tileMap->getContentSize().width / 2, origin.y - _tileMap->getContentSize().height / 2);
+
+    this->addChild(_tileMap, 0);
+
+}
+*/
+
 
 void FightScene::listenToUserOperation(const std::string& filename)
 {

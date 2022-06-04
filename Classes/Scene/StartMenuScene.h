@@ -3,6 +3,7 @@
 #define __STARTMENU_SCENE_H__
 
 #include "cocos2d.h"
+#include "FightScene.h"
 
 class StartMenuScene : public cocos2d::Scene
 {
@@ -31,7 +32,7 @@ public:
 
 	void StartMenuScene::exitCallback(cocos2d::Ref* pSender);
 
-	//void StartMenuScene::loadingFightScene();//地图加载工具,一直搞不懂为啥不能直接加载
+	//void StartMenuScene::preLoadingFightScene();
 
 	CREATE_FUNC(StartMenuScene);
 
@@ -47,6 +48,7 @@ protected:
 
 	cocos2d::Menu* userButton_;
 
+	//FightScene* fightScene_;
 
 };
 

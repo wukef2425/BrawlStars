@@ -14,9 +14,15 @@ private:
 
     Player* currentPlayer;
 
+    cocos2d::TMXTiledMap* _tileMap;
+
 public:
 
-    static cocos2d::Scene* createScene();
+    cocos2d::Scene* createScene();
+    static FightScene* create(TMXTiledMap* map);
+    FightScene(TMXTiledMap* map);
+
+    //static cocos2d::Scene* createScene();
 
     virtual bool init();
 
@@ -24,8 +30,11 @@ public:
 
     bool FightScene::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* unusedEvent);
 
+    void FightScene::bindPlayer(Player* player);
 
-    CREATE_FUNC(FightScene);
+    void FightScene::loadingFightScene();
+
+    //CREATE_FUNC(FightScene);
 
 };
 

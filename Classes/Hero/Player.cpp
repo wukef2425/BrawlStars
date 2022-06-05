@@ -4,35 +4,11 @@
 */
 
 #include "Player.h"
-
-Player* Player::create(const std::string& filename) 
-{
-    auto player = new(std::nothrow) Player;
-
-    if (!player)
-    {
-        return nullptr;
-    }
-
-    auto chosenHero = Sprite::create(filename);
-
-    if (chosenHero)
-    {
-        player->setPosition(player->x, player->y);// player初始坐标(x,y)根据窗口大小在Player类的protected里面改
-
-        player->changeHeroTo(chosenHero);// 包含了sprite_=chosenHero和addchilid(chosenHero)
-
-        player->autorelease();
-
-        return player;
-    }
-    
-    return nullptr;
-}
+#include "Consts.h"
 
 void Player::listenToKeyPresses(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event)
 {
-    using K = cocos2d::EventKeyboard::KeyCode;
+    using K = cocos2d::EventKeyboard::KeyCode;// 全if不elseif可以实现同时按两个键
 
     if (keyCode == K::KEY_D)
     {

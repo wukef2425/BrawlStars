@@ -33,13 +33,7 @@ protected:
 
 	int energy_;//死了以后掉落多少能量
 
-	cocos2d::Sprite* sprite_;
-
 public:
-
-	void changeHeroTo(cocos2d::Sprite* sprite);
-
-	cocos2d::Sprite* getChosenHero();
 
 	bool isAlive();
 
@@ -50,6 +44,8 @@ public:
 	virtual void dealDamage(int damage);
 
 	virtual void ultimateSkill(int damage);
+
+	void bindPhysicsBodyAndTag(cocos2d::Sprite*& sprite, int bitmask, int tag);
 
 	virtual ~Hero() = default;
 

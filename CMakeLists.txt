@@ -65,10 +65,12 @@ list(APPEND GAME_SOURCE
      Classes/Hero/Hero.cpp
      Classes/Hero/Player.cpp
      Classes/Hero/ChooseHero.cpp
+     Classes/Hero/PolarBear.cpp
      Classes/User/UserInfo.cpp
      )
 list(APPEND GAME_HEADER
      Classes/AppDelegate.h
+     Classes/Consts.h
      Classes/Scene/StartScene.h
      Classes/Scene/StartLoginScene.h
      Classes/Scene/StartMenuScene.h
@@ -77,7 +79,7 @@ list(APPEND GAME_HEADER
      Classes/Hero/Hero.h
      Classes/Hero/Player.h
      Classes/Hero/ChooseHero.h
-
+     Classes/Hero/PolarBear.h
      Classes/User/UserInfo.h
      )
 

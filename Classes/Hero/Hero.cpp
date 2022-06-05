@@ -5,18 +5,6 @@
 
 #include "Hero.h"
 
-void Hero::changeHeroTo(cocos2d::Sprite* sprite)
-{
-	sprite_ = sprite;
-
-	addChild(sprite_);
-}
-
-cocos2d::Sprite* Hero::getChosenHero()
-{
-	return sprite_;// 以公用接口拿到protected的东西
-}
-
 bool Hero::isAlive()
 {
 	return isAlive_;
@@ -24,7 +12,7 @@ bool Hero::isAlive()
 
 void Hero::die()
 {
-	isAlive_ = false;;
+	isAlive_ = false;
 }
 
 void Hero::receiveDamage(int damage)
@@ -46,4 +34,14 @@ void Hero::dealDamage(int damage)
 void Hero::ultimateSkill(int damage)
 {
 	;
+}
+
+void Hero::bindPhysicsBodyAndTag(cocos2d::Sprite*& sprite, int bitmask, int tag)// 传引用，否则会被释放掉
+{
+	auto physicsBody = PhysicsBody::createBox(sprite->getContentSize()/10, PhysicsMaterial(0.f, 0.f, 0.f));
+	physicsBody->setDynamic(false);
+	physicsBody->setCategoryBitmask(bitmask);// bitmask是碰撞的body种类 这一句是设置种类
+	physicsBody->setContactTestBitmask(bitmask);// 这一句是在这个种类碰撞的时候通知
+	sprite->setPhysicsBody(physicsBody);
+	sprite->setTag(tag);
 }

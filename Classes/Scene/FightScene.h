@@ -7,12 +7,15 @@
 #define __FIGHT_SCENE_H__
 
 #include "Hero/Player.h"
+#include "Hero/PolarBear.h"
 
 class FightScene : public cocos2d::Scene
 {
 private:
 
     Player* currentPlayer;
+
+    Hero* AI;
 
     cocos2d::TMXTiledMap* _tileMap;
 
@@ -26,13 +29,23 @@ public:
 
     virtual bool init();
 
-    void FightScene::listenToUserOperation(const std::string& filename);
+    void listenToUserOperation();
 
-    bool FightScene::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* unusedEvent);
+    bool onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* unusedEvent);
 
-    void FightScene::bindPlayer(Player* player);
+    void createAI(float delta);
 
-    void FightScene::loadingFightScene();
+    bool onContactBegin(cocos2d::PhysicsContact& contact);
+    
+    void bindPhysicsBodyAndTag(cocos2d::Sprite*& sprite, int bitmask, int tag);
+
+    void showSpark(const std::string& filename, cocos2d::Node*& node);
+
+    void bindPlayer(Player* player);
+
+    void setCamera();
+
+    void loadingFightScene();
 
     //CREATE_FUNC(FightScene);
 

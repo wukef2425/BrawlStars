@@ -1,6 +1,6 @@
 /**
-* @file Hero.cpp
-* @author wkf
+* @file Player.cpp
+* @author wukef
 */
 
 #include "Hero.h"

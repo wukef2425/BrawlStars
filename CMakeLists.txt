@@ -62,11 +62,20 @@ list(APPEND GAME_SOURCE
      Classes/Scene/StartMenuScene.cpp
      Classes/Scene/SetScene.cpp
      Classes/Scene/FightScene.cpp
+     Classes/Scene/ChooseHero.cpp 
      Classes/Hero/Hero.cpp
      Classes/Hero/Player.cpp
-     Classes/Hero/ChooseHero.cpp
+
      Classes/Hero/PolarBear.cpp
+     Classes/Hero/ChangYi.cpp
+     Classes/Hero/YunHe.cpp
+     Classes/Hero/ShunDe.cpp
+     Classes/Hero/HaoQing.cpp
+     Classes/Hero/SanYue.cpp
+         
      Classes/User/UserInfo.cpp
+     
+     Classes/Utils/FightUtils.cpp
      )
 list(APPEND GAME_HEADER
      Classes/AppDelegate.h
@@ -76,11 +85,20 @@ list(APPEND GAME_HEADER
      Classes/Scene/StartMenuScene.h
      Classes/Scene/SetScene.h
      Classes/Scene/FightScene.h
+     Classes/Scene/ChooseHero.h
      Classes/Hero/Hero.h
-     Classes/Hero/Player.h
-     Classes/Hero/ChooseHero.h
+     Classes/Hero/Player.h     
+     
      Classes/Hero/PolarBear.h
+     Classes/Hero/ChangYi.h
+     Classes/Hero/YunHe.h
+     Classes/Hero/ShunDe.h
+     Classes/Hero/HaoQing.h
+     Classes/Hero/SanYue.h
+
      Classes/User/UserInfo.h
+     Classes/Utils/FightUtils.h
+
      )
 
 if(ANDROID)

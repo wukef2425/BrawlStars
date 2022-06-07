@@ -3,20 +3,15 @@
 * @author wukef & wyf
 */
 
-/*Fight界面主要要加载的内容有
-1.UI部件，包括游戏时间/人物血量及蓝/生存人数/雾/雾的警告，他们是动态可变化的
-2.监听器，通过鼠标/键盘/触摸检测来对人物动作进行改变
-3.每一个元素所在的层：地图 0；障碍物、武器 1；设置层 5；结束层
-4.分界线，就是外围的两个格子
-
-*/
-
 #include "Consts.h"
 #include "cocos2d.h"
 #include "FightScene.h"
+#include "Scene/ChooseHero.h"
+#include <vector>
+#include <string>
 
 USING_NS_CC;
-
+using namespace std;
 // Print useful error message instead of segfaulting when files are not there.
 static void problemLoading(const char* filename)
 {
@@ -24,7 +19,7 @@ static void problemLoading(const char* filename)
     printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in HelloWorldScene.cpp\n");
 }
 
-FightScene::FightScene(TMXTiledMap* map): _tileMap(map)
+FightScene::FightScene(TMXTiledMap* map) : _tileMap(map)
 {
     currentPlayer = nullptr;
     //dropNode_ = nullptr;
@@ -63,16 +58,7 @@ cocos2d::Scene* FightScene::createScene()
     return nullptr;
 }
 
-void FightScene::bindPlayer(Player* player)
-{
-    if (player != nullptr && currentPlayer == nullptr)
-    {
-        this->currentPlayer = player;
-        //this->addChild(player);
-    }
-   
-}
-// on "init" you need to initialize your instance
+
 bool FightScene::init()
 {
 
@@ -84,14 +70,16 @@ bool FightScene::init()
     {
         return false;
     }
-   
-    this->addChild(_tileMap, 0);
 
-    this->currentPlayer = PolarBear::createPlayer();// 通过这两句换英雄
+    
+    initMap();//初始化地图
+
+    initHero();//初始化英雄
+
     AI = PolarBear::createAI();
 
     this->addChild(AI);
-    
+
     this->schedule(CC_SCHEDULE_SELECTOR(FightScene::createAI), 0.5f);// 0.5秒执行一次schedule AI会0.5秒更新一次目的地，追着你跑
 
     listenToUserOperation();
@@ -99,23 +87,78 @@ bool FightScene::init()
     return true;
 }
 
-/*
-void FightScene::loadingFightScene()//加载地图、地图中的障碍物/草坪/英雄、地图中的UI组件
+void FightScene::initMap()
 {
-
-    auto visibleSize = Director::getInstance()->getVisibleSize();
-
-    Vec2 origin = Director::getInstance()->getVisibleOrigin();
-
-    TMXTiledMap* _tileMap = TMXTiledMap::create("Map/SnowMap.tmx");
-
-    _tileMap->setPosition(origin.x - _tileMap->getContentSize().width / 2, origin.y - _tileMap->getContentSize().height / 2);
-
+    //添加地图
     this->addChild(_tileMap, 0);
 
-}
-*/
+   //分属性添加内容
 
+    _background = _tileMap->getLayer("Basic");//基础背景
+    
+    _barrier = _tileMap->getLayer("Barrier");//障碍物
+
+    _collision = _tileMap->getLayer("Collision");//碰撞图层
+    _collision->setVisible(false);
+    
+    _grass = _tileMap->getLayer("Grass");//草丛
+
+   /*
+   _smoke = _tileMap->getLayer("Smoke");//毒烟
+    _xTileCoordMin = 0,
+        _xTileCoordMax = _map->getMapSize().width,
+        _yTileCoordMin = 0,
+        _yTileCoordMax = _map->getMapSize().height;
+    this->smokeMove();
+
+    _box = _tileMap->getObjectGroup("Box");//宝箱
+
+     // 获取全部宝箱位置
+    this->getBoxPosition();
+
+    //添加宝箱/
+    addBox();
+   
+   */ 
+    
+}
+
+
+/*绑定指定人物*/
+void FightScene::initHero()
+{
+
+    this->currentPlayer = PolarBear::createPlayer();// 通过这两句换英雄
+
+    string brawlerName;
+
+    switch (FightUtils::_hero)
+    {
+    case FightUtils::ChangYi:
+        this->currentPlayer = ChangYi::createPlayer();
+        brawlerName = "ChangYi";
+        break;
+    case FightUtils::YunHe:
+        this->currentPlayer = YunHe::createPlayer();
+        brawlerName = "YunHe";
+        break;
+    case FightUtils::HaoQing:
+        this->currentPlayer = HaoQing::createPlayer();
+        brawlerName = "HaoQing";
+        break;
+    case FightUtils::SanYue:
+        this->currentPlayer = SanYue::createPlayer();
+        brawlerName = "SanYue";
+        break;
+    case FightUtils::ShunDe:
+        this->currentPlayer = ShunDe::createPlayer();
+        brawlerName = "ShunDe";
+        break;
+    default:
+        break;
+    }
+
+}
 
 void FightScene::listenToUserOperation()
 {
@@ -229,7 +272,7 @@ void FightScene::createAI(float delta)
 
     /* 加入渲染树 */
     this->addChild(currentBullet);
-    
+
     Vec2 offset = playerPosition - AI->getPosition();
     offset.normalize();// currentPlayer位置指向鼠标touch位置的单位向量
     auto aid = offset * ShootSpeed;// 改动这个可以改子弹发射速率，后期可以不同的英雄不一样

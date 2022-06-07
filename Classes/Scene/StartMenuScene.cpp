@@ -7,7 +7,7 @@
 #include "StartMenuScene.h"
 #include "SetScene.h"
 #include "User/UserInfo.h"
-#include "Hero/ChooseHero.h"
+#include "ChooseHero.h"
 
 USING_NS_CC;
 

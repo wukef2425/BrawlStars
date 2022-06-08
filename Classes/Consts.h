@@ -19,4 +19,7 @@
 /* shootspeed */
 #define ShootSpeed 1000
 
+/*smokespeed*/
+#define SmokeSpeed 20
+
 #endif

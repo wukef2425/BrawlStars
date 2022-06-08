@@ -12,14 +12,12 @@ Scene* StartLoginScene::createScene()
     return StartLoginScene::create();
 }
 
-// Print useful error message instead of segfaulting when files are not there.
 static void problemLoading(const char* filename)
 {
     printf("Error while loading: %s\n", filename);
     printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in HelloWorldScene.cpp\n");
 }
 
-// on "init" you need to initialize your instance
 bool StartLoginScene::init()
 {
     if (!Scene::init())
@@ -30,14 +28,12 @@ bool StartLoginScene::init()
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
     
-    //设置背景图片
     auto* background = Sprite::create("Scene/MyLoginScene.jpg");        //创建精灵类，背景图片为background.jpg
     background->setScale(1.05f);
     background->setPosition(visibleSize.width / 2, visibleSize.height / 2);        //让背景图像居中显示
     addChild(background, 0);
 
-    //加一些乱七八糟的小组件
-    auto* agetip = Sprite::create("AgeTip.jpg");        //适龄提示
+    auto* agetip = Sprite::create("AgeTip.jpg");        //agetip
     agetip->setScale(0.7f);
     if (agetip == nullptr)
     {
@@ -49,7 +45,7 @@ bool StartLoginScene::init()
         addChild(agetip, 1);
     }
     
-    auto* gamelogo = Sprite::create("GameLogo.png");        //游戏logo
+    auto* gamelogo = Sprite::create("GameLogo.png");        //logo
     
     if (gamelogo == nullptr)
     {
@@ -61,12 +57,12 @@ bool StartLoginScene::init()
         addChild(gamelogo, 2);
     }
 
-    //加载登录按钮
+    //loginitem
     auto LoginItem = MenuItemImage::create(
         "Login.png",
         "Login.png",
         CC_CALLBACK_1(StartLoginScene::menuCloseCallback, this));
-    LoginItem->setScale(0.6f);//让登录按钮缩小尺寸
+    LoginItem->setScale(0.6f);
     if (LoginItem == nullptr ||
         LoginItem->getContentSize().width <= 0 ||
         LoginItem->getContentSize().height <= 0)
@@ -80,21 +76,16 @@ bool StartLoginScene::init()
         LoginItem->setPosition(Vec2(x, y));
     }
 
-    // create menu, it's an autorelease object？其实我不懂为啥不能直接添加
     auto menu = Menu::create(LoginItem, NULL);
     menu->setPosition(Vec2::ZERO);
     this->addChild(menu, 1);
     
-    
-
-
-
     return true;
 }
 
 void StartLoginScene::menuCloseCallback(Ref* pSender)
 {
-    //摁下登录按钮，切换到menu页面
+    //switch to menu
     Director::getInstance()->replaceScene(TransitionFade::create(2.0f, StartMenuScene::createScene()));
 
 }

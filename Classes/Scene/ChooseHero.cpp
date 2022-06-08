@@ -3,12 +3,15 @@
 * @author wyf
 */
 
-#include "ChooseHero.h"
 #include<vector>
 #include<string>
+#include "ChooseHero.h"
+#include "Utils/FightUtils.h"
+#include "Scene/StartMenuScene.h"
+
+
 using namespace std;
 USING_NS_CC;
-
 
 Scene* ChooseHero::createScene()
 {
@@ -32,7 +35,10 @@ bool ChooseHero::init()
 
 	initButton();
 
+	initHeroButton();
+
 	cocos2d::Director::getInstance()->getOpenGLView()->setCursorVisible(true);
+
 	return true;
 }
 
@@ -40,7 +46,6 @@ void ChooseHero::preLoadingFightScene()
 {
 
 	auto visibleSize = Director::getInstance()->getVisibleSize();
-
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
 	TMXTiledMap* _tileMap = TMXTiledMap::create("Map/SnowMap.tmx");
@@ -49,9 +54,8 @@ void ChooseHero::preLoadingFightScene()
 
 	fightScene_ = FightScene::create(_tileMap);
 
-	fightScene_->retain();//先看看是啥
+	fightScene_->retain();
 
-	//AudioEngine::preload("audio/bgm_1low.mp3");//加载音乐
 }
 
 void ChooseHero::initButton()
@@ -80,10 +84,16 @@ void ChooseHero::initButton()
 
 	backBtn_ = Menu::create(backBtn, NULL);
 	backBtn_->setPosition(Vec2((visibleSize.width * 8) / 9, (visibleSize.height * 8) / 9));
-	addChild(backBtn_, 1);
+	addChild(backBtn_, 1);	
+}
 
-	//英雄选择按钮，采取统一的方式来进行选择
+void ChooseHero::initHeroButton()
+{
 
+	auto visibleSize = Director::getInstance()->getVisibleSize();
+	Vec2 origin = Director::getInstance()->getVisibleOrigin();
+	
+	//using vector to record repeat steps
 	Vector<MenuItem*> HeroMenuVector;
 
 	vector<string> NameMenuVector = { "ShunDe","ChangYi","YunHe", "HaoQing","SanYue" };
@@ -102,7 +112,6 @@ void ChooseHero::initButton()
 		Vec2(4 * visibleSize.width / 6 + origin.x, visibleSize.height / 2 + origin.y),
 		Vec2(5 * visibleSize.width / 6 + origin.x, visibleSize.height / 2 + origin.y), };
 
-	//逐个创建按钮，分配信息，存入Vector
 	for (int i = 0; i < NameMenuVector.size(); i++)
 	{
 		MenuItem* heroButton = MenuItemImage::create("Hero/ChooseHero/" + NameMenuVector.at(i) + "Before.jpg",
@@ -120,33 +129,32 @@ void ChooseHero::initButton()
 		HeroMenuVector.pushBack(heroButton);
 	}
 
-	//将以上内容放入menu中
 	Menu* menu = Menu::createWithArray(HeroMenuVector);
 	menu->setPosition(Vec2::ZERO);
 	this->addChild(menu, 1);
 }
-
+//start game
 void ChooseHero::startGame(Ref* pSender)
 {
-	//fightScene_->bindPlayer(Player::create("heroArray[cur_hero_index].name"));
-
-	cocos2d::Director::getInstance()->getOpenGLView()->setCursorVisible(false);
-
 	cocos2d::Director::getInstance()->replaceScene(fightScene_->createScene());
 }
 
+//switch to menu
 void ChooseHero::backToMenu(Ref* pSender)
 {
-	//摁下返回按钮，切换到menu页面
+
 	Director::getInstance()->replaceScene(StartMenuScene::createScene());
 }
+/******************************************************Hero************************************************************/
 
+//to zyy 选择英雄点击的时候播放属于个人英雄的语音怎么样？显得比较高级一点
+// 如果要加的话就全加到这几个函数中吧，素材问我要就行
+// 素材包全都放在一个地方？方便一些
 //顺德
 void ChooseHero::menuShunDeCallback(cocos2d::Ref* pSender)
 {
-	
+	/*记录选择英雄信息的一个东西，但貌似记录的不是很成功*/
 	FightUtils::_hero = FightUtils::AllHero::ShunDe;
-
 }
 
 //昊青
@@ -168,9 +176,9 @@ void ChooseHero::menuChangYiCallback(cocos2d::Ref* pSender)
 	FightUtils::_hero = FightUtils::AllHero::ChangYi;
 }
 
-
 //三月
 void ChooseHero::menuSanYueCallback(cocos2d::Ref* pSender)
 {
 	FightUtils::_hero = FightUtils::AllHero::SanYue;
 }
+

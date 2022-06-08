@@ -113,9 +113,6 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
     director->runWithScene(startscene);
 
-    //这是需要解决的一个遗留问题，否则startscene只是加载了一瞬间
-    director->replaceScene(TransitionFade::create(1.0f, StartLoginScene::createScene()));
-
     return true;
 }
 

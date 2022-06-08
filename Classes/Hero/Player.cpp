@@ -5,6 +5,7 @@
 
 #include "Player.h"
 #include "Consts.h"
+#include "Scene/FightScene.h"
 
 void Player::listenToKeyPresses(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event)
 {
@@ -70,6 +71,16 @@ void Player::update(float delta)
         x += step;
     }
 
+    //找个函数把坐标传回到fight
     setPosition(x, y);
 }
+
+/*
+* 
+Vec2 Player::returnPosition()
+{
+    return Vec2(x, y);
+}
+
+*/
 

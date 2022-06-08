@@ -1,6 +1,7 @@
 #include "ChangYi.h"
 #include "Consts.h"
 
+/*人物中要包括的基础内容有，人物的攻击方式，人物的各种属性，人物的大招*/
 ChangYi* ChangYi::createPlayer()
 {
     auto player = new(std::nothrow) ChangYi;

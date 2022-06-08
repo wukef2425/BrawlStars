@@ -2,10 +2,8 @@
 #define _CHOOSEHERO_H_
 
 #include "cocos2d.h"
-#include "Scene/StartMenuScene.h"
-#include "Scene/ChooseHero.h"
-#include "FightScene.h"
-#include "Utils/FightUtils.h"
+#include "Scene/FightScene.h"
+
 
 USING_NS_CC;
 using namespace std;
@@ -20,10 +18,10 @@ public:
 
 	//预加载战斗场景
 	void ChooseHero::preLoadingFightScene();
-
 	//预加载按钮
 	void initButton();
-
+	//英雄选择按钮
+	void initHeroButton();
 	//按钮回调函数
 	void ChooseHero::startGame(cocos2d::Ref* pSender);
 	void ChooseHero::backToMenu(cocos2d::Ref* pSender);

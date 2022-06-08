@@ -4,26 +4,34 @@
 */
 
 #include "Hero.h"
+#include "Consts.h"
+
+bool Hero::isUltimateSkillReady()
+{
+	return ultimateProgress_;
+}
 
 bool Hero::isAlive()
 {
 	return isAlive_;
 }
 
-void Hero::die()
-{
-	isAlive_ = false;
-}
-
-void Hero::receiveDamage(int damage)
+void Hero::receiveDamage(int damage, Hero*& sprite)
 {
 
 	health_ -= (damage - defend_);
 
 	if (health_ <= 0)
 	{
-		die();
+		// 给能量块绑定了物理躯干getPosition会失效？？是map问题吗？
+		auto energy = cocos2d::Sprite::create("Hero/energy.png");
+		energy->setPosition(sprite->getPosition());
+		sprite->getParent()->addChild(energy);
+
+		isAlive_ = false;
 	}
+	//auto blink = cocos2d::Blink::create(0.5f, 3);// 有概率出现打死了还有子弹的bug？？
+	//sprite->runAction(blink);
 }
 
 void Hero::dealDamage(int damage)
@@ -31,7 +39,7 @@ void Hero::dealDamage(int damage)
 	;
 }
 
-void Hero::ultimateSkill(int damage)
+void Hero::ultimateSkill()
 {
 	;
 }

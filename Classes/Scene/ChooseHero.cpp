@@ -130,7 +130,7 @@ void ChooseHero::startGame(Ref* pSender)
 {
 	//fightScene_->bindPlayer(Player::create("heroArray[cur_hero_index].name"));
 
-	cocos2d::Director::getInstance()->getOpenGLView()->setCursorVisible(false);
+	cocos2d::Director::getInstance()->getOpenGLView()->setCursorVisible(true);
 
 	cocos2d::Director::getInstance()->replaceScene(fightScene_->createScene());
 }

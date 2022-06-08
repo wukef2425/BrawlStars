@@ -12,9 +12,9 @@ class Player : public Hero
 {
 private:
 
-    enum Key { W, A, S, D};
+    enum Key { W, A, S, D, E };
 
-    bool keyPressed[4] = {};
+    bool keyPressed[5] = {};
     
     /* …Ë÷√≤Ω≥§ */
     float step = 10.f;

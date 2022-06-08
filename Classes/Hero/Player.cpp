@@ -26,27 +26,35 @@ void Player::listenToKeyPresses(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d
     {
         keyPressed[S] = true;
     }
+    if (keyCode == K::KEY_E)
+    {
+        keyPressed[E] = true;
+    }
 }
 
 void Player::listenToKeyReleases(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event)
 {
     using K = cocos2d::EventKeyboard::KeyCode;
 
-    if (keyCode == K::KEY_D)
+    if (keyCode == K::KEY_W)
     {
-        keyPressed[D] = false;
+        keyPressed[W] = false;
     }
     if (keyCode == K::KEY_A)
     {
         keyPressed[A] = false;
     }
-    if (keyCode == K::KEY_W)
-    {
-        keyPressed[W] = false;
-    }
     if (keyCode == K::KEY_S)
     {
         keyPressed[S] = false;
+    }
+    if (keyCode == K::KEY_D)
+    {
+        keyPressed[D] = false;
+    }
+    if (keyCode == K::KEY_E)
+    {
+        keyPressed[E] = false;
     }
 }
 
@@ -69,7 +77,12 @@ void Player::update(float delta)
     {
         x += step;
     }
+    if (keyPressed[E])
+    {
+        ultimateSkill();
+    }
 
     setPosition(x, y);
 }
+
 

@@ -13,37 +13,42 @@ class Hero :public cocos2d::Sprite
 {
 protected:
 
-	friend class StatusBar;//状态条 包括生命和弹药数量两种
+	friend class StatusBar;// 状态条 包括生命和弹药数量两种
 
-	class HealthBar;//生命条
+	class HealthBar;// 生命条
 
-	class BulletBar;//弹药条
+	class BulletBar;// 弹药条
 
-	bool isAlive_ = true;//是否存活
+	bool isAlive_ = true;// 是否存活
 
-	int health_;//当前生命
+	bool ultimateProgress_ = false;// 大招进度条
 
-	int bullet_;//当前弹药
+	int health_;// 当前生命
 
-	int maxHealth_;//最大生命
+	int bullet_;// 当前弹药
 
-	int attack_;//攻击值
+	int maxHealth_;// 最大生命
 
-	int defend_;//防御值
+	int attack_;// 攻击值
 
-	int energy_;//死了以后掉落多少能量
+	int defend_;// 防御值
+
+	int energy_;// 死了以后掉落多少能量
+
 
 public:
 
+	Hero* create(const std::string& filename);
+
 	bool isAlive();
 
-	virtual void die();
+	bool isUltimateSkillReady();
 
-	virtual void receiveDamage(int damage);
+	void receiveDamage(int damage, Hero*& sprite);
 
 	virtual void dealDamage(int damage);
 
-	virtual void ultimateSkill(int damage);
+	virtual void ultimateSkill();
 
 	void bindPhysicsBodyAndTag(cocos2d::Sprite*& sprite, int bitmask, int tag);
 

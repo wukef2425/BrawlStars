@@ -10,6 +10,7 @@
 #include "Hero/Player.h"
 #include "Hero/PolarBear.h"
 #include "Utils/FightUtils.h"
+#include "Utils/CameraEffect.h"
 
 #include "Hero/ChangYi.h"
 #include "Hero/YunHe.h"
@@ -23,6 +24,8 @@ using namespace std;
 class FightScene : public cocos2d::Scene
 {
 private:
+
+    CameraEffect* fightCamera;
 
     Player* currentPlayer;
 

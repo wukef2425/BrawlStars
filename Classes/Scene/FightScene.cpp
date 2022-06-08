@@ -80,6 +80,8 @@ bool FightScene::init()
 
     this->addChild(AI);
 
+    setCamera();
+
     this->schedule(CC_SCHEDULE_SELECTOR(FightScene::createAI), 0.5f);// 0.5秒执行一次schedule AI会0.5秒更新一次目的地，追着你跑
 
     listenToUserOperation();
@@ -184,8 +186,6 @@ void FightScene::listenToUserOperation()
 
 bool FightScene::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* unusedEvent)
 {
-    Vec2 touchLocation = touch->getLocation();
-
     /* 创造currentBullet并设置初始位置 */
     auto currentBullet = Sprite::create("Hero/Bullet/polar-bear-bullet.png");// 因为子弹是打一个删一个的，所以只能放在onTouchBegan内部
     currentBullet->setPosition(this->currentPlayer->getPosition());// 初始位置是从currentPlayer出发
@@ -196,13 +196,15 @@ bool FightScene::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* unusedEvent
     /* 加入渲染树 */
     this->addChild(currentBullet);
 
-    Vec2 offset = touchLocation - this->currentPlayer->getPosition();
+    /* touch转世界坐标 */
+    cocos2d::Size winSize = Director::getInstance()->getVisibleSize();
+    Vec2 touchWorldPosition = touch->getLocation() + currentPlayer->getPosition() - Vec2(winSize.width * 0.5f, winSize.height * 0.5f);
+
+    Vec2 offset = touchWorldPosition - this->currentPlayer->getPosition();
     offset.normalize();// currentPlayer位置指向鼠标touch位置的单位向量
-    auto aid = offset * ShootSpeed;// 改动这个可以改子弹发射速率，后期可以不同的英雄不一样
-    auto shootRange = aid + currentBullet->getPosition();// 射程，实际上是Vec2的目的地
 
     /* 定义一些动作 */
-    auto actionMove = MoveTo::create(1.5f, shootRange);// 1.5秒到达目的地
+    auto actionMove = MoveBy::create(1.5f, offset * ShootSpeed);// 1.5秒到达目的地
     auto actionRemove = RemoveSelf::create();// 删掉自身
 
     /* 让currentBullet完成上面的一系列动作 */
@@ -223,12 +225,12 @@ bool FightScene::onContactBegin(cocos2d::PhysicsContact& contact)
         if (nodeA->getTag() == PlayerBulletTag && nodeB->getTag() == EnemyTag)
         {
             showSpark("Hero/Bullet/spiky-eclipse.png", nodeA);
-            AI->receiveDamage(30);// 我随便写的 后面可以随英雄变化
+            AI->receiveDamage(20,AI);// 我随便写的 后面可以随英雄变化
         }
         else if (nodeB->getTag() == PlayerBulletTag && nodeA->getTag() == EnemyTag)
         {
             showSpark("Hero/Bullet/spiky-eclipse.png", nodeB);
-            AI->receiveDamage(30);// 我随便写的 后面可以随英雄变化
+            AI->receiveDamage(20,AI);// 我随便写的 后面可以随英雄变化
         }
         else if (nodeA->getTag() == EnemyBulletTag && nodeB->getTag() == PlayerTag)
         {
@@ -238,6 +240,15 @@ bool FightScene::onContactBegin(cocos2d::PhysicsContact& contact)
         {
             showSpark("Hero/Bullet/enemy-spiky-eclipse.png", nodeB);
         }
+        else if (nodeA->getTag() == PlayerTag && nodeB->getTag() == EnergyTag)
+        {
+            nodeB->removeFromParentAndCleanup(true);
+        }
+        else if (nodeB->getTag() == PlayerTag && nodeA->getTag() == EnergyTag)
+        {
+            nodeA->removeFromParentAndCleanup(true);
+        }
+
     }
 
     return true;
@@ -275,11 +286,9 @@ void FightScene::createAI(float delta)
 
     Vec2 offset = playerPosition - AI->getPosition();
     offset.normalize();// currentPlayer位置指向鼠标touch位置的单位向量
-    auto aid = offset * ShootSpeed;// 改动这个可以改子弹发射速率，后期可以不同的英雄不一样
-    auto shootRange = aid + currentBullet->getPosition();// 射程，实际上是Vec2的目的地
 
     /* 定义一些动作 */
-    auto actionMove = MoveTo::create(2.0f, shootRange);// 2.0秒到达目的地
+    auto actionMove = MoveBy::create(2.0f, offset * ShootSpeed);// 2.0秒到达目的地
     auto actionRemove = RemoveSelf::create();// 删掉自身
 
     /* 让currentBullet完成上面的一系列动作 */
@@ -302,3 +311,11 @@ void FightScene::bindPhysicsBodyAndTag(cocos2d::Sprite*& sprite, int bitmask, in
     sprite->setTag(tag);
 }
 
+void FightScene::setCamera()
+{
+    this->fightCamera = CameraEffect::create(this);
+    if (this->fightCamera != nullptr && this->currentPlayer != nullptr)
+    {
+        this->fightCamera->FollowPlayer(currentPlayer);
+    }
+}

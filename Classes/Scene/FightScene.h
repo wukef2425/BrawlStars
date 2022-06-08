@@ -10,6 +10,7 @@
 #include "Hero/Player.h"
 #include "Hero/PolarBear.h"
 #include "Utils/FightUtils.h"
+#include "Utils/CameraEffect.h"
 
 #include "Hero/ChangYi.h"
 #include "Hero/YunHe.h"
@@ -24,26 +25,30 @@ class FightScene : public cocos2d::Scene
 {
 private:
 
+
+    CameraEffect* fightCamera;
+
     Size _visibleSize;
     Vec2 _origin;
+
 
     Player* currentPlayer;
 
     Hero* AI;
 
 
-    /*µØÍ¼ĞÅÏ¢»ã×Ü*/
+    /*åœ°å›¾ä¿¡æ¯æ±‡æ€»*/
     cocos2d::TMXTiledMap* _tileMap;
-    TMXLayer* _background;	 			//±³¾°²ã
-    TMXLayer* _barrier;					//ÕÏ°­ÎïÍ¼²ã
-    TMXLayer* _collidable;				//Åö×²ÊôĞÔÍ¼²ã
-    TMXLayer* _grass;					//²İ´ÔÍ¼²ã
-    TMXLayer* _smoke;		         	//¶¾ÑÌÍ¼²ã
-    int _xSmokeMin;					//¶¾ÑÌÎ»ÖÃ
-    int	_xSmokeMax;					//¶¾ÑÌÎ»ÖÃ
-    int	_ySmokeMin;					//¶¾ÑÌÎ»ÖÃ
-    int	_ySmokeMax;					//¶¾ÑÌÎ»ÖÃ
-    Sprite* _smokeCell;		            //¶¾ÑÌµ¥Ôª¸ñ
+    TMXLayer* _background;	 			//èƒŒæ™¯å±‚
+    TMXLayer* _barrier;					//éšœç¢ç‰©å›¾å±‚
+    TMXLayer* _collidable;				//ç¢°æ’å±æ€§å›¾å±‚
+    TMXLayer* _grass;					//è‰ä¸›å›¾å±‚
+    TMXLayer* _smoke;		         	//æ¯’çƒŸå›¾å±‚
+    int _xSmokeMin;					//æ¯’çƒŸä½ç½®
+    int	_xSmokeMax;					//æ¯’çƒŸä½ç½®
+    int	_ySmokeMin;					//æ¯’çƒŸä½ç½®
+    int	_ySmokeMax;					//æ¯’çƒŸä½ç½®
+    Sprite* _smokeCell;		            //æ¯’çƒŸå•å…ƒæ ¼
 
 
 

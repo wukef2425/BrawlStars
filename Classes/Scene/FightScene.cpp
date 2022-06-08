@@ -22,7 +22,7 @@ static void problemLoading(const char* filename)
     printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in HelloWorldScene.cpp\n");
 }
 
-/*Ô¤ÏÈ¼ÓÔØµØÍ¼º¯Êı,*/
+/*é¢„å…ˆåŠ è½½åœ°å›¾å‡½æ•°,*/
 FightScene::FightScene(TMXTiledMap* map) : _tileMap(map)
 {
     currentPlayer = nullptr;
@@ -60,7 +60,7 @@ Scene* FightScene::createScene()
     return nullptr;
 }
 
-/*½çÃæ³õÊ¼»¯º¯Êı*/
+/*ç•Œé¢åˆå§‹åŒ–å‡½æ•°*/
 bool FightScene::init()
 {
 
@@ -69,58 +69,66 @@ bool FightScene::init()
         return false;
     }
 
-    //to zyy ÓÎÏ·¼ÓÔØµÄÊ±ºò¼ÓÈëÒôÀÖ×é¼ş
+    //to zyy æ¸¸æˆåŠ è½½çš„æ—¶å€™åŠ å…¥éŸ³ä¹ç»„ä»¶
 
-    initMap();//³õÊ¼»¯µØÍ¼
+    initMap();//åˆå§‹åŒ–åœ°å›¾
 
-    //initUI(); ¼ÓÈëui×é¼ş£¬°üÀ¨Ê£ÓàÈËÊı£¬À¶ÌõÑªÌõ£¬ÉèÖÃ¼ü£¨ÒôÀÖºÍÒôĞ§¸÷ÖÖ¶«Î÷to zyy£©£¬ÔİÍ£ºÍÍË³ö°´Å¥£¨²»ÖªµÀÊÇ²»ÊÇui£©
+    //initUI(); åŠ å…¥uiç»„ä»¶ï¼ŒåŒ…æ‹¬å‰©ä½™äººæ•°ï¼Œè“æ¡è¡€æ¡ï¼Œè®¾ç½®é”®ï¼ˆéŸ³ä¹å’ŒéŸ³æ•ˆå„ç§ä¸œè¥¿to zyyï¼‰ï¼Œæš‚åœå’Œé€€å‡ºæŒ‰é’®ï¼ˆä¸çŸ¥é“æ˜¯ä¸æ˜¯uiï¼‰
 
-    initHero();//³õÊ¼»¯Ó¢ĞÛ
+    initHero();//åˆå§‹åŒ–è‹±é›„
 
-    initAI();//³õÊ¼»¯AI
+    initAI();//åˆå§‹åŒ–AI
 
-    listenToUserOperation();//¼àÌıÓÃ»§²Ù×÷£¬Ïàµ±ÓÚÒ»¸öÕ½¶·¹Ü¿ØÆ÷£¬µ«¸Ğ¾õÖ»ÒªÓĞ¼àÌı¾Í¿ÉÒÔ£¬Õâ¸ö¿ÉÒÔ·ÅÔÚÕ½¶·ÀàÀï£¿£¿£¿
+    listenToUserOperation();//ç›‘å¬ç”¨æˆ·æ“ä½œï¼Œç›¸å½“äºä¸€ä¸ªæˆ˜æ–—ç®¡æ§å™¨ï¼Œä½†æ„Ÿè§‰åªè¦æœ‰ç›‘å¬å°±å¯ä»¥ï¼Œè¿™ä¸ªå¯ä»¥æ”¾åœ¨æˆ˜æ–—ç±»é‡Œï¼Ÿï¼Ÿï¼Ÿ
+
+
+    setCamera();
+
+    //this->schedule(CC_SCHEDULE_SELECTOR(FightScene::createAI), 0.5f);// 0.5ç§’æ‰§è¡Œä¸€æ¬¡schedule AIä¼š0.5ç§’æ›´æ–°ä¸€æ¬¡ç›®çš„åœ°ï¼Œè¿½ç€ä½ è·‘
+
+    //listenToUserOperation();
 
     this->scheduleUpdate();
+
 
     return true;
 }
 
-/*ĞèÒªÌí¼ÓµÄĞÅÏ¢ÓĞ£º¾µÍ·µÄ¸úËæ¡¢ÈËÎïµÄÒÆ¶¯¡¢²İÆºµÄ×´Ì¬¡¢ÈËÎïÒÆ¶¯Òª×¢ÒâÊÇ·ñÓĞÕÏ°­Îï*/
+/*éœ€è¦æ·»åŠ çš„ä¿¡æ¯æœ‰ï¼šé•œå¤´çš„è·Ÿéšã€äººç‰©çš„ç§»åŠ¨ã€è‰åªçš„çŠ¶æ€ã€äººç‰©ç§»åŠ¨è¦æ³¨æ„æ˜¯å¦æœ‰éšœç¢ç‰©*/
 void FightScene::update(float dt)
 {
-    //this->setViewPointCenter(playerPos);//to wkf ÉèÖÃ¾µÍ·¸úËæ¿ÉÒÔ¼Óµ½ÕâÀï
+    //this->setViewPointCenter(playerPos);//to wkf è®¾ç½®é•œå¤´è·Ÿéšå¯ä»¥åŠ åˆ°è¿™é‡Œ
     // 
     // 
     // 
-    // //ÈËÎïÒÆ¶¯µÄ¸úËæÓ¦¸Ã·ÅÖÃÔÚupdateÖĞ
-    //¸üĞÂÍæ¼ÒµÄÎ»ÖÃ
+    // //äººç‰©ç§»åŠ¨çš„è·Ÿéšåº”è¯¥æ”¾ç½®åœ¨updateä¸­
+    //æ›´æ–°ç©å®¶çš„ä½ç½®
     Vec2 playerPos = currentPlayer->getPosition();
-    this->setPlayerPosition(playerPos);//to wkf ¾ÍÊÇÔÚÕâÀï¸ü¸ÄÍæ¼ÒµÄÎ»ÖÃ£¬ÏÈ´«µ½setplayerpositionº¯ÊıÖĞ½øĞĞÅĞ¶Ï£¬Èç¹û¿ÉÒÔ¸ü¸ÄµÄ»°¾Ísetposition£¬²»¿ÉÒÔµÄ»°
-                                       //¾ÍÖ±½Óreturn´ïµ½ÎŞ·¨ÒÆ¶¯µÄĞ§¹û
-    //¿¼ÂÇaiµÄÒÆ¶¯ÊÇ·ñÒ²Òª¼Óµ½ÕâÀï£¬²»¹ı¿ÉÄÜ»á²»Í¬²½£¬ĞèÒªµ÷Ò»ÏÂÊ±¼ä
-                                       //this->setGrassOpacity(playerPos);//²İ´ÔµÄ±ä»¯Ò²Ó¦¸Ã¼Óµ½ÕâÀï
+    this->setPlayerPosition(playerPos);//to wkf å°±æ˜¯åœ¨è¿™é‡Œæ›´æ”¹ç©å®¶çš„ä½ç½®ï¼Œå…ˆä¼ åˆ°setplayerpositionå‡½æ•°ä¸­è¿›è¡Œåˆ¤æ–­ï¼Œå¦‚æœå¯ä»¥æ›´æ”¹çš„è¯å°±setpositionï¼Œä¸å¯ä»¥çš„è¯
+                                       //å°±ç›´æ¥returnè¾¾åˆ°æ— æ³•ç§»åŠ¨çš„æ•ˆæœ
+    //è€ƒè™‘aiçš„ç§»åŠ¨æ˜¯å¦ä¹Ÿè¦åŠ åˆ°è¿™é‡Œï¼Œä¸è¿‡å¯èƒ½ä¼šä¸åŒæ­¥ï¼Œéœ€è¦è°ƒä¸€ä¸‹æ—¶é—´
+                                       //this->setGrassOpacity(playerPos);//è‰ä¸›çš„å˜åŒ–ä¹Ÿåº”è¯¥åŠ åˆ°è¿™é‡Œ
    
 }
 
-/*****************************************Õ½¶·ËùĞèº¯Êı************************************************/
+/*****************************************æˆ˜æ–—æ‰€éœ€å‡½æ•°************************************************/
 void FightScene::listenToUserOperation()
 {
-    this->addChild(this->currentPlayer);// ºÃÏñÒªÏÈ¼Óµ½playerÀïÔÙ¼Óµ½sceneÀï£¿£¿£¿
-    this->currentPlayer->scheduleUpdate();// ÓÃÀ´schedule update
+    this->addChild(this->currentPlayer);// å¥½åƒè¦å…ˆåŠ åˆ°playeré‡Œå†åŠ åˆ°sceneé‡Œï¼Ÿï¼Ÿï¼Ÿ
+    this->currentPlayer->scheduleUpdate();// ç”¨æ¥schedule update
 
-    /* ¼àÌı¼üÅÌWASDÊµÏÖÒÆ¶¯ */
+    /* ç›‘å¬é”®ç›˜WASDå®ç°ç§»åŠ¨ */
     auto keyboardListener = cocos2d::EventListenerKeyboard::create();
     keyboardListener->onKeyPressed = CC_CALLBACK_2(Player::listenToKeyPresses, this->currentPlayer);
     keyboardListener->onKeyReleased = CC_CALLBACK_2(Player::listenToKeyReleases, this->currentPlayer);
     this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(keyboardListener, this);
 
-    /* ¼àÌıÊó±ê ÊµÏÖµã»÷¹¥»÷ */
+    /* ç›‘å¬é¼ æ ‡ å®ç°ç‚¹å‡»æ”»å‡» */
     auto eventListener = cocos2d::EventListenerTouchOneByOne::create();
     eventListener->onTouchBegan = CC_CALLBACK_2(FightScene::onTouchBegan, this);
     this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(eventListener, this);
 
-    /* Åö×²¼àÌı */
+    /* ç¢°æ’ç›‘å¬ */
     auto contactListener = EventListenerPhysicsContact::create();
     contactListener->onContactBegin = CC_CALLBACK_1(FightScene::onContactBegin, this);
     this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(contactListener, this);
@@ -128,28 +136,28 @@ void FightScene::listenToUserOperation()
 
 bool FightScene::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* unusedEvent)
 {
-    Vec2 touchLocation = touch->getLocation();
+    /* åˆ›é€ currentBulletå¹¶è®¾ç½®åˆå§‹ä½ç½® */
+    auto currentBullet = Sprite::create("Hero/Bullet/polar-bear-bullet.png");// å› ä¸ºå­å¼¹æ˜¯æ‰“ä¸€ä¸ªåˆ ä¸€ä¸ªçš„ï¼Œæ‰€ä»¥åªèƒ½æ”¾åœ¨onTouchBeganå†…éƒ¨
+    currentBullet->setPosition(this->currentPlayer->getPosition());// åˆå§‹ä½ç½®æ˜¯ä»currentPlayerå‡ºå‘
 
-    /* ´´ÔìcurrentBullet²¢ÉèÖÃ³õÊ¼Î»ÖÃ */
-    auto currentBullet = Sprite::create("Hero/Bullet/polar-bear-bullet.png");// ÒòÎª×Óµ¯ÊÇ´òÒ»¸öÉ¾Ò»¸öµÄ£¬ËùÒÔÖ»ÄÜ·ÅÔÚonTouchBeganÄÚ²¿
-    currentBullet->setPosition(this->currentPlayer->getPosition());// ³õÊ¼Î»ÖÃÊÇ´ÓcurrentPlayer³ö·¢
-
-    /* ¸øcurrentBullet°ó¶¨ÎïÀíÇû¸É */
+    /* ç»™currentBulletç»‘å®šç‰©ç†èº¯å¹² */
     bindPhysicsBodyAndTag(currentBullet, PlayerBulletAndEnemyBitmask, PlayerBulletTag);
 
-    /* ¼ÓÈëäÖÈ¾Ê÷ */
+    /* åŠ å…¥æ¸²æŸ“æ ‘ */
     this->addChild(currentBullet);
 
-    Vec2 offset = touchLocation - this->currentPlayer->getPosition();
-    offset.normalize();// currentPlayerÎ»ÖÃÖ¸ÏòÊó±êtouchÎ»ÖÃµÄµ¥Î»ÏòÁ¿
-    auto aid = offset * ShootSpeed;// ¸Ä¶¯Õâ¸ö¿ÉÒÔ¸Ä×Óµ¯·¢ÉäËÙÂÊ£¬ºóÆÚ¿ÉÒÔ²»Í¬µÄÓ¢ĞÛ²»Ò»Ñù
-    auto shootRange = aid + currentBullet->getPosition();// Éä³Ì£¬Êµ¼ÊÉÏÊÇVec2µÄÄ¿µÄµØ
+    /* touchè½¬ä¸–ç•Œåæ ‡ */
+    cocos2d::Size winSize = Director::getInstance()->getVisibleSize();
+    Vec2 touchWorldPosition = touch->getLocation() + currentPlayer->getPosition() - Vec2(winSize.width * 0.5f, winSize.height * 0.5f);
 
-    /* ¶¨ÒåÒ»Ğ©¶¯×÷ */
-    auto actionMove = MoveTo::create(1.5f, shootRange);// 1.5Ãëµ½´ïÄ¿µÄµØ
-    auto actionRemove = RemoveSelf::create();// É¾µô×ÔÉí
+    Vec2 offset = touchWorldPosition - this->currentPlayer->getPosition();
+    offset.normalize();// currentPlayerä½ç½®æŒ‡å‘é¼ æ ‡touchä½ç½®çš„å•ä½å‘é‡
 
-    /* ÈÃcurrentBulletÍê³ÉÉÏÃæµÄÒ»ÏµÁĞ¶¯×÷ */
+    /* å®šä¹‰ä¸€äº›åŠ¨ä½œ */
+    auto actionMove = MoveBy::create(1.5f, offset * ShootSpeed);// 1.5ç§’åˆ°è¾¾ç›®çš„åœ°
+    auto actionRemove = RemoveSelf::create();// åˆ æ‰è‡ªèº«
+
+    /* è®©currentBulletå®Œæˆä¸Šé¢çš„ä¸€ç³»åˆ—åŠ¨ä½œ */
     currentBullet->runAction(Sequence::create(actionMove, actionRemove, nullptr));
 
     return true;
@@ -157,22 +165,22 @@ bool FightScene::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* unusedEvent
 
 bool FightScene::onContactBegin(cocos2d::PhysicsContact& contact)
 {
-    /* »ñÈ¡Á½¸öÅö×²µÄÎïÌå */
+    /* è·å–ä¸¤ä¸ªç¢°æ’çš„ç‰©ä½“ */
     auto nodeA = contact.getShapeA()->getBody()->getNode();
     auto nodeB = contact.getShapeB()->getBody()->getNode();
 
-    /* »ğ»¨ÌØĞ§ & É¾³ı±ê¼ÇÎªBulletTagµÄÄÇ¸önode(¾ÍÊÇÖ®Ç°±ê¼ÇµÄcurrentBullet) */
+    /* ç«èŠ±ç‰¹æ•ˆ & åˆ é™¤æ ‡è®°ä¸ºBulletTagçš„é‚£ä¸ªnode(å°±æ˜¯ä¹‹å‰æ ‡è®°çš„currentBullet) */
     if (nodeA && nodeB)
     {
         if (nodeA->getTag() == PlayerBulletTag && nodeB->getTag() == EnemyTag)
         {
             showSpark("Hero/Bullet/spiky-eclipse.png", nodeA);
-            AI->receiveDamage(30);// ÎÒËæ±ãĞ´µÄ ºóÃæ¿ÉÒÔËæÓ¢ĞÛ±ä»¯
+            AI->receiveDamage(20,AI);// æˆ‘éšä¾¿å†™çš„ åé¢å¯ä»¥éšè‹±é›„å˜åŒ–
         }
         else if (nodeB->getTag() == PlayerBulletTag && nodeA->getTag() == EnemyTag)
         {
             showSpark("Hero/Bullet/spiky-eclipse.png", nodeB);
-            AI->receiveDamage(30);// ÎÒËæ±ãĞ´µÄ ºóÃæ¿ÉÒÔËæÓ¢ĞÛ±ä»¯
+            AI->receiveDamage(20,AI);// æˆ‘éšä¾¿å†™çš„ åé¢å¯ä»¥éšè‹±é›„å˜åŒ–
         }
         else if (nodeA->getTag() == EnemyBulletTag && nodeB->getTag() == PlayerTag)
         {
@@ -182,6 +190,15 @@ bool FightScene::onContactBegin(cocos2d::PhysicsContact& contact)
         {
             showSpark("Hero/Bullet/enemy-spiky-eclipse.png", nodeB);
         }
+        else if (nodeA->getTag() == PlayerTag && nodeB->getTag() == EnergyTag)
+        {
+            nodeB->removeFromParentAndCleanup(true);
+        }
+        else if (nodeB->getTag() == PlayerTag && nodeA->getTag() == EnergyTag)
+        {
+            nodeA->removeFromParentAndCleanup(true);
+        }
+
     }
 
     return true;
@@ -202,31 +219,29 @@ void FightScene::showSpark(const std::string& filename, cocos2d::Node*& node)
 void FightScene::createAI(float delta)
 {
     auto destination = this->currentPlayer->getPosition();
-    auto actionMoveAI = MoveTo::create(1.5f, destination);// 1.5ÃëÒÆ¶¯µ½Ä¿µÄµØ
+    auto actionMoveAI = MoveTo::create(1.5f, destination);// 1.5ç§’ç§»åŠ¨åˆ°ç›®çš„åœ°
     AI->runAction(actionMoveAI);
 
     Vec2 playerPosition = this->currentPlayer->getPosition();
 
-    /* ´´ÔìcurrentBullet²¢ÉèÖÃ³õÊ¼Î»ÖÃ */
+    /* åˆ›é€ currentBulletå¹¶è®¾ç½®åˆå§‹ä½ç½® */
     auto currentBullet = Sprite::create("Hero/Bullet/enemy-bullet.png");
-    currentBullet->setPosition(AI->getPosition());// ³õÊ¼Î»ÖÃÊÇ´ÓAI³ö·¢
+    currentBullet->setPosition(AI->getPosition());// åˆå§‹ä½ç½®æ˜¯ä»AIå‡ºå‘
 
-    /* ¸øcurrentBullet°ó¶¨ÎïÀíÇû¸É */
-    bindPhysicsBodyAndTag(currentBullet, EnemyBulletAndPlayerBitmask, EnemyBulletTag);// Ö»¹ÜµĞÈË×Óµ¯ÓëÍæ¼ÒµÄ½Ó´¥
+    /* ç»™currentBulletç»‘å®šç‰©ç†èº¯å¹² */
+    bindPhysicsBodyAndTag(currentBullet, EnemyBulletAndPlayerBitmask, EnemyBulletTag);// åªç®¡æ•Œäººå­å¼¹ä¸ç©å®¶çš„æ¥è§¦
 
-    /* ¼ÓÈëäÖÈ¾Ê÷ */
+    /* åŠ å…¥æ¸²æŸ“æ ‘ */
     this->addChild(currentBullet);
 
     Vec2 offset = playerPosition - AI->getPosition();
-    offset.normalize();// currentPlayerÎ»ÖÃÖ¸ÏòÊó±êtouchÎ»ÖÃµÄµ¥Î»ÏòÁ¿
-    auto aid = offset * ShootSpeed;// ¸Ä¶¯Õâ¸ö¿ÉÒÔ¸Ä×Óµ¯·¢ÉäËÙÂÊ£¬ºóÆÚ¿ÉÒÔ²»Í¬µÄÓ¢ĞÛ²»Ò»Ñù
-    auto shootRange = aid + currentBullet->getPosition();// Éä³Ì£¬Êµ¼ÊÉÏÊÇVec2µÄÄ¿µÄµØ
+    offset.normalize();// currentPlayerä½ç½®æŒ‡å‘é¼ æ ‡touchä½ç½®çš„å•ä½å‘é‡
 
-    /* ¶¨ÒåÒ»Ğ©¶¯×÷ */
-    auto actionMove = MoveTo::create(2.0f, shootRange);// 2.0Ãëµ½´ïÄ¿µÄµØ
-    auto actionRemove = RemoveSelf::create();// É¾µô×ÔÉí
+    /* å®šä¹‰ä¸€äº›åŠ¨ä½œ */
+    auto actionMove = MoveBy::create(2.0f, offset * ShootSpeed);// 2.0ç§’åˆ°è¾¾ç›®çš„åœ°
+    auto actionRemove = RemoveSelf::create();// åˆ æ‰è‡ªèº«
 
-    /* ÈÃcurrentBulletÍê³ÉÉÏÃæµÄÒ»ÏµÁĞ¶¯×÷ */
+    /* è®©currentBulletå®Œæˆä¸Šé¢çš„ä¸€ç³»åˆ—åŠ¨ä½œ */
     currentBullet->runAction(Sequence::create(actionMove, actionRemove, nullptr));
 
     if (!AI->isAlive())
@@ -236,54 +251,54 @@ void FightScene::createAI(float delta)
     }
 }
 
-void FightScene::bindPhysicsBodyAndTag(cocos2d::Sprite*& sprite, int bitmask, int tag)// ´«ÒıÓÃ£¬·ñÔò»á±»ÊÍ·Åµô
+void FightScene::bindPhysicsBodyAndTag(cocos2d::Sprite*& sprite, int bitmask, int tag)// ä¼ å¼•ç”¨ï¼Œå¦åˆ™ä¼šè¢«é‡Šæ”¾æ‰
 {
     auto physicsBody = PhysicsBody::createBox(sprite->getContentSize(), PhysicsMaterial(0.f, 0.f, 0.f));
     physicsBody->setDynamic(false);
-    physicsBody->setCategoryBitmask(bitmask);// bitmaskÊÇÅö×²µÄbodyÖÖÀà ÕâÒ»¾äÊÇÉèÖÃÖÖÀà
-    physicsBody->setContactTestBitmask(bitmask);// ÕâÒ»¾äÊÇÔÚÕâ¸öÖÖÀàÅö×²µÄÊ±ºòÍ¨Öª
+    physicsBody->setCategoryBitmask(bitmask);// bitmaskæ˜¯ç¢°æ’çš„bodyç§ç±» è¿™ä¸€å¥æ˜¯è®¾ç½®ç§ç±»
+    physicsBody->setContactTestBitmask(bitmask);// è¿™ä¸€å¥æ˜¯åœ¨è¿™ä¸ªç§ç±»ç¢°æ’çš„æ—¶å€™é€šçŸ¥
     sprite->setPhysicsBody(physicsBody);
     sprite->setTag(tag);
 }
-/******************************************½çÃæ³õÊ¼»¯*************************************************/
-/*³õÊ¼»¯µØÍ¼£¬Ìí¼ÓÕÏ°­Îï/²İÆº/¶¾ÑÌ/±¦Ïä/ÈËÎï¼°ai×ø±ê*/
+/******************************************ç•Œé¢åˆå§‹åŒ–*************************************************/
+/*åˆå§‹åŒ–åœ°å›¾ï¼Œæ·»åŠ éšœç¢ç‰©/è‰åª/æ¯’çƒŸ/å®ç®±/äººç‰©åŠaiåæ ‡*/
 void FightScene::initMap()
 {
-    //Ìí¼ÓµØÍ¼,¼ÇµÃÌí¼ÓµØÍ¼µÄÑ¡Ôñ
-    //mapChoose½çÃæ£¬½«Ñ¡ÔñµÄµØÍ¼´«Èë²ÎÊıÖĞ
+    //æ·»åŠ åœ°å›¾,è®°å¾—æ·»åŠ åœ°å›¾çš„é€‰æ‹©
+    //mapChooseç•Œé¢ï¼Œå°†é€‰æ‹©çš„åœ°å›¾ä¼ å…¥å‚æ•°ä¸­
     
-    this->addChild(_tileMap, 0);//mapÊÇÒÑ¾­Ô¤¼ÓÔØºÃµÄ
+    this->addChild(_tileMap, 0);//mapæ˜¯å·²ç»é¢„åŠ è½½å¥½çš„
 
-    //·ÖÊôĞÔÌí¼ÓÄÚÈİ
+    //åˆ†å±æ€§æ·»åŠ å†…å®¹
 
-    _background = _tileMap->getLayer("Basic");//»ù´¡±³¾°
+    _background = _tileMap->getLayer("Basic");//åŸºç¡€èƒŒæ™¯
 
-    _barrier = _tileMap->getLayer("Barrier");//ÕÏ°­Îï,¿¼ÂÇ×©¿éÓëĞ¡ºÓÊÇ·ñÒª·Ö¿ª£¬ÒòÎª×©¿é¿É´İ»Ù
+    _barrier = _tileMap->getLayer("Barrier");//éšœç¢ç‰©,è€ƒè™‘ç –å—ä¸å°æ²³æ˜¯å¦è¦åˆ†å¼€ï¼Œå› ä¸ºç –å—å¯æ‘§æ¯
 
-    _collidable = _tileMap->getLayer("Collision");//Åö×²Í¼²ã
+    _collidable = _tileMap->getLayer("Collision");//ç¢°æ’å›¾å±‚
     _collidable->setVisible(false);
 
-    _grass = _tileMap->getLayer("Grass");//²İ´Ô
+    _grass = _tileMap->getLayer("Grass");//è‰ä¸›
 
-    _smoke = _tileMap->getLayer("Smoke");//¶¾ÑÌ
+    _smoke = _tileMap->getLayer("Smoke");//æ¯’çƒŸ
     _xSmokeMin = 0,
     _xSmokeMax = _tileMap->getMapSize().width,
     _ySmokeMin = 0,
     _ySmokeMax = _tileMap->getMapSize().height;
     this->smokeMove();
 
-    //¶¾ÑÌµÄÒÆ¶¯£¬Ò»¹²»áÒÆ¶¯30´Î£¬Ã¿20ÃëÒÆ¶¯Ò»´Î£¬ÓÎÏ·Ò»¹²6min
-    //to wkf ²»ÖªµÀÕâ¸öº¯ÊıÊÇÊ²Ã´¸öÓÃ·¨£¬ÒªÊÇÓĞÆäËüµ÷ÓÃ·½Ê½¿ÉÒÔ¸ü¸ÄÒ»ÏÂ
-    this->schedule([=](float dt) {				//Ã¿20ÃëË¢ĞÂ
+    //æ¯’çƒŸçš„ç§»åŠ¨ï¼Œä¸€å…±ä¼šç§»åŠ¨30æ¬¡ï¼Œæ¯20ç§’ç§»åŠ¨ä¸€æ¬¡ï¼Œæ¸¸æˆä¸€å…±6min
+    //to wkf ä¸çŸ¥é“è¿™ä¸ªå‡½æ•°æ˜¯ä»€ä¹ˆä¸ªç”¨æ³•ï¼Œè¦æ˜¯æœ‰å…¶å®ƒè°ƒç”¨æ–¹å¼å¯ä»¥æ›´æ”¹ä¸€ä¸‹
+    this->schedule([=](float dt) {				//æ¯20ç§’åˆ·æ–°
         smokeMove();
         }, SmokeSpeed, "smoke move");
 
 
 }
-/*°ó¶¨Ö¸¶¨ÈËÎï*/
+/*ç»‘å®šæŒ‡å®šäººç‰©*/
 void FightScene::initHero()
 {
-    //Í¨¹ıÑ¡ÔñµÄÈËÎïÀ´µ÷ÓÃ²»Í¬µÄcreatePlayerº¯Êı½øĞĞ
+    //é€šè¿‡é€‰æ‹©çš„äººç‰©æ¥è°ƒç”¨ä¸åŒçš„createPlayerå‡½æ•°è¿›è¡Œ
     switch (FightUtils::_hero)
     {
     case FightUtils::ChangYi:
@@ -317,7 +332,7 @@ void FightScene::initAI()
 
     this->addChild(AI);
 
-    this->schedule(CC_SCHEDULE_SELECTOR(FightScene::createAI), 0.5f);// 0.5ÃëÖ´ĞĞÒ»´Îschedule AI»á0.5Ãë¸üĞÂÒ»´ÎÄ¿µÄµØ£¬×·×ÅÄãÅÜ
+    this->schedule(CC_SCHEDULE_SELECTOR(FightScene::createAI), 0.5f);// 0.5ç§’æ‰§è¡Œä¸€æ¬¡schedule AIä¼š0.5ç§’æ›´æ–°ä¸€æ¬¡ç›®çš„åœ°ï¼Œè¿½ç€ä½ è·‘
 }
 
 void FightScene::initUI()
@@ -325,13 +340,13 @@ void FightScene::initUI()
 
 }
 
-/***********************************ÍßÆ¬µØÍ¼³õÊ¼»¯£¨¶¾ÑÌ¡¢²İÆº¡¢ÕÏ°­Îï£©**********************************************/
+/***********************************ç“¦ç‰‡åœ°å›¾åˆå§‹åŒ–ï¼ˆæ¯’çƒŸã€è‰åªã€éšœç¢ç‰©ï¼‰**********************************************/
 
-// OpenGL×ø±ê×ª³É¸ñ×Ó×ø±ê
+// OpenGLåæ ‡è½¬æˆæ ¼å­åæ ‡
 Vec2 FightScene::tileCoordFormPosition(const Vec2& position)
 {
-    Size mapSize = _tileMap->getMapSize();      // »ñÈ¡ÒÔtilesÊıÁ¿Îªµ¥Î»µÄµØÍ¼³ß´ç
-    Size tileSize = _tileMap->getTileSize();    // »ñÈ¡ÒÔÏñËØµãÎªµ¥Î»µÄtile³ß´çÊôĞÔ
+    Size mapSize = _tileMap->getMapSize();      // è·å–ä»¥tilesæ•°é‡ä¸ºå•ä½çš„åœ°å›¾å°ºå¯¸
+    Size tileSize = _tileMap->getTileSize();    // è·å–ä»¥åƒç´ ç‚¹ä¸ºå•ä½çš„tileå°ºå¯¸å±æ€§
     
     int x = position.x / tileSize.width;
     int y = (mapSize.height * tileSize.height - position.y) / tileSize.height;
@@ -344,12 +359,12 @@ void FightScene::setPlayerPosition(Point position)
 
     Point tileCoord = this->tileCoordFormPosition(position); 
 
-    //±ß½ç·¶Î§ÏŞÖÆ
+    //è¾¹ç•ŒèŒƒå›´é™åˆ¶
     if (!(tileCoord.x <=62 && tileCoord.y <=62 && tileCoord.x >= 3 && tileCoord.y >= 3))
     {
         return; 
     }
-    //barrierÏŞÖÆ
+    //barrieré™åˆ¶
     if (_collidable->getTileAt(tileCoord))
     {
         return;
@@ -359,16 +374,16 @@ void FightScene::setPlayerPosition(Point position)
 
 }
 
-//¶¾ÑÌµÄÒÆ¶¯
+//æ¯’çƒŸçš„ç§»åŠ¨
 void FightScene::smokeMove()
 {
 
-    /* È«²¿ÏÔÊ¾¶¾ÑÌ */
+    /* å…¨éƒ¨æ˜¾ç¤ºæ¯’çƒŸ */
     for (int X = _xSmokeMin; X <_xSmokeMax; X++)
     {
         for (int Y = _ySmokeMin; Y < _ySmokeMax; Y++)
         {
-            if (_smoke->getTileAt(Vec2(X, Y))) //Èç¹ûÍ¨¹ıtile×ø±êÄÜ¹»·ÃÎÊÖ¸¶¨¶¾ÑÌµ¥Ôª¸ñ
+            if (_smoke->getTileAt(Vec2(X, Y))) //å¦‚æœé€šè¿‡tileåæ ‡èƒ½å¤Ÿè®¿é—®æŒ‡å®šæ¯’çƒŸå•å…ƒæ ¼
             {
                 _smokeCell = _smoke->getTileAt(Vec2(X, Y));
                 _smokeCell->setVisible(true);
@@ -376,12 +391,12 @@ void FightScene::smokeMove()
         }
     }
 
-    /* ÖĞĞÄ²»ÏÔÊ¾¶¾ÑÌ */
+    /* ä¸­å¿ƒä¸æ˜¾ç¤ºæ¯’çƒŸ */
     for (int X = _xSmokeMin; X <_xSmokeMax; X++)
     {
         for (int Y = _ySmokeMin; Y <_ySmokeMax; Y++)
         {
-            if (_smoke->getTileAt(Vec2(X, Y))) //Èç¹ûÍ¨¹ıtile×ø±êÄÜ¹»·ÃÎÊÖ¸¶¨¶¾ÑÌµ¥Ôª¸ñ
+            if (_smoke->getTileAt(Vec2(X, Y))) //å¦‚æœé€šè¿‡tileåæ ‡èƒ½å¤Ÿè®¿é—®æŒ‡å®šæ¯’çƒŸå•å…ƒæ ¼
             {
                 _smokeCell = _smoke->getTileAt(Vec2(X, Y));
                 _smokeCell->setVisible(false);
@@ -389,7 +404,7 @@ void FightScene::smokeMove()
         }
     }
 
-    /* ¶¾ÑÌÒÆ¶¯ */
+    /* æ¯’çƒŸç§»åŠ¨ */
     _xSmokeMin++;
     _xSmokeMax--;
     _ySmokeMin++;
@@ -397,13 +412,21 @@ void FightScene::smokeMove()
 
     
 }
-//¶¾ÑÌµÄÉËº¦
+//æ¯’çƒŸçš„ä¼¤å®³
 
-/***********************************ui×é¼ş³õÊ¼»¯£¨Ê£ÓàÈËÊı¡¢ÑªÁ¿¡¢À¶Á¿£©**********************************************/
-
-
-
-/**********************************ÓÎÏ·×´Ì¬¼ÇÂ¼£¬ÈËÎïÊÇ·ñËÀÍö¡¢ÓÎÏ·ÊÇ·ñ½áÊø*************************************************/
+/***********************************uiç»„ä»¶åˆå§‹åŒ–ï¼ˆå‰©ä½™äººæ•°ã€è¡€é‡ã€è“é‡ï¼‰**********************************************/
 
 
 
+/**********************************æ¸¸æˆçŠ¶æ€è®°å½•ï¼Œäººç‰©æ˜¯å¦æ­»äº¡ã€æ¸¸æˆæ˜¯å¦ç»“æŸ*************************************************/
+
+
+
+void FightScene::setCamera()
+{
+    this->fightCamera = CameraEffect::create(this);
+    if (this->fightCamera != nullptr && this->currentPlayer != nullptr)
+    {
+        this->fightCamera->FollowPlayer(currentPlayer);
+    }
+}

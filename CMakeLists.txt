@@ -76,6 +76,7 @@ list(APPEND GAME_SOURCE
      Classes/User/UserInfo.cpp
      
      Classes/Utils/FightUtils.cpp
+     Classes/Utils/CameraEffect.cpp
      )
 list(APPEND GAME_HEADER
      Classes/AppDelegate.h
@@ -98,6 +99,8 @@ list(APPEND GAME_HEADER
 
      Classes/User/UserInfo.h
      Classes/Utils/FightUtils.h
+     Classes/Utils/CameraEffect.h
+
 
      )
 

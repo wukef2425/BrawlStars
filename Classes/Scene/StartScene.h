@@ -12,6 +12,8 @@ public:
 
     virtual bool init();
 
+    void StartScene::ChangeScene(float dt);
+
     void StartScene::initTermLabel();
     // implement the "static create()" method manually
     CREATE_FUNC(StartScene);

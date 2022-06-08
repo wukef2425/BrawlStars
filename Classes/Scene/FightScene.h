@@ -25,22 +25,30 @@ class FightScene : public cocos2d::Scene
 {
 private:
 
+
     CameraEffect* fightCamera;
+
+    Size _visibleSize;
+    Vec2 _origin;
+
 
     Player* currentPlayer;
 
     Hero* AI;
 
-    /*ÍßÆ¬µØÍ¼²¿·Ö*/
 
+    /*åœ°å›¾ä¿¡æ¯æ±‡æ€»*/
     cocos2d::TMXTiledMap* _tileMap;
-    TMXLayer* _background;	 			//±³¾°²ã
-    TMXLayer* _barrier;					//ÕÏ°­ÎïÍ¼²ã
-    TMXLayer* _collision;				//Åö×²ÊôĞÔÍ¼²ã
-    TMXLayer* _grass;					//²İ´ÔÍ¼²ã
-
-
-
+    TMXLayer* _background;	 			//èƒŒæ™¯å±‚
+    TMXLayer* _barrier;					//éšœç¢ç‰©å›¾å±‚
+    TMXLayer* _collidable;				//ç¢°æ’å±æ€§å›¾å±‚
+    TMXLayer* _grass;					//è‰ä¸›å›¾å±‚
+    TMXLayer* _smoke;		         	//æ¯’çƒŸå›¾å±‚
+    int _xSmokeMin;					//æ¯’çƒŸä½ç½®
+    int	_xSmokeMax;					//æ¯’çƒŸä½ç½®
+    int	_ySmokeMin;					//æ¯’çƒŸä½ç½®
+    int	_ySmokeMax;					//æ¯’çƒŸä½ç½®
+    Sprite* _smokeCell;		            //æ¯’çƒŸå•å…ƒæ ¼
 
 
 
@@ -68,13 +76,24 @@ public:
 
     void bindPlayer(Player* player);
 
+    void smokeMove();
+
     void setCamera();
     
     void FightScene::initMap();
 
     void FightScene::initHero();
-    //CREATE_FUNC(FightScene);
 
+    void FightScene::initAI();
+
+    void FightScene::initUI();
+    //CREATE_FUNC(FightScene);
+    void FightScene::update(float dt);
+
+    Vec2 tileCoordFormPosition(const Vec2& position);
+
+    void FightScene::setPlayerPosition(Point position);
+  
 };
 
 #endif // #define __FIGHT_SCENE_H__

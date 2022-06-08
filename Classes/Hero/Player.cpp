@@ -5,10 +5,11 @@
 
 #include "Player.h"
 #include "Consts.h"
+#include "Scene/FightScene.h"
 
 void Player::listenToKeyPresses(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event)
 {
-    using K = cocos2d::EventKeyboard::KeyCode;// È«if²»elseif¿ÉÒÔÊµÏÖÍ¬Ê±°´Á½¸ö¼ü
+    using K = cocos2d::EventKeyboard::KeyCode;// å…¨ifä¸elseifå¯ä»¥å®ç°åŒæ—¶æŒ‰ä¸¤ä¸ªé”®
 
     if (keyCode == K::KEY_D)
     {
@@ -58,7 +59,7 @@ void Player::listenToKeyReleases(cocos2d::EventKeyboard::KeyCode keyCode, cocos2
     }
 }
 
-/*¸üĞÂÍæ¼ÒµÄĞÅÏ¢£¬°üÀ¨ËùÔÚÎ»ÖÃ£¬ËùÔÚÎ»ÖÃÊÇbarrier/grass£¬ÒÔ¼°¾µÍ·¸úËæ*/
+/*æ›´æ–°ç©å®¶çš„ä¿¡æ¯ï¼ŒåŒ…æ‹¬æ‰€åœ¨ä½ç½®ï¼Œæ‰€åœ¨ä½ç½®æ˜¯barrier/grassï¼Œä»¥åŠé•œå¤´è·Ÿéš*/
 void Player::update(float delta)
 {
     if (keyPressed[W])
@@ -82,7 +83,18 @@ void Player::update(float delta)
         ultimateSkill();
     }
 
+    //æ‰¾ä¸ªå‡½æ•°æŠŠåæ ‡ä¼ å›åˆ°fight
     setPosition(x, y);
 }
+
+
+/*
+* 
+Vec2 Player::returnPosition()
+{
+    return Vec2(x, y);
+}
+
+*/
 
 

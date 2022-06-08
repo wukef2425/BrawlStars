@@ -3,12 +3,15 @@
 * @author wyf
 */
 
-#include "ChooseHero.h"
 #include<vector>
 #include<string>
+#include "ChooseHero.h"
+#include "Utils/FightUtils.h"
+#include "Scene/StartMenuScene.h"
+
+
 using namespace std;
 USING_NS_CC;
-
 
 Scene* ChooseHero::createScene()
 {
@@ -32,7 +35,10 @@ bool ChooseHero::init()
 
 	initButton();
 
+	initHeroButton();
+
 	cocos2d::Director::getInstance()->getOpenGLView()->setCursorVisible(true);
+
 	return true;
 }
 
@@ -40,7 +46,6 @@ void ChooseHero::preLoadingFightScene()
 {
 
 	auto visibleSize = Director::getInstance()->getVisibleSize();
-
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
 	TMXTiledMap* _tileMap = TMXTiledMap::create("Map/SnowMap.tmx");
@@ -49,9 +54,8 @@ void ChooseHero::preLoadingFightScene()
 
 	fightScene_ = FightScene::create(_tileMap);
 
-	fightScene_->retain();//ÏÈ¿´¿´ÊÇÉ¶
+	fightScene_->retain();
 
-	//AudioEngine::preload("audio/bgm_1low.mp3");//¼ÓÔØÒôÀÖ
 }
 
 void ChooseHero::initButton()
@@ -59,13 +63,13 @@ void ChooseHero::initButton()
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-	//ÉèÖÃ±³¾°Í¼Æ¬
-	auto* background = Sprite::create("Scene/HeroChooseScene.jpg");        //´´½¨¾«ÁéÀà£¬±³¾°Í¼Æ¬Îªbackground.jpg
+	//è®¾ç½®èƒŒæ™¯å›¾ç‰‡
+	auto* background = Sprite::create("Scene/HeroChooseScene.jpg");        //åˆ›å»ºç²¾çµç±»ï¼ŒèƒŒæ™¯å›¾ç‰‡ä¸ºbackground.jpg
 	background->setScale(1.05f);
-	background->setPosition(visibleSize.width / 2, visibleSize.height / 2);        //ÈÃ±³¾°Í¼Ïñ¾ÓÖĞÏÔÊ¾
+	background->setPosition(visibleSize.width / 2, visibleSize.height / 2);        //è®©èƒŒæ™¯å›¾åƒå±…ä¸­æ˜¾ç¤º
 	addChild(background, 0);
 
-	//¿ªÊ¼°´Å¥
+	//å¼€å§‹æŒ‰é’®
 	auto enterBtn = MenuItemImage::create("Hero/ChooseHero/Button/Begin.png",
 		"Hero/ChooseHero/Button/Begin.png",
 		CC_CALLBACK_1(ChooseHero::startGame, this));
@@ -73,17 +77,23 @@ void ChooseHero::initButton()
 	enterBtn_->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 5));
 	addChild(enterBtn_, 1);
 
-	//·µ»ØÖ÷²Ëµ¥°´Å¥
+	//è¿”å›ä¸»èœå•æŒ‰é’®
 	auto backBtn = MenuItemImage::create("Hero/ChooseHero/Button/Back.png",
 		"Hero/ChooseHero/Button/Back.png",
 		CC_CALLBACK_1(ChooseHero::backToMenu, this));
 
 	backBtn_ = Menu::create(backBtn, NULL);
 	backBtn_->setPosition(Vec2((visibleSize.width * 8) / 9, (visibleSize.height * 8) / 9));
-	addChild(backBtn_, 1);
+	addChild(backBtn_, 1);	
+}
 
-	//Ó¢ĞÛÑ¡Ôñ°´Å¥£¬²ÉÈ¡Í³Ò»µÄ·½Ê½À´½øĞĞÑ¡Ôñ
+void ChooseHero::initHeroButton()
+{
 
+	auto visibleSize = Director::getInstance()->getVisibleSize();
+	Vec2 origin = Director::getInstance()->getVisibleOrigin();
+	
+	//using vector to record repeat steps
 	Vector<MenuItem*> HeroMenuVector;
 
 	vector<string> NameMenuVector = { "ShunDe","ChangYi","YunHe", "HaoQing","SanYue" };
@@ -102,7 +112,6 @@ void ChooseHero::initButton()
 		Vec2(4 * visibleSize.width / 6 + origin.x, visibleSize.height / 2 + origin.y),
 		Vec2(5 * visibleSize.width / 6 + origin.x, visibleSize.height / 2 + origin.y), };
 
-	//Öğ¸ö´´½¨°´Å¥£¬·ÖÅäĞÅÏ¢£¬´æÈëVector
 	for (int i = 0; i < NameMenuVector.size(); i++)
 	{
 		MenuItem* heroButton = MenuItemImage::create("Hero/ChooseHero/" + NameMenuVector.at(i) + "Before.jpg",
@@ -120,57 +129,59 @@ void ChooseHero::initButton()
 		HeroMenuVector.pushBack(heroButton);
 	}
 
-	//½«ÒÔÉÏÄÚÈİ·ÅÈëmenuÖĞ
 	Menu* menu = Menu::createWithArray(HeroMenuVector);
 	menu->setPosition(Vec2::ZERO);
 	this->addChild(menu, 1);
 }
-
+//start game
 void ChooseHero::startGame(Ref* pSender)
 {
+
 	//fightScene_->bindPlayer(Player::create("heroArray[cur_hero_index].name"));
 
 	cocos2d::Director::getInstance()->getOpenGLView()->setCursorVisible(true);
-
-	cocos2d::Director::getInstance()->replaceScene(fightScene_->createScene());
 }
 
+//switch to menu
 void ChooseHero::backToMenu(Ref* pSender)
 {
-	//ŞôÏÂ·µ»Ø°´Å¥£¬ÇĞ»»µ½menuÒ³Ãæ
+
 	Director::getInstance()->replaceScene(StartMenuScene::createScene());
 }
+/******************************************************Hero************************************************************/
 
-//Ë³µÂ
+//to zyy é€‰æ‹©è‹±é›„ç‚¹å‡»çš„æ—¶å€™æ’­æ”¾å±äºä¸ªäººè‹±é›„çš„è¯­éŸ³æ€ä¹ˆæ ·ï¼Ÿæ˜¾å¾—æ¯”è¾ƒé«˜çº§ä¸€ç‚¹
+// å¦‚æœè¦åŠ çš„è¯å°±å…¨åŠ åˆ°è¿™å‡ ä¸ªå‡½æ•°ä¸­å§ï¼Œç´ æé—®æˆ‘è¦å°±è¡Œ
+// ç´ æåŒ…å…¨éƒ½æ”¾åœ¨ä¸€ä¸ªåœ°æ–¹ï¼Ÿæ–¹ä¾¿ä¸€äº›
+//é¡ºå¾·
 void ChooseHero::menuShunDeCallback(cocos2d::Ref* pSender)
 {
-	
+	/*è®°å½•é€‰æ‹©è‹±é›„ä¿¡æ¯çš„ä¸€ä¸ªä¸œè¥¿ï¼Œä½†è²Œä¼¼è®°å½•çš„ä¸æ˜¯å¾ˆæˆåŠŸ*/
 	FightUtils::_hero = FightUtils::AllHero::ShunDe;
-
 }
 
-//ê»Çà
+//æ˜Šé’
 void ChooseHero::menuHaoQingCallback(cocos2d::Ref* pSender)
 {
 	FightUtils::_hero = FightUtils::AllHero::HaoQing;
 }
 
-//ÔÆºÌ
+//äº‘ç¦¾
 void ChooseHero::menuYunHeCallback(cocos2d::Ref* pSender)
 {
 	
 	FightUtils::_hero = FightUtils::AllHero::YunHe;
 }
 
-//³¤Òâ
+//é•¿æ„
 void ChooseHero::menuChangYiCallback(cocos2d::Ref* pSender)
 {
 	FightUtils::_hero = FightUtils::AllHero::ChangYi;
 }
 
-
-//ÈıÔÂ
+//ä¸‰æœˆ
 void ChooseHero::menuSanYueCallback(cocos2d::Ref* pSender)
 {
 	FightUtils::_hero = FightUtils::AllHero::SanYue;
 }
+

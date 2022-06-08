@@ -24,20 +24,26 @@ class FightScene : public cocos2d::Scene
 {
 private:
 
+    Size _visibleSize;
+    Vec2 _origin;
+
     Player* currentPlayer;
 
     Hero* AI;
 
-    /*Õﬂ∆¨µÿÕº≤ø∑÷*/
 
+    /*µÿÕº–≈œ¢ª„◊‹*/
     cocos2d::TMXTiledMap* _tileMap;
     TMXLayer* _background;	 			//±≥æ∞≤„
     TMXLayer* _barrier;					//’œ∞≠ŒÔÕº≤„
-    TMXLayer* _collision;				//≈ˆ◊≤ Ù–‘Õº≤„
+    TMXLayer* _collidable;				//≈ˆ◊≤ Ù–‘Õº≤„
     TMXLayer* _grass;					//≤›¥‘Õº≤„
-
-
-
+    TMXLayer* _smoke;		         	//∂æ—ÃÕº≤„
+    int _xSmokeMin;					//∂æ—ÃŒª÷√
+    int	_xSmokeMax;					//∂æ—ÃŒª÷√
+    int	_ySmokeMin;					//∂æ—ÃŒª÷√
+    int	_ySmokeMax;					//∂æ—ÃŒª÷√
+    Sprite* _smokeCell;		            //∂æ—Ãµ•‘™∏Ò
 
 
 
@@ -65,13 +71,24 @@ public:
 
     void bindPlayer(Player* player);
 
+    void smokeMove();
+
     void setCamera();
     
     void FightScene::initMap();
 
     void FightScene::initHero();
-    //CREATE_FUNC(FightScene);
 
+    void FightScene::initAI();
+
+    void FightScene::initUI();
+    //CREATE_FUNC(FightScene);
+    void FightScene::update(float dt);
+
+    Vec2 tileCoordFormPosition(const Vec2& position);
+
+    void FightScene::setPlayerPosition(Point position);
+  
 };
 
 #endif // #define __FIGHT_SCENE_H__

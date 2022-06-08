@@ -3,28 +3,29 @@
 * @author wukef & wyf
 */
 
-#include "Consts.h"
+
 #include "cocos2d.h"
-#include "FightScene.h"
-#include "Scene/ChooseHero.h"
 #include <vector>
 #include <string>
 
+#include "Consts.h"
+#include "FightScene.h"
+#include "Scene/ChooseHero.h"
+
+
 USING_NS_CC;
 using namespace std;
-// Print useful error message instead of segfaulting when files are not there.
+
 static void problemLoading(const char* filename)
 {
     printf("Error while loading: %s\n", filename);
     printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in HelloWorldScene.cpp\n");
 }
 
+/*预先加载地图函数,*/
 FightScene::FightScene(TMXTiledMap* map) : _tileMap(map)
 {
     currentPlayer = nullptr;
-    //dropNode_ = nullptr;
-    //mainCFightScene::FightScene(TMXTiledMap* map): _tileMap(map)amera_ = nullptr;
-   // touchHolding_ = false;
 };
 
 FightScene* FightScene::create(TMXTiledMap* map)
@@ -44,9 +45,10 @@ FightScene* FightScene::create(TMXTiledMap* map)
     return nullptr;
 }
 
-cocos2d::Scene* FightScene::createScene()
+Scene* FightScene::createScene()
 {
     auto scene = Scene::createWithPhysics();
+
     if (scene != nullptr)
     {
         scene->addChild(this, 0);
@@ -58,108 +60,50 @@ cocos2d::Scene* FightScene::createScene()
     return nullptr;
 }
 
-
+/*界面初始化函数*/
 bool FightScene::init()
 {
 
-    if (!Scene::init())
-    {
-        return false;
-    }
-    if (!Scene::initWithPhysics())
+    if (!Scene::init()|| !Scene::initWithPhysics())
     {
         return false;
     }
 
-    
+    //to zyy 游戏加载的时候加入音乐组件
+
     initMap();//初始化地图
+
+    //initUI(); 加入ui组件，包括剩余人数，蓝条血条，设置键（音乐和音效各种东西to zyy），暂停和退出按钮（不知道是不是ui）
 
     initHero();//初始化英雄
 
-    AI = PolarBear::createAI();
+    initAI();//初始化AI
 
-    this->addChild(AI);
+    listenToUserOperation();//监听用户操作，相当于一个战斗管控器，但感觉只要有监听就可以，这个可以放在战斗类里？？？
 
-    this->schedule(CC_SCHEDULE_SELECTOR(FightScene::createAI), 0.5f);// 0.5秒执行一次schedule AI会0.5秒更新一次目的地，追着你跑
-
-    listenToUserOperation();
+    this->scheduleUpdate();
 
     return true;
 }
 
-void FightScene::initMap()
+/*需要添加的信息有：镜头的跟随、人物的移动、草坪的状态、人物移动要注意是否有障碍物*/
+void FightScene::update(float dt)
 {
-    //添加地图
-    this->addChild(_tileMap, 0);
-
-   //分属性添加内容
-
-    _background = _tileMap->getLayer("Basic");//基础背景
-    
-    _barrier = _tileMap->getLayer("Barrier");//障碍物
-
-    _collision = _tileMap->getLayer("Collision");//碰撞图层
-    _collision->setVisible(false);
-    
-    _grass = _tileMap->getLayer("Grass");//草丛
-
-   /*
-   _smoke = _tileMap->getLayer("Smoke");//毒烟
-    _xTileCoordMin = 0,
-        _xTileCoordMax = _map->getMapSize().width,
-        _yTileCoordMin = 0,
-        _yTileCoordMax = _map->getMapSize().height;
-    this->smokeMove();
-
-    _box = _tileMap->getObjectGroup("Box");//宝箱
-
-     // 获取全部宝箱位置
-    this->getBoxPosition();
-
-    //添加宝箱/
-    addBox();
+    //this->setViewPointCenter(playerPos);//to wkf 设置镜头跟随可以加到这里
+    // 
+    // 
+    // 
+    // //人物移动的跟随应该放置在update中
+    //更新玩家的位置
+    Vec2 playerPos = currentPlayer->getPosition();
+    this->setPlayerPosition(playerPos);//to wkf 就是在这里更改玩家的位置，先传到setplayerposition函数中进行判断，如果可以更改的话就setposition，不可以的话
+                                       //就直接return达到无法移动的效果
+    //考虑ai的移动是否也要加到这里，不过可能会不同步，需要调一下时间
+                                       //this->setGrassOpacity(playerPos);//草丛的变化也应该加到这里
    
-   */ 
-    
 }
 
-
-/*绑定指定人物*/
-void FightScene::initHero()
-{
-
-    this->currentPlayer = PolarBear::createPlayer();// 通过这两句换英雄
-
-    string brawlerName;
-
-    switch (FightUtils::_hero)
-    {
-    case FightUtils::ChangYi:
-        this->currentPlayer = ChangYi::createPlayer();
-        brawlerName = "ChangYi";
-        break;
-    case FightUtils::YunHe:
-        this->currentPlayer = YunHe::createPlayer();
-        brawlerName = "YunHe";
-        break;
-    case FightUtils::HaoQing:
-        this->currentPlayer = HaoQing::createPlayer();
-        brawlerName = "HaoQing";
-        break;
-    case FightUtils::SanYue:
-        this->currentPlayer = SanYue::createPlayer();
-        brawlerName = "SanYue";
-        break;
-    case FightUtils::ShunDe:
-        this->currentPlayer = ShunDe::createPlayer();
-        brawlerName = "ShunDe";
-        break;
-    default:
-        break;
-    }
-
-}
-
+/*****************************************战斗所需函数************************************************/
 void FightScene::listenToUserOperation()
 {
     this->addChild(this->currentPlayer);// 好像要先加到player里再加到scene里？？？
@@ -301,4 +245,165 @@ void FightScene::bindPhysicsBodyAndTag(cocos2d::Sprite*& sprite, int bitmask, in
     sprite->setPhysicsBody(physicsBody);
     sprite->setTag(tag);
 }
+/******************************************界面初始化*************************************************/
+/*初始化地图，添加障碍物/草坪/毒烟/宝箱/人物及ai坐标*/
+void FightScene::initMap()
+{
+    //添加地图,记得添加地图的选择
+    //mapChoose界面，将选择的地图传入参数中
+    
+    this->addChild(_tileMap, 0);//map是已经预加载好的
+
+    //分属性添加内容
+
+    _background = _tileMap->getLayer("Basic");//基础背景
+
+    _barrier = _tileMap->getLayer("Barrier");//障碍物,考虑砖块与小河是否要分开，因为砖块可摧毁
+
+    _collidable = _tileMap->getLayer("Collision");//碰撞图层
+    _collidable->setVisible(false);
+
+    _grass = _tileMap->getLayer("Grass");//草丛
+
+    _smoke = _tileMap->getLayer("Smoke");//毒烟
+    _xSmokeMin = 0,
+    _xSmokeMax = _tileMap->getMapSize().width,
+    _ySmokeMin = 0,
+    _ySmokeMax = _tileMap->getMapSize().height;
+    this->smokeMove();
+
+    //毒烟的移动，一共会移动30次，每20秒移动一次，游戏一共6min
+    //to wkf 不知道这个函数是什么个用法，要是有其它调用方式可以更改一下
+    this->schedule([=](float dt) {				//每20秒刷新
+        smokeMove();
+        }, SmokeSpeed, "smoke move");
+
+
+}
+/*绑定指定人物*/
+void FightScene::initHero()
+{
+    //通过选择的人物来调用不同的createPlayer函数进行
+    switch (FightUtils::_hero)
+    {
+    case FightUtils::ChangYi:
+        this->currentPlayer = ChangYi::createPlayer();
+
+        break;
+    case FightUtils::YunHe:
+        this->currentPlayer = YunHe::createPlayer();
+
+        break;
+    case FightUtils::HaoQing:
+        this->currentPlayer = HaoQing::createPlayer();
+
+        break;
+    case FightUtils::SanYue:
+        this->currentPlayer = SanYue::createPlayer();
+
+        break;
+    case FightUtils::ShunDe:
+        this->currentPlayer = ShunDe::createPlayer();
+
+        break;
+    default:
+        break;
+    }
+}
+
+void FightScene::initAI()
+{
+    AI = PolarBear::createAI();
+
+    this->addChild(AI);
+
+    this->schedule(CC_SCHEDULE_SELECTOR(FightScene::createAI), 0.5f);// 0.5秒执行一次schedule AI会0.5秒更新一次目的地，追着你跑
+}
+
+void FightScene::initUI()
+{
+
+}
+
+/***********************************瓦片地图初始化（毒烟、草坪、障碍物）**********************************************/
+
+// OpenGL坐标转成格子坐标
+Vec2 FightScene::tileCoordFormPosition(const Vec2& position)
+{
+    Size mapSize = _tileMap->getMapSize();      // 获取以tiles数量为单位的地图尺寸
+    Size tileSize = _tileMap->getTileSize();    // 获取以像素点为单位的tile尺寸属性
+    
+    int x = position.x / tileSize.width;
+    int y = (mapSize.height * tileSize.height - position.y) / tileSize.height;
+
+    return Vec2(x, y);
+}
+
+void FightScene::setPlayerPosition(Point position)
+{
+
+    Point tileCoord = this->tileCoordFormPosition(position); 
+
+    //边界范围限制
+    if (!(tileCoord.x <=62 && tileCoord.y <=62 && tileCoord.x >= 3 && tileCoord.y >= 3))
+    {
+        return; 
+    }
+    //barrier限制
+    if (_collidable->getTileAt(tileCoord))
+    {
+        return;
+    }
+
+    currentPlayer->setPosition(position);
+
+}
+
+//毒烟的移动
+void FightScene::smokeMove()
+{
+
+    /* 全部显示毒烟 */
+    for (int X = _xSmokeMin; X <_xSmokeMax; X++)
+    {
+        for (int Y = _ySmokeMin; Y < _ySmokeMax; Y++)
+        {
+            if (_smoke->getTileAt(Vec2(X, Y))) //如果通过tile坐标能够访问指定毒烟单元格
+            {
+                _smokeCell = _smoke->getTileAt(Vec2(X, Y));
+                _smokeCell->setVisible(true);
+            }
+        }
+    }
+
+    /* 中心不显示毒烟 */
+    for (int X = _xSmokeMin; X <_xSmokeMax; X++)
+    {
+        for (int Y = _ySmokeMin; Y <_ySmokeMax; Y++)
+        {
+            if (_smoke->getTileAt(Vec2(X, Y))) //如果通过tile坐标能够访问指定毒烟单元格
+            {
+                _smokeCell = _smoke->getTileAt(Vec2(X, Y));
+                _smokeCell->setVisible(false);
+            }
+        }
+    }
+
+    /* 毒烟移动 */
+    _xSmokeMin++;
+    _xSmokeMax--;
+    _ySmokeMin++;
+    _ySmokeMax--;
+
+    
+}
+//毒烟的伤害
+
+/***********************************ui组件初始化（剩余人数、血量、蓝量）**********************************************/
+
+
+
+/**********************************游戏状态记录，人物是否死亡、游戏是否结束*************************************************/
+
+
 

@@ -63,6 +63,8 @@ list(APPEND GAME_SOURCE
      Classes/Scene/SetScene.cpp
      Classes/Scene/FightScene.cpp
      Classes/Scene/ChooseHero.cpp 
+     Classes/Scene/InstructionScene.cpp
+
      Classes/Entity/Hero.cpp
      Classes/Entity/Player.cpp
 
@@ -87,6 +89,8 @@ list(APPEND GAME_HEADER
      Classes/Scene/SetScene.h
      Classes/Scene/FightScene.h
      Classes/Scene/ChooseHero.h
+     Classes/Scene/InstructionScene.h
+
      Classes/Entity/Hero.h
      Classes/Entity/Player.h     
      

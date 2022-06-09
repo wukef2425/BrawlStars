@@ -1,4 +1,3 @@
-
 #pragma once
 #ifndef __START_SCENE_H__
 #define __START_SCENE_H__

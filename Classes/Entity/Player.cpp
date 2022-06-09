@@ -60,31 +60,47 @@ void Player::listenToKeyReleases(cocos2d::EventKeyboard::KeyCode keyCode, cocos2
 }
 
 /*  更新玩家的信息，包括所在位置，所在位置是barrier/grass，以及镜头跟随 */
-void Player::update(float delta)
+void Player::ChangePosition(bool moveDecide)
 {
-    if (keyPressed[W])
+    //思路是每次都要调用这个函数，如果所在位置是障碍物则实现跳回去，如果不是就正常运行    
+    if (moveDecide == false)
     {
-        y += step;
-    }
-    if (keyPressed[A])
-    {
-        x -= step;
-    }
-    if (keyPressed[S])
-    {
-        y -= step;
-    }
-    if (keyPressed[D])
-    {
-        x += step;
-    }
-    if (keyPressed[E])
-    {
-        ultimateSkill();
-    }
+        x = initX;
+        y = initY;
+        setPosition(initX, initY);//返回上次正确移动记录的数据
 
-    //找个函数把坐标传回到fight
-    setPosition(x, y);
+        return;
+    }
+    
+    if (moveDecide == true)
+    {
+        initX = x;
+        initY = y;
+        //如果所在位置不在障碍物处，会先读取坐标
+        if (keyPressed[W])
+        {
+            y += step;
+        }
+        if (keyPressed[A])
+        {
+            x -= step;
+        }
+        if (keyPressed[S])
+        {
+            y -= step;
+        }
+        if (keyPressed[D])
+        {
+            x += step;
+        }
+        if (keyPressed[E])
+        {
+            ultimateSkill();
+        }
+
+        setPosition(x, y);
+    }
+    
 }
 
 

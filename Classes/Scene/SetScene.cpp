@@ -86,7 +86,7 @@ void SetScene::initRuleBooks()
 void SetScene::ruleBooksCallback(Ref* pSender)
 {
     //摁下按钮，切换到说明书页面，由于说明书页面还没做，就等会吧~
-    Director::getInstance()->replaceScene(StartMenuScene::createScene());
+    Director::getInstance()->replaceScene(InstructionScene::createScene());
 }
 
 void SetScene::initVolumeSound()

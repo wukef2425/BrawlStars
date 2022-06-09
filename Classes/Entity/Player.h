@@ -23,8 +23,9 @@ private:
     cocos2d::Size winSize = Director::getInstance()->getVisibleSize();
 
     float x = winSize.width * 0.5f;
-
+    float initX = winSize.width * 0.5f;
     float y = winSize.height * 0.5f;
+    float initY = winSize.height * 0.5f;
 
 public:
 
@@ -32,7 +33,8 @@ public:
     void listenToKeyPresses(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
     void listenToKeyReleases(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
 
-    void update(float delta) override;
+    void Player::ChangePosition(bool moveDecide);
+    //void update(float delta) override;
     //Vec2 Player::returnPosition();
 };
 

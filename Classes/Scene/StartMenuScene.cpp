@@ -101,8 +101,6 @@ void StartMenuScene::startCallback(cocos2d::Ref* pSender)
 
 }
 
-
-
 void StartMenuScene::initOnlineButton()
 {
 	auto visibleSize = Director::getInstance()->getVisibleSize();

@@ -2,7 +2,7 @@
 #ifndef __SANYUE_H__
 #define __SANYUE_H__
 
-#include "Hero/Player.h"
+#include "Entity/Player.h"
 
 class SanYue :public Player
 {

@@ -6,7 +6,7 @@
 #ifndef __PLAYER_H__
 #define __PLAYER_H__
 
-#include "Hero/Hero.h"
+#include "Entity/Hero.h"
 
 class Player : public Hero
 {

@@ -6,7 +6,7 @@
 #ifndef __POLAR_BEAR_H__
 #define __POLAR_BEAR_H__
 
-#include "Hero/Player.h"
+#include "Entity/Player.h"
 
 class PolarBear :public Player
 {

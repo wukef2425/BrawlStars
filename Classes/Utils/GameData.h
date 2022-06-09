@@ -1,16 +1,16 @@
 #pragma once
-#ifndef _FIGHT_UTILS_H_
-#define _FIGHT_UTILS_H_
+#ifndef _GAME_DATA_H_
+#define _GAME_DATA_H_
 
 #include "cocos2d.h"
 
 USING_NS_CC;
 using namespace std;
 
-class FightUtils
+class GameData
 {
 public:
-	/*枚举所有英雄*/
+
 	enum AllHero
 	{
 		ChangYi,
@@ -24,8 +24,14 @@ public:
     包括选择的人物、地图、人物剩余的个数人物的蓝量血量*/
 
 	static AllHero _hero;		//玩家使用的brawl
-	
+
+	static GameData* getInstance();
+
+private:
+
+	static GameData* _instancePlayer;//当前人数
+
 
 };
 
-#endif // !_FIGHT_UTILS_H_
+#endif // !_GAME_DATA_

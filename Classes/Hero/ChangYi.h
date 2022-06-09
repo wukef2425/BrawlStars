@@ -2,7 +2,7 @@
 #ifndef __CHANGYI_H__
 #define __CHANGYI_H__
 
-#include "Hero/Player.h"
+#include "Entity/Player.h"
 
 class ChangYi :public Player
 {

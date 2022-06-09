@@ -2,7 +2,7 @@
 #define __CAMERA_EFFECT_H__
 
 #include "cocos2d.h"
-#include "Hero/Player.h"
+#include "Entity/Player.h"
 
 class CameraEffect :public cocos2d::Camera
 {

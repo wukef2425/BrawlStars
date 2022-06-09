@@ -63,8 +63,8 @@ list(APPEND GAME_SOURCE
      Classes/Scene/SetScene.cpp
      Classes/Scene/FightScene.cpp
      Classes/Scene/ChooseHero.cpp 
-     Classes/Hero/Hero.cpp
-     Classes/Hero/Player.cpp
+     Classes/Entity/Hero.cpp
+     Classes/Entity/Player.cpp
 
      Classes/Hero/PolarBear.cpp
      Classes/Hero/ChangYi.cpp
@@ -87,8 +87,8 @@ list(APPEND GAME_HEADER
      Classes/Scene/SetScene.h
      Classes/Scene/FightScene.h
      Classes/Scene/ChooseHero.h
-     Classes/Hero/Hero.h
-     Classes/Hero/Player.h     
+     Classes/Entity/Hero.h
+     Classes/Entity/Player.h     
      
      Classes/Hero/PolarBear.h
      Classes/Hero/ChangYi.h

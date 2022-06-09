@@ -2,7 +2,7 @@
 #ifndef __HAOQING_H__
 #define __HAOQING_H__
 
-#include "Hero/Player.h"
+#include "Entity/Player.h"
 
 class HaoQing :public Player
 {

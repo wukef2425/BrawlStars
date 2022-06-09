@@ -22,7 +22,7 @@ static void problemLoading(const char* filename)
     printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in HelloWorldScene.cpp\n");
 }
 
-/*预先加载地图函数,*/
+/* 预先加载地图函数 */
 FightScene::FightScene(TMXTiledMap* map) : _tileMap(map)
 {
     currentPlayer = nullptr;
@@ -60,7 +60,22 @@ Scene* FightScene::createScene()
     return nullptr;
 }
 
-/*界面初始化函数*/
+/*
+void FightScene::bindPlayer(Player* player)
+{
+    if (player != nullptr && currentPlayer == nullptr)
+    {
+        this->currentPlayer = player;
+        this->addChild(player);
+    }
+    this->setCamera();
+    this->setOperationListener();
+    this->setUI();
+}
+*/
+
+
+/* 界面初始化函数 */
 bool FightScene::init()
 {
 
@@ -79,8 +94,9 @@ bool FightScene::init()
 
     initAI();//初始化AI
 
-    listenToUserOperation();//监听用户操作，相当于一个战斗管控器，但感觉只要有监听就可以，这个可以放在战斗类里？？？
+    initSmoke();
 
+    listenToUserOperation();//监听用户操作，相当于一个战斗管控器，但感觉只要有监听就可以，这个可以放在战斗类里？？？
 
     setCamera();
 
@@ -94,7 +110,7 @@ bool FightScene::init()
     return true;
 }
 
-/*需要添加的信息有：镜头的跟随、人物的移动、草坪的状态、人物移动要注意是否有障碍物*/
+/* 需要添加的信息有：镜头的跟随、人物的移动、草坪的状态、人物移动要注意是否有障碍物 */
 void FightScene::update(float dt)
 {
     //this->setViewPointCenter(playerPos);//to wkf 设置镜头跟随可以加到这里
@@ -280,44 +296,31 @@ void FightScene::initMap()
 
     _grass = _tileMap->getLayer("Grass");//草丛
 
-    _smoke = _tileMap->getLayer("Smoke");//毒烟
-    _xSmokeMin = 0,
-    _xSmokeMax = _tileMap->getMapSize().width,
-    _ySmokeMin = 0,
-    _ySmokeMax = _tileMap->getMapSize().height;
-    this->smokeMove();
-
-    //毒烟的移动，一共会移动30次，每20秒移动一次，游戏一共6min
-    //to wkf 不知道这个函数是什么个用法，要是有其它调用方式可以更改一下
-    this->schedule([=](float dt) {				//每20秒刷新
-        smokeMove();
-        }, SmokeSpeed, "smoke move");
-
 
 }
-/*绑定指定人物*/
+//绑定指定人物
 void FightScene::initHero()
 {
     //通过选择的人物来调用不同的createPlayer函数进行
-    switch (FightUtils::_hero)
+    switch (GameData::_hero)
     {
-    case FightUtils::ChangYi:
+    case GameData::ChangYi:
         this->currentPlayer = ChangYi::createPlayer();
 
         break;
-    case FightUtils::YunHe:
+    case GameData::YunHe:
         this->currentPlayer = YunHe::createPlayer();
 
         break;
-    case FightUtils::HaoQing:
+    case GameData::HaoQing:
         this->currentPlayer = HaoQing::createPlayer();
 
         break;
-    case FightUtils::SanYue:
+    case GameData::SanYue:
         this->currentPlayer = SanYue::createPlayer();
 
         break;
-    case FightUtils::ShunDe:
+    case GameData::ShunDe:
         this->currentPlayer = ShunDe::createPlayer();
 
         break;
@@ -325,6 +328,7 @@ void FightScene::initHero()
         break;
     }
 }
+
 
 void FightScene::initAI()
 {
@@ -374,27 +378,20 @@ void FightScene::setPlayerPosition(Point position)
 
 }
 
-//毒烟的移动
-void FightScene::smokeMove()
+void FightScene::initSmoke()
 {
 
-    /* 全部显示毒烟 */
-    for (int X = _xSmokeMin; X <_xSmokeMax; X++)
+    _smoke = _tileMap->getLayer("Smoke");//毒烟
+    _xSmokeMin = 0,
+        _xSmokeMax = _tileMap->getMapSize().width,
+        _ySmokeMin = 0,
+        _ySmokeMax = _tileMap->getMapSize().height;
+    this->smokeMove();
+    //不能直接false _smoke->setVisible(false);
+
+    for (int X = _xSmokeMin; X < _xSmokeMax; X++)
     {
         for (int Y = _ySmokeMin; Y < _ySmokeMax; Y++)
-        {
-            if (_smoke->getTileAt(Vec2(X, Y))) //如果通过tile坐标能够访问指定毒烟单元格
-            {
-                _smokeCell = _smoke->getTileAt(Vec2(X, Y));
-                _smokeCell->setVisible(true);
-            }
-        }
-    }
-
-    /* 中心不显示毒烟 */
-    for (int X = _xSmokeMin; X <_xSmokeMax; X++)
-    {
-        for (int Y = _ySmokeMin; Y <_ySmokeMax; Y++)
         {
             if (_smoke->getTileAt(Vec2(X, Y))) //如果通过tile坐标能够访问指定毒烟单元格
             {
@@ -403,18 +400,55 @@ void FightScene::smokeMove()
             }
         }
     }
+    //毒烟的移动，一共会移动30次，每20秒移动一次，游戏一共6min
+    //to wkf 不知道这个函数是什么个用法，要是有其它调用方式可以更改一下
+    this->schedule([=](float dt) {				//每20秒刷新
+        smokeMove();
+        }, SmokeSpeed, "smoke move");
 
-    /* 毒烟移动 */
+
+}
+//毒烟的移动
+void FightScene::smokeMove()
+{
+    for (int X = _xSmokeMin; X < _xSmokeMax; X++)
+    {
+        if (_smoke->getTileAt(Vec2(X, _ySmokeMin)))
+        {
+            _smokeCell = _smoke->getTileAt(Vec2(X, _ySmokeMin));
+            _smokeCell->setVisible(true);
+        }
+        if (_smoke->getTileAt(Vec2(X, _ySmokeMax - 1)))
+        {
+            _smokeCell = _smoke->getTileAt(Vec2(X, _ySmokeMax - 1));
+            _smokeCell->setVisible(true);
+        }
+    }
+    for (int Y = _ySmokeMin; Y < _ySmokeMax; Y++)
+    {
+        if (_smoke->getTileAt(Vec2(_xSmokeMin, Y)))//如果通过tile坐标能够访问指定毒烟单元格
+        {
+            _smokeCell = _smoke->getTileAt(Vec2(_xSmokeMin, Y));
+            _smokeCell->setVisible(true);
+        }
+        if (_smoke->getTileAt(Vec2(_xSmokeMax - 1, Y)))
+        {
+            _smokeCell = _smoke->getTileAt(Vec2(_xSmokeMax - 1, Y));
+            _smokeCell->setVisible(true);
+        }
+    }
+      
     _xSmokeMin++;
     _xSmokeMax--;
     _ySmokeMin++;
     _ySmokeMax--;
 
-    
+
 }
 //毒烟的伤害
 
 /***********************************ui组件初始化（剩余人数、血量、蓝量）**********************************************/
+
 
 
 

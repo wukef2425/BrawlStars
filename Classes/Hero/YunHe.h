@@ -2,7 +2,7 @@
 #ifndef __YUNHE_H__
 #define __YUNHE_H__
 
-#include "Hero/Player.h"
+#include "Entity/Player.h"
 
 class YunHe :public Player
 {

@@ -44,6 +44,7 @@ private:
     TMXLayer* _barrier;					//障碍物图层
     TMXLayer* _collidable;				//碰撞属性图层
     TMXLayer* _grass;					//草丛图层
+    Sprite* _grassCell;					//草丛单元格
     TMXLayer* _smoke;		         	//毒烟图层
     int _xSmokeMin;					//毒烟位置
     int	_xSmokeMax;					//毒烟位置
@@ -90,11 +91,16 @@ public:
     void FightScene::initUI();
 
     void FightScene::initSmoke();
+
+    void FightScene::smokeHurt();
     //CREATE_FUNC(FightScene);
     void FightScene::update(float dt);
 
-    Vec2 tileCoordFormPosition(const Vec2& position);
+    Vec2 tilePosition(const Vec2& position);
 
+    void FightScene::smokeHurt(Point position);
+
+    void FightScene::grassCover(Point position);
     void FightScene::setPlayerPosition(Point position);
   
 };

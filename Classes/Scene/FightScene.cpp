@@ -114,25 +114,53 @@ bool FightScene::init()
 void FightScene::update(float dt)
 {
     //this->setViewPointCenter(playerPos);//to wkf 设置镜头跟随可以加到这里
-    // 
-    // 
-    // 
     // //人物移动的跟随应该放置在update中
     //更新玩家的位置
-    Vec2 playerPos = currentPlayer->getPosition();
-    this->setPlayerPosition(playerPos);//to wkf 就是在这里更改玩家的位置，先传到setplayerposition函数中进行判断，如果可以更改的话就setposition，不可以的话
-                                       //就直接return达到无法移动的效果
+    Vec2 playerPosition = currentPlayer->getPosition();
+    this->setPlayerPosition(playerPosition);
     //考虑ai的移动是否也要加到这里，不过可能会不同步，需要调一下时间
-                                       //this->setGrassOpacity(playerPos);//草丛的变化也应该加到这里
+    //this->grassCover(playerPosition);//草丛的变化也应该加到这里,但目前有点bug先注释掉
    
+}
+
+// OpenGL坐标转成格子坐标，但这个目前的转换不太成功
+Vec2 FightScene::tilePosition(const Vec2& position)
+{
+    Size mapSize = _tileMap->getMapSize();      // 获取以tiles数量为单位的地图尺寸
+    Size tileSize = _tileMap->getTileSize();    // 获取以像素点为单位的tile尺寸属性
+
+    int x = position.x / tileSize.width;
+    int y = (mapSize.height * tileSize.height - position.y) / tileSize.height;
+
+    return Vec2(x, y);
+}
+/*****************************人物移动**************************************************/
+void FightScene::setPlayerPosition(Point position)
+{
+    Point tileCoord = this->tilePosition(position);
+    //首先判断能否移动，注意这个判断的是上一个的内容，如果不能的话返回上一步
+    // 比如，人物移动到了一个障碍物处，然后下一步就是人物不能动了，此时恢复原状态
+    //边界范围限制
+    if (!(tileCoord.x <= 62 && tileCoord.y <= 62 && tileCoord.x >= 3 && tileCoord.y >= 3))
+    {
+        this->currentPlayer->ChangePosition(false);//最后全改成false
+        return;
+    }
+    //barrier限制
+    if (_collidable->getTileAt(tileCoord))
+    {
+        this->currentPlayer->ChangePosition(false);//最后改成false
+
+        return;
+    }
+
+    this->currentPlayer->ChangePosition(true);
+
 }
 
 /*****************************************战斗所需函数************************************************/
 void FightScene::listenToUserOperation()
 {
-    this->addChild(this->currentPlayer);// 好像要先加到player里再加到scene里？？？
-    this->currentPlayer->scheduleUpdate();// 用来schedule update
-
     /* 监听键盘WASD实现移动 */
     auto keyboardListener = cocos2d::EventListenerKeyboard::create();
     keyboardListener->onKeyPressed = CC_CALLBACK_2(Player::listenToKeyPresses, this->currentPlayer);
@@ -327,8 +355,9 @@ void FightScene::initHero()
     default:
         break;
     }
-}
 
+    this->addChild(this->currentPlayer);// 好像要先加到player里再加到scene里？？？
+}
 
 void FightScene::initAI()
 {
@@ -345,38 +374,6 @@ void FightScene::initUI()
 }
 
 /***********************************瓦片地图初始化（毒烟、草坪、障碍物）**********************************************/
-
-// OpenGL坐标转成格子坐标
-Vec2 FightScene::tileCoordFormPosition(const Vec2& position)
-{
-    Size mapSize = _tileMap->getMapSize();      // 获取以tiles数量为单位的地图尺寸
-    Size tileSize = _tileMap->getTileSize();    // 获取以像素点为单位的tile尺寸属性
-    
-    int x = position.x / tileSize.width;
-    int y = (mapSize.height * tileSize.height - position.y) / tileSize.height;
-
-    return Vec2(x, y);
-}
-
-void FightScene::setPlayerPosition(Point position)
-{
-
-    Point tileCoord = this->tileCoordFormPosition(position); 
-
-    //边界范围限制
-    if (!(tileCoord.x <=62 && tileCoord.y <=62 && tileCoord.x >= 3 && tileCoord.y >= 3))
-    {
-        return; 
-    }
-    //barrier限制
-    if (_collidable->getTileAt(tileCoord))
-    {
-        return;
-    }
-
-    currentPlayer->setPosition(position);
-
-}
 
 void FightScene::initSmoke()
 {
@@ -402,9 +399,9 @@ void FightScene::initSmoke()
     }
     //毒烟的移动，一共会移动30次，每20秒移动一次，游戏一共6min
     //to wkf 不知道这个函数是什么个用法，要是有其它调用方式可以更改一下
-    this->schedule([=](float dt) {				//每20秒刷新
-        smokeMove();
-        }, SmokeSpeed, "smoke move");
+    //this->schedule([=](float dt) {				//每20秒刷新
+    //    smokeMove();
+     //   }, SmokeSpeed, "smoke move");
 
 
 }
@@ -446,15 +443,81 @@ void FightScene::smokeMove()
 
 }
 //毒烟的伤害
+void FightScene::smokeHurt(Point position)
+{
+    Point _tileCoord = this->tilePosition(position); //转化为瓦片地图坐标
+    if (_smoke->getTileAt(_tileCoord))
+    {
+        _smokeCell = _smoke->getTileAt(_tileCoord);
+        if (_smokeCell->isVisible()) //如果毒烟可见
+        {
+            //to wkf 转到人物承受伤害的函数
+            // 还没写人物伤害函数，传入的内容是伤害量，应该可以和玩家攻击用相同的方式
+            //brawler->takeDamage(SMOKE_DAMAGE);
+        }
+    }
+}
+//草坪，这个目前会出现bug所以我准备等坐标修好了之后再来修这个
+void FightScene::grassCover(Point position)
+{
+    //草坪的操作模式是->检测人物碰撞->变透明->人物离开->恢复颜色
+    //所以要储存好坐标，走过去和走回来
 
+    static vector<Point> grassChange = {}; //储存改变的草丛
+
+    //将之前位置的草丛恢复
+    int i; 
+    for (i = 0; i < grassChange.size(); i++)
+    {
+        Point tileCoord = this->tilePosition(grassChange[i]);
+        if (_grass->getTileAt(tileCoord))
+        {
+            _grassCell = _grass->getTileAt(tileCoord); //通过tile坐标访问指定草丛单元格
+            _grassCell->setOpacity(255); //将指定草丛单元格设为不透明
+        }
+    }
+
+    Vec2 tileSize = _tileMap->getTileSize(); //获得单个瓦片尺寸
+    
+    //将玩家及其周围所在草丛变透明
+    grassChange =
+    {
+        position,
+        Vec2(position.x + tileSize.x, position.y),
+        Vec2(position.x - tileSize.x, position.y),
+        Vec2(position.x, position.y + tileSize.y),
+        Vec2(position.x, position.y - tileSize.y)
+    }; 
+
+    for (i = 0; i < grassChange.size(); i++)
+    {
+        Point tileCoord = this->tilePosition(grassChange[i]);
+        if (_grass->getTileAt(tileCoord))
+        {
+            _grassCell = _grass->getTileAt(tileCoord); 
+            _grassCell->setOpacity(100); //将指定草丛单元格变透明
+        }
+    }
+
+    /*英雄在草丛里半透明
+    Point tileCoord = this->tileCoordForPosition(position);
+    if (_grass->getTileAt(tileCoord))
+    {
+        _player->getBrawler()->getSprite()->setOpacity(100);
+    }
+    else
+    {
+        _player->getBrawler()->getSprite()->setOpacity(255);
+    }*/
+
+
+}
 /***********************************ui组件初始化（剩余人数、血量、蓝量）**********************************************/
 
 
 
 
 /**********************************游戏状态记录，人物是否死亡、游戏是否结束*************************************************/
-
-
 
 void FightScene::setCamera()
 {

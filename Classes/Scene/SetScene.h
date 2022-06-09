@@ -3,6 +3,7 @@
 #define __SET_SCENE_H__
 
 #include "cocos2d.h"
+#include "Scene/InstructionScene.h"
 
 class SetScene : public cocos2d::Scene
 {

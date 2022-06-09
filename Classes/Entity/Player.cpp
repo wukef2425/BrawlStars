@@ -59,7 +59,7 @@ void Player::listenToKeyReleases(cocos2d::EventKeyboard::KeyCode keyCode, cocos2
     }
 }
 
-/*更新玩家的信息，包括所在位置，所在位置是barrier/grass，以及镜头跟随*/
+/*  更新玩家的信息，包括所在位置，所在位置是barrier/grass，以及镜头跟随 */
 void Player::update(float delta)
 {
     if (keyPressed[W])
@@ -88,13 +88,5 @@ void Player::update(float delta)
 }
 
 
-/*
-* 
-Vec2 Player::returnPosition()
-{
-    return Vec2(x, y);
-}
-
-*/
 
 

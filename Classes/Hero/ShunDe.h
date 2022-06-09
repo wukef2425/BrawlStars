@@ -2,7 +2,7 @@
 #ifndef __SHUNDE_H__
 #define __SHUNDE_H__
 
-#include "Hero/Player.h"
+#include "Entity/Player.h"
 
 class ShunDe :public Player
 {

@@ -6,7 +6,7 @@
 #include<vector>
 #include<string>
 #include "ChooseHero.h"
-#include "Utils/FightUtils.h"
+#include "Utils/GameData.h"
 #include "Scene/StartMenuScene.h"
 
 
@@ -138,8 +138,9 @@ void ChooseHero::startGame(Ref* pSender)
 {
 
 	//fightScene_->bindPlayer(Player::create("heroArray[cur_hero_index].name"));
-
 	cocos2d::Director::getInstance()->getOpenGLView()->setCursorVisible(true);
+
+	cocos2d::Director::getInstance()->replaceScene(fightScene_->createScene());
 }
 
 //switch to menu
@@ -156,32 +157,33 @@ void ChooseHero::backToMenu(Ref* pSender)
 //顺德
 void ChooseHero::menuShunDeCallback(cocos2d::Ref* pSender)
 {
-	/*记录选择英雄信息的一个东西，但貌似记录的不是很成功*/
-	FightUtils::_hero = FightUtils::AllHero::ShunDe;
+	/* 记录选择英雄信息的一个东西，但貌似记录的不是很成功 */
+	GameData::_hero = GameData::AllHero::ShunDe;
 }
 
 //昊青
 void ChooseHero::menuHaoQingCallback(cocos2d::Ref* pSender)
 {
-	FightUtils::_hero = FightUtils::AllHero::HaoQing;
+	//FightScene::initHero(0);
+	GameData::_hero = GameData::AllHero::HaoQing;
 }
 
 //云禾
 void ChooseHero::menuYunHeCallback(cocos2d::Ref* pSender)
 {
 	
-	FightUtils::_hero = FightUtils::AllHero::YunHe;
+	GameData::_hero = GameData::AllHero::YunHe;
 }
 
 //长意
 void ChooseHero::menuChangYiCallback(cocos2d::Ref* pSender)
 {
-	FightUtils::_hero = FightUtils::AllHero::ChangYi;
+	GameData::_hero = GameData::AllHero::ChangYi;
 }
 
 //三月
 void ChooseHero::menuSanYueCallback(cocos2d::Ref* pSender)
 {
-	FightUtils::_hero = FightUtils::AllHero::SanYue;
+	GameData::_hero = GameData::AllHero::SanYue;
 }
 

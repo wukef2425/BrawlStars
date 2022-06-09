@@ -7,11 +7,12 @@
 #define __FIGHT_SCENE_H__
 
 
-#include "Hero/Player.h"
-#include "Hero/PolarBear.h"
-#include "Utils/FightUtils.h"
+#include "Entity/Player.h"
+
+#include "Utils/GameData.h"
 #include "Utils/CameraEffect.h"
 
+#include "Hero/PolarBear.h"
 #include "Hero/ChangYi.h"
 #include "Hero/YunHe.h"
 #include "Hero/ShunDe.h"
@@ -37,7 +38,7 @@ private:
     Hero* AI;
 
 
-    /*地图信息汇总*/
+    /* 地图信息汇总 */
     cocos2d::TMXTiledMap* _tileMap;
     TMXLayer* _background;	 			//背景层
     TMXLayer* _barrier;					//障碍物图层
@@ -87,6 +88,8 @@ public:
     void FightScene::initAI();
 
     void FightScene::initUI();
+
+    void FightScene::initSmoke();
     //CREATE_FUNC(FightScene);
     void FightScene::update(float dt);
 

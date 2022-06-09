@@ -63,13 +63,13 @@ void ChooseHero::initButton()
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-	//设置背景图片
-	auto* background = Sprite::create("Scene/HeroChooseScene.jpg");        //创建精灵类，背景图片为background.jpg
+	// 设置背景图片
+	auto* background = Sprite::create("Scene/HeroChooseScene.jpg");        // 创建精灵类，背景图片为background.jpg
 	background->setScale(1.05f);
-	background->setPosition(visibleSize.width / 2, visibleSize.height / 2);        //让背景图像居中显示
+	background->setPosition(visibleSize.width / 2, visibleSize.height / 2);        // 让背景图像居中显示
 	addChild(background, 0);
 
-	//开始按钮
+	// 开始按钮
 	auto enterBtn = MenuItemImage::create("Hero/ChooseHero/Button/Begin.png",
 		"Hero/ChooseHero/Button/Begin.png",
 		CC_CALLBACK_1(ChooseHero::startGame, this));
@@ -77,7 +77,7 @@ void ChooseHero::initButton()
 	enterBtn_->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 5));
 	addChild(enterBtn_, 1);
 
-	//返回主菜单按钮
+	// 返回主菜单按钮
 	auto backBtn = MenuItemImage::create("Hero/ChooseHero/Button/Back.png",
 		"Hero/ChooseHero/Button/Back.png",
 		CC_CALLBACK_1(ChooseHero::backToMenu, this));
@@ -136,16 +136,13 @@ void ChooseHero::initHeroButton()
 //start game
 void ChooseHero::startGame(Ref* pSender)
 {
-
-	//fightScene_->bindPlayer(Player::create("heroArray[cur_hero_index].name"));
-
 	cocos2d::Director::getInstance()->getOpenGLView()->setCursorVisible(true);
+	cocos2d::Director::getInstance()->replaceScene(fightScene_->createScene());
 }
 
 //switch to menu
 void ChooseHero::backToMenu(Ref* pSender)
 {
-
 	Director::getInstance()->replaceScene(StartMenuScene::createScene());
 }
 /******************************************************Hero************************************************************/
@@ -153,33 +150,32 @@ void ChooseHero::backToMenu(Ref* pSender)
 //to zyy 选择英雄点击的时候播放属于个人英雄的语音怎么样？显得比较高级一点
 // 如果要加的话就全加到这几个函数中吧，素材问我要就行
 // 素材包全都放在一个地方？方便一些
-//顺德
+// 顺德
 void ChooseHero::menuShunDeCallback(cocos2d::Ref* pSender)
 {
-	/*记录选择英雄信息的一个东西，但貌似记录的不是很成功*/
+	/* 记录选择英雄信息的一个东西，但貌似记录的不是很成功 */
 	FightUtils::_hero = FightUtils::AllHero::ShunDe;
 }
 
-//昊青
+// 昊青
 void ChooseHero::menuHaoQingCallback(cocos2d::Ref* pSender)
 {
 	FightUtils::_hero = FightUtils::AllHero::HaoQing;
 }
 
-//云禾
+// 云禾
 void ChooseHero::menuYunHeCallback(cocos2d::Ref* pSender)
 {
-	
 	FightUtils::_hero = FightUtils::AllHero::YunHe;
 }
 
-//长意
+// 长意
 void ChooseHero::menuChangYiCallback(cocos2d::Ref* pSender)
 {
 	FightUtils::_hero = FightUtils::AllHero::ChangYi;
 }
 
-//三月
+// 三月
 void ChooseHero::menuSanYueCallback(cocos2d::Ref* pSender)
 {
 	FightUtils::_hero = FightUtils::AllHero::SanYue;

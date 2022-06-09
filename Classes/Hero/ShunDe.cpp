@@ -22,8 +22,6 @@ ShunDe* ShunDe::createPlayer()
 
     player->defend_ = 10;//防御值
 
-    player->energy_ = 1;//死了以后掉落多少能量
-
     auto chosenHero = Sprite::create("Hero/FightHero/ShunDe.png");
 
     if (chosenHero)
@@ -63,8 +61,6 @@ Hero* ShunDe::createAI()
 
     player->defend_ = 0;//防御值
 
-    player->energy_ = 1;//死了以后掉落多少能量
-
     auto chosenHero = Sprite::create("Hero/FightHero/ShunDe.png");
 
     if (chosenHero)
@@ -81,4 +77,13 @@ Hero* ShunDe::createAI()
     }
 
     return nullptr;
+}
+
+void ShunDe::ultimateSkill()
+{
+    auto skill = Sprite::create("Hero/FightHero/polar-bear.png");
+
+    skill->setPosition(this->getPosition());
+
+    this->getParent()->addChild(skill);
 }

@@ -22,7 +22,7 @@ static void problemLoading(const char* filename)
     printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in HelloWorldScene.cpp\n");
 }
 
-/*预先加载地图函数,*/
+/* 预先加载地图函数, */
 FightScene::FightScene(TMXTiledMap* map) : _tileMap(map)
 {
     currentPlayer = nullptr;
@@ -60,7 +60,7 @@ Scene* FightScene::createScene()
     return nullptr;
 }
 
-/*界面初始化函数*/
+/* 界面初始化函数 */
 bool FightScene::init()
 {
 
@@ -81,12 +81,9 @@ bool FightScene::init()
 
     listenToUserOperation();//监听用户操作，相当于一个战斗管控器，但感觉只要有监听就可以，这个可以放在战斗类里？？？
 
-
     setCamera();
 
     //this->schedule(CC_SCHEDULE_SELECTOR(FightScene::createAI), 0.5f);// 0.5秒执行一次schedule AI会0.5秒更新一次目的地，追着你跑
-
-    //listenToUserOperation();
 
     this->scheduleUpdate();
 
@@ -94,7 +91,7 @@ bool FightScene::init()
     return true;
 }
 
-/*需要添加的信息有：镜头的跟随、人物的移动、草坪的状态、人物移动要注意是否有障碍物*/
+/* 需要添加的信息有：镜头的跟随、人物的移动、草坪的状态、人物移动要注意是否有障碍物 */
 void FightScene::update(float dt)
 {
     //this->setViewPointCenter(playerPos);//to wkf 设置镜头跟随可以加到这里
@@ -103,8 +100,8 @@ void FightScene::update(float dt)
     // 
     // //人物移动的跟随应该放置在update中
     //更新玩家的位置
-    Vec2 playerPos = currentPlayer->getPosition();
-    this->setPlayerPosition(playerPos);//to wkf 就是在这里更改玩家的位置，先传到setplayerposition函数中进行判断，如果可以更改的话就setposition，不可以的话
+    //Vec2 playerPos = currentPlayer->getPosition();
+    //this->setPlayerPosition(playerPos);//to wkf 就是在这里更改玩家的位置，先传到setplayerposition函数中进行判断，如果可以更改的话就setposition，不可以的话
                                        //就直接return达到无法移动的效果
     //考虑ai的移动是否也要加到这里，不过可能会不同步，需要调一下时间
                                        //this->setGrassOpacity(playerPos);//草丛的变化也应该加到这里
@@ -115,6 +112,7 @@ void FightScene::update(float dt)
 void FightScene::listenToUserOperation()
 {
     this->addChild(this->currentPlayer);// 好像要先加到player里再加到scene里？？？
+
     this->currentPlayer->scheduleUpdate();// 用来schedule update
 
     /* 监听键盘WASD实现移动 */
@@ -172,15 +170,16 @@ bool FightScene::onContactBegin(cocos2d::PhysicsContact& contact)
     /* 火花特效 & 删除标记为BulletTag的那个node(就是之前标记的currentBullet) */
     if (nodeA && nodeB)
     {
+        auto currentHero = dynamic_cast<Hero*>(currentPlayer);
         if (nodeA->getTag() == PlayerBulletTag && nodeB->getTag() == EnemyTag)
         {
             showSpark("Hero/Bullet/spiky-eclipse.png", nodeA);
-            AI->receiveDamage(20,AI);// 我随便写的 后面可以随英雄变化
+            AI->receiveDamage(currentPlayer->dealDamage(), AI, currentHero);
         }
         else if (nodeB->getTag() == PlayerBulletTag && nodeA->getTag() == EnemyTag)
         {
             showSpark("Hero/Bullet/spiky-eclipse.png", nodeB);
-            AI->receiveDamage(20,AI);// 我随便写的 后面可以随英雄变化
+            AI->receiveDamage(currentPlayer->dealDamage(), AI, currentHero);
         }
         else if (nodeA->getTag() == EnemyBulletTag && nodeB->getTag() == PlayerTag)
         {
@@ -190,15 +189,14 @@ bool FightScene::onContactBegin(cocos2d::PhysicsContact& contact)
         {
             showSpark("Hero/Bullet/enemy-spiky-eclipse.png", nodeB);
         }
-        else if (nodeA->getTag() == PlayerTag && nodeB->getTag() == EnergyTag)
-        {
-            nodeB->removeFromParentAndCleanup(true);
-        }
-        else if (nodeB->getTag() == PlayerTag && nodeA->getTag() == EnergyTag)
-        {
-            nodeA->removeFromParentAndCleanup(true);
-        }
-
+        //else if (nodeA->getTag() == EnergyTag && nodeB->getTag() == PlayerTag)
+        //{
+            //nodeA->removeFromParentAndCleanup(true);
+        //}
+        //else if (nodeB->getTag() == EnergyTag && nodeA->getTag() == PlayerTag)
+        //{
+            //nodeB->removeFromParentAndCleanup(true);
+        //}
     }
 
     return true;
@@ -243,12 +241,6 @@ void FightScene::createAI(float delta)
 
     /* 让currentBullet完成上面的一系列动作 */
     currentBullet->runAction(Sequence::create(actionMove, actionRemove, nullptr));
-
-    if (!AI->isAlive())
-    {
-        AI->removeFromParentAndCleanup(true);
-        this->unschedule(CC_SCHEDULE_SELECTOR(FightScene::createAI));
-    }
 }
 
 void FightScene::bindPhysicsBodyAndTag(cocos2d::Sprite*& sprite, int bitmask, int tag)// 传引用，否则会被释放掉
@@ -285,17 +277,18 @@ void FightScene::initMap()
     _xSmokeMax = _tileMap->getMapSize().width,
     _ySmokeMin = 0,
     _ySmokeMax = _tileMap->getMapSize().height;
-    this->smokeMove();
+    this->smokeMove(SmokeSpeed);
 
     //毒烟的移动，一共会移动30次，每20秒移动一次，游戏一共6min
     //to wkf 不知道这个函数是什么个用法，要是有其它调用方式可以更改一下
-    this->schedule([=](float dt) {				//每20秒刷新
-        smokeMove();
-        }, SmokeSpeed, "smoke move");
+    //this->schedule([=](float dt) {				//每20秒刷新
+        //smokeMove();
+        //}, SmokeSpeed, "smoke move");
+    //this->schedule(CC_SCHEDULE_SELECTOR(FightScene::smokeMove), SmokeSpeed);// 还有个办法就是加float delta
 
 
 }
-/*绑定指定人物*/
+/* 绑定指定人物 */
 void FightScene::initHero()
 {
     //通过选择的人物来调用不同的createPlayer函数进行
@@ -303,23 +296,18 @@ void FightScene::initHero()
     {
     case FightUtils::ChangYi:
         this->currentPlayer = ChangYi::createPlayer();
-
         break;
     case FightUtils::YunHe:
         this->currentPlayer = YunHe::createPlayer();
-
         break;
     case FightUtils::HaoQing:
         this->currentPlayer = HaoQing::createPlayer();
-
         break;
     case FightUtils::SanYue:
         this->currentPlayer = SanYue::createPlayer();
-
         break;
     case FightUtils::ShunDe:
         this->currentPlayer = ShunDe::createPlayer();
-
         break;
     default:
         break;
@@ -375,7 +363,7 @@ void FightScene::setPlayerPosition(Point position)
 }
 
 //毒烟的移动
-void FightScene::smokeMove()
+void FightScene::smokeMove(float delta)
 {
 
     /* 全部显示毒烟 */
@@ -390,6 +378,11 @@ void FightScene::smokeMove()
             }
         }
     }
+    /* 毒烟移动 */
+    _xSmokeMin++;
+    _xSmokeMax--;
+    _ySmokeMin++;
+    _ySmokeMax--;
 
     /* 中心不显示毒烟 */
     for (int X = _xSmokeMin; X <_xSmokeMax; X++)
@@ -404,12 +397,6 @@ void FightScene::smokeMove()
         }
     }
 
-    /* 毒烟移动 */
-    _xSmokeMin++;
-    _xSmokeMax--;
-    _ySmokeMin++;
-    _ySmokeMax--;
-
     
 }
 //毒烟的伤害
@@ -418,15 +405,13 @@ void FightScene::smokeMove()
 
 
 
-/**********************************游戏状态记录，人物是否死亡、游戏是否结束*************************************************/
-
-
+/**********************************游戏状态记录，人物是否死亡、游戏是否结束*******************************************/
 
 void FightScene::setCamera()
 {
     this->fightCamera = CameraEffect::create(this);
     if (this->fightCamera != nullptr && this->currentPlayer != nullptr)
     {
-        this->fightCamera->FollowPlayer(currentPlayer);
+        this->fightCamera->FollowPlayer(currentPlayer, _tileMap);
     }
 }

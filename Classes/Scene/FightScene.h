@@ -25,30 +25,28 @@ class FightScene : public cocos2d::Scene
 {
 private:
 
-
     CameraEffect* fightCamera;
 
     Size _visibleSize;
     Vec2 _origin;
-
 
     Player* currentPlayer;
 
     Hero* AI;
 
 
-    /*地图信息汇总*/
+    /* 地图信息汇总 */
     cocos2d::TMXTiledMap* _tileMap;
-    TMXLayer* _background;	 			//背景层
-    TMXLayer* _barrier;					//障碍物图层
-    TMXLayer* _collidable;				//碰撞属性图层
-    TMXLayer* _grass;					//草丛图层
-    TMXLayer* _smoke;		         	//毒烟图层
-    int _xSmokeMin;					//毒烟位置
-    int	_xSmokeMax;					//毒烟位置
-    int	_ySmokeMin;					//毒烟位置
-    int	_ySmokeMax;					//毒烟位置
-    Sprite* _smokeCell;		            //毒烟单元格
+    TMXLayer* _background;	 			// 背景层
+    TMXLayer* _barrier;					// 障碍物图层
+    TMXLayer* _collidable;				// 碰撞属性图层
+    TMXLayer* _grass;					// 草丛图层
+    TMXLayer* _smoke;		         	// 毒烟图层
+    int _xSmokeMin;					// 毒烟位置
+    int	_xSmokeMax;					// 毒烟位置
+    int	_ySmokeMin;					// 毒烟位置
+    int	_ySmokeMax;					// 毒烟位置
+    Sprite* _smokeCell;		            // 毒烟单元格
 
 
 
@@ -74,12 +72,10 @@ public:
 
     void showSpark(const std::string& filename, cocos2d::Node*& node);
 
-    void bindPlayer(Player* player);
-
-    void smokeMove();
+    void smokeMove(float delta);
 
     void setCamera();
-    
+
     void FightScene::initMap();
 
     void FightScene::initHero();

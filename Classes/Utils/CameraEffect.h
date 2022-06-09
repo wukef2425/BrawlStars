@@ -1,3 +1,8 @@
+/**
+* @file CameraEffect.h
+* @author wukef
+*/
+
 #ifndef __CAMERA_EFFECT_H__
 #define __CAMERA_EFFECT_H__
 
@@ -14,7 +19,7 @@ public:
 
 	static CameraEffect* create(cocos2d::Scene* scene);
 
-	void FollowPlayer(Player* player);
+	void FollowPlayer(Player* player, cocos2d::TMXTiledMap* map);
 };
 
 #endif

@@ -33,7 +33,8 @@ public:
     void listenToKeyReleases(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
 
     void update(float delta) override;
-    //Vec2 Player::returnPosition();
+
+    Vec2 returnPosition();
 };
 
 #endif // #define __PLAYER_H__

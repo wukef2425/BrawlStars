@@ -21,7 +21,9 @@ protected:
 
 	bool isAlive_ = true;// 是否存活
 
-	bool ultimateProgress_ = false;// 大招进度条
+	bool ultimateReady_ = false;// 大招好了没
+
+	int ultimateProgress_ = 0;// 大招进度条
 
 	int health_;// 当前生命
 
@@ -33,22 +35,25 @@ protected:
 
 	int defend_;// 防御值
 
-	int energy_;// 死了以后掉落多少能量
-
-
 public:
 
-	Hero* create(const std::string& filename);
+	Hero* createEnergy(Hero*& energyGenerator, Hero*& energyReceiver);
 
 	bool isAlive();
 
+	void die(Hero*& diedSprite, Hero*& killer);
+
+	int dealDamage();
+
+	void chargeForUlitmateSkill(int charge);
+
 	bool isUltimateSkillReady();
 
-	void receiveDamage(int damage, Hero*& sprite);
-
-	virtual void dealDamage(int damage);
+	void receiveDamage(int damage, Hero*& injuredSprite, Hero*& killer);
 
 	virtual void ultimateSkill();
+
+	void clearUltimateSkillProgress();
 
 	void bindPhysicsBodyAndTag(cocos2d::Sprite*& sprite, int bitmask, int tag);
 

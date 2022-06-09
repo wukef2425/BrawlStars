@@ -22,8 +22,6 @@ HaoQing* HaoQing::createPlayer()
 
     player->defend_ = 10;//防御值
 
-    player->energy_ = 1;//死了以后掉落多少能量
-
     auto chosenHero = Sprite::create("Hero/FightHero/HaoQing.png");
 
     if (chosenHero)
@@ -62,8 +60,6 @@ Hero* HaoQing::createAI()
     player->attack_ = 35;//攻击值
 
     player->defend_ = 0;//防御值
-
-    player->energy_ = 1;//死了以后掉落多少能量
 
     auto chosenHero = Sprite::create("Hero/FightHero/HaoQing.png");
 

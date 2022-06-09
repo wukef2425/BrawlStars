@@ -15,12 +15,15 @@
 #define EnemyBulletTag 2
 #define PlayerTag 3
 #define EnemyTag 4
-#define EnergyTag 5
+// #define EnergyTag 5
 
 /* shootspeed */
 #define ShootSpeed 1000
 
-/*smokespeed*/
-#define SmokeSpeed 20
+/* smokespeed */
+#define SmokeSpeed 0.1f
+
+/* Hero data */
+#define ultiFull 100
 
 #endif

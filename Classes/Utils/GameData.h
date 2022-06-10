@@ -25,14 +25,13 @@ public:
 
 	static AllHero _hero;		//玩家使用的brawl
 
-	static GameData* _instancePlayer;//当前人数
+	static int getRemainingPlayer();
 
-	static GameData* getInstance();
+	static void deleteDiedPlayer();
 
 private:
 
-
-
+	static int remainingPlayer;//当前人数
 
 };
 

@@ -27,6 +27,16 @@ void Hero::receiveDamage(int damage, Hero*& injuredSprite, Hero*& killer)
 		die(injuredSprite, killer);
 	}
 }
+/* receiveDamage重载 injuredSprite受伤 毒雾可用 */
+void Hero::receiveDamage(int damage, Hero*& injuredSprite)
+{
+	injuredSprite->health_ -= (damage - defend_);// 这数据似乎不太对35的攻击打一下就死了？
+
+	if (health_ <= 0)
+	{
+		die(injuredSprite);
+	}
+}
 /* killer杀死了diedSprite */
 void Hero::die(Hero*& diedSprite, Hero*& killer)
 {
@@ -35,6 +45,15 @@ void Hero::die(Hero*& diedSprite, Hero*& killer)
 	diedSprite->getParent()->addChild(energy);
 
 	isAlive_ = false;
+
+	GameData::deleteDiedPlayer();
+}
+/* die重载 diedSprite死了 毒雾可用 */
+void Hero::die(Hero*& diedSprite)
+{
+	isAlive_ = false;
+
+	GameData::deleteDiedPlayer();
 }
 /* energyGenerator产生能量给energyReceiver */
 Hero* Hero::createEnergy(Hero*& energyGenerator, Hero*& energyReceiver)
@@ -70,6 +89,14 @@ Hero* Hero::createEnergy(Hero*& energyGenerator, Hero*& energyReceiver)
 
 	return nullptr;
 }
+void Hero::recoverHealth()
+{
+	if (health_ < healthInit_ && true == isAlive_)
+	{
+		health_ += HealthRecovery;
+	}
+
+}
 
 /******************************************攻击状态*************************************************/
 
@@ -101,8 +128,18 @@ void Hero::chargeForUlitmateSkill(int charge)
 		ultimateReady_ = true;
 	}
 }
+/* 确认施放大招 */
+void Hero::confirmToReleaseUltimateSkill()
+{
+	confirm_ = true;
+}
+/* 是否确认施放大招 */
+bool Hero::isReleaseConfirmed()
+{
+	return confirm_;
+}
 /* 大招（在子类实现）*/
-void Hero::ultimateSkill()
+void Hero::ultimateSkill(Vec2 touchWorldPosition)
 {
 	;
 }
@@ -121,6 +158,14 @@ void Hero::bindPhysicsBodyAndTag(cocos2d::Sprite*& sprite, int bitmask, int tag)
 	physicsBody->setContactTestBitmask(bitmask);// 这一句是在这个种类碰撞的时候通知
 	sprite->setPhysicsBody(physicsBody);
 	sprite->setTag(tag);
+}
+void Hero::recoverBullet()
+{
+	if (bullet_ < bulletInit_ && true == isAlive_)
+	{
+		bullet_ += BulletRecovery;
+	}
+
 }
 
 /************************************************血条和蓝条**********************************************************************/
@@ -187,8 +232,8 @@ void Hero::update_mp()
 }
 
 //怒气值SP
-void Hero::initSpSlider() {
-
+void Hero::initSpSlider()
+{
 	_spSlider = ControlSlider::create("Hero/FightHero/bloodBg.png", "Hero/FightHero/heroSp.png", "Hero/FightHero/sliderThumb.png");
 
 	_spSlider->setEnabled(false);//让滑动条无法改变进度值

@@ -22,6 +22,7 @@
 
 /*smokespeed*/
 #define SmokeSpeed 1
+#define SmokeDamage 10
 
 /* UI */
 #define HpSliderPosY 50
@@ -30,5 +31,9 @@
 
 #define bulletFull 20
 #define ultiFull 100
+
+/* HERO */
+#define HealthRecovery 0.1
+#define BulletRecovery 0.1
 
 #endif

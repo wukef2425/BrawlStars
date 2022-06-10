@@ -22,6 +22,8 @@ protected:
 
 	bool ultimateReady_ = false;// 大招好了没
 
+	bool confirm_ = false;// 是否确认施放大招
+
 	int attack_;// 攻击值
 
 	int defend_;// 防御值
@@ -46,11 +48,16 @@ public:
 
 	void receiveDamage(int damage, Hero*& injuredSprite, Hero*& killer);
 
+	void receiveDamage(int damage, Hero*& injuredSprite);
+
 	void die(Hero*& diedSprite, Hero*& killer);
+
+	void die(Hero*& diedSprite);
 
 	Hero* createEnergy(Hero*& energyGenerator, Hero*& energyReceiver);
 
-	
+	void recoverHealth();
+
 	/* 攻击状态 */
 
 	int dealDamage();
@@ -60,13 +67,18 @@ public:
 	bool isUltimateSkillReady();
 
 	void chargeForUlitmateSkill(int charge);
+
+	void confirmToReleaseUltimateSkill();
+
+	bool isReleaseConfirmed();
 	
-	virtual void ultimateSkill();
+	virtual void ultimateSkill(Vec2 touchWorldPosition);
 
 	void clearUltimateSkillProgress();
 
 	void bindPhysicsBodyAndTag(cocos2d::Sprite*& sprite, int bitmask, int tag);
 
+	void recoverBullet();
 	
 	/* UI */
 	

@@ -20,7 +20,7 @@ public:
 
     static Hero* createAI();
 
-    void ultimateSkill() override;
+    void ultimateSkill(Vec2 touchWorldPosition) override;
 };
 
 #endif

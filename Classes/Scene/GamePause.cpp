@@ -53,6 +53,7 @@ bool Gamepause::init()
 	pMenu->setPosition(cocos2d::Vec2::ZERO);
 	this->addChild(pMenu, 2);
 
+
 	//重新开始游戏按钮
 	auto pRestartItem = cocos2d::MenuItemImage::create(
 		"Button/pause_restart.png",

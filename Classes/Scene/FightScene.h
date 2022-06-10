@@ -76,7 +76,7 @@ public:
 
     void showSpark(const std::string& filename, cocos2d::Node*& node);
 
-    void bindPlayer(Player* player);
+    //void bindPlayer(Player* player);
 
     void smokeMove();
 
@@ -92,7 +92,8 @@ public:
 
     void FightScene::initSmoke();
 
-    void FightScene::smokeHurt();
+    //void FightScene::smokeHurt();
+
     //CREATE_FUNC(FightScene);
     void FightScene::update(float dt);
 

@@ -1,6 +1,6 @@
 /**
 * @file Player.h
-* @author wukef
+* @author wukef & wyf
 */
 
 #ifndef __PLAYER_H__
@@ -12,9 +12,9 @@ class Player : public Hero
 {
 private:
 
-    enum Key { W, A, S, D, E };
+    enum Key { W, A, S, D, E, C };
 
-    bool keyPressed[5] = {};
+    bool keyPressed[6] = {};
     
     /* …Ë÷√≤Ω≥§ */
     float step = 10.f;

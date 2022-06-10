@@ -1,6 +1,6 @@
 /**
 * @file Player.cpp
-* @author wukef
+* @author wukef & wyf
 */
 
 #include "Player.h"
@@ -31,6 +31,10 @@ void Player::listenToKeyPresses(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d
     {
         keyPressed[E] = true;
     }
+    if (keyCode == K::KEY_C)
+    {
+        keyPressed[C] = true;
+    }
 }
 
 void Player::listenToKeyReleases(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event)
@@ -56,6 +60,10 @@ void Player::listenToKeyReleases(cocos2d::EventKeyboard::KeyCode keyCode, cocos2
     if (keyCode == K::KEY_E)
     {
         keyPressed[E] = false;
+    }
+    if (keyCode == K::KEY_C)
+    {
+        keyPressed[C] = false;
     }
 }
 
@@ -93,9 +101,17 @@ void Player::ChangePosition(bool moveDecide)
         {
             x += step;
         }
-        if (keyPressed[E])
+        if (keyPressed[E] && true == this->isUltimateSkillReady())
         {
             ultimateSkill();
+        }
+        if (keyPressed[C])
+        {
+            auto hello = Sprite::create("Hero/delighted.png");
+            hello->setPosition(this->getPosition() + Vec2(0, 70));
+            this->getParent()->addChild(hello);
+            auto actionRemove = RemoveSelf::create();
+            hello->runAction(actionRemove);
         }
 
         setPosition(x, y);

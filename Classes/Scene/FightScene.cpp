@@ -14,7 +14,6 @@
 
 
 USING_NS_CC;
-using namespace std;
 
 static void problemLoading(const char* filename)
 {
@@ -113,6 +112,14 @@ void FightScene::update(float dt)
     currentPlayer->update_hp();
     currentPlayer->update_sp();
     currentPlayer->update_mp();
+
+    HeroCount();//记录英雄人数
+
+    currentPlayer->recoverHealth();
+    AI->recoverHealth();
+
+    currentPlayer->recoverBullet();
+    AI->recoverBullet();
    
 }
 
@@ -179,7 +186,7 @@ bool FightScene::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* unusedEvent
     cocos2d::Size winSize = Director::getInstance()->getVisibleSize();
     Vec2 touchWorldPosition = touch->getLocation() + currentPlayer->getPosition() - Vec2(winSize.width * 0.5f, winSize.height * 0.5f);
 
-    if (0 <= bulletRemain && false == currentPlayer->isUltimateSkillReady())
+    if (0 <= bulletRemain && false == currentPlayer->isReleaseConfirmed())
     {
         /* 创造currentBullet并设置初始位置 */
         auto currentBullet = Sprite::create("Hero/Bullet/polar-bear-bullet.png");// 因为子弹是打一个删一个的，所以只能放在onTouchBegan内部
@@ -201,11 +208,11 @@ bool FightScene::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* unusedEvent
         /* 让currentBullet完成上面的一系列动作 */
         currentBullet->runAction(Sequence::create(actionMove, actionRemove, nullptr));
     }
-    else if (true == currentPlayer->isUltimateSkillReady())
+    else if (0 <= bulletRemain && true == currentPlayer->isReleaseConfirmed())
     {
-        ;
+        currentPlayer->ultimateSkill(touchWorldPosition);
     }
-    else
+    else if(0 > bulletRemain)
     {
         auto noBullet = Sprite::create("Hero/Bullet/nobullet.png");
         noBullet->setPosition(touchWorldPosition);
@@ -337,8 +344,6 @@ void FightScene::initMap()
     _collidable->setVisible(false);
 
     _grass = _tileMap->getLayer("Grass");//草丛
-
-    HeroCount();//记录英雄人数
 }
 //绑定指定人物
 void FightScene::initHero()
@@ -391,9 +396,6 @@ void FightScene::initUI()
     AI->initHpSlider();
     AI->initMpSlider();
     AI->initSpSlider();
-
-
-    
 }
 
 /***********************************瓦片地图初始化（毒烟、草坪、障碍物）**********************************************/
@@ -464,27 +466,26 @@ void FightScene::smokeMove()
 
 }
 //毒烟的伤害
-void FightScene::smokeHurt(Point position)
+void FightScene::smokeHurt(Vec2 position)
 {
-    Point _tileCoord = this->tilePosition(position); //转化为瓦片地图坐标
+    Vec2 _tileCoord = this->tilePosition(position); //转化为瓦片地图坐标
     if (_smoke->getTileAt(_tileCoord))
     {
         _smokeCell = _smoke->getTileAt(_tileCoord);
         if (_smokeCell->isVisible()) //如果毒烟可见
         {
-            //to wkf 转到人物承受伤害的函数
-            // 还没写人物伤害函数，传入的内容是伤害量，应该可以和玩家攻击用相同的方式
-            //brawler->takeDamage(SMOKE_DAMAGE);
+            auto currentHero = dynamic_cast<Hero*>(currentPlayer);
+            currentPlayer->receiveDamage(SmokeDamage, currentHero);
         }
     }
 }
 //草坪，这个目前会出现bug所以我准备等坐标修好了之后再来修这个
-void FightScene::grassCover(Point position)
+void FightScene::grassCover(Vec2 position)
 {
     //草坪的操作模式是->检测人物碰撞->变透明->人物离开->恢复颜色
     //所以要储存好坐标，走过去和走回来
 
-    static vector<Point> grassChange = {}; //储存改变的草丛
+    static vector<Vec2> grassChange = {}; //储存改变的草丛
 
     //将之前位置的草丛恢复
     int i; 
@@ -512,7 +513,7 @@ void FightScene::grassCover(Point position)
 
     for (i = 0; i < grassChange.size(); i++)
     {
-        Point tileCoord = this->tilePosition(grassChange[i]);
+        Vec2 tileCoord = this->tilePosition(grassChange[i]);
         if (_grass->getTileAt(tileCoord))
         {
             _grassCell = _grass->getTileAt(tileCoord); 
@@ -538,14 +539,12 @@ void FightScene::grassCover(Point position)
 //to myself 记得加上第二个层，要不没法做
 //to wkf 每当消灭一个英雄，在消灭英雄函数内执行减一操作，然后在执行计分板操作
 void FightScene::HeroCount()//计分板
-{
-    //想给计分板加个板子
-    //要做到在屏幕上位置不变，需要格外加个图层,但目前我不太会先留着明天
-    heroNumber = Label::createWithTTF(StringUtils::format("Brawler Left: %d", GameData::_instancePlayer).c_str(), "fonts/arial.ttf", 40);
+{// 有个问题就是放到update里会有重叠 然后touch会执行多次 by wkf
+    heroNumber = Label::createWithTTF(StringUtils::format("Brawler Left: %d", GameData::getRemainingPlayer()).c_str(), "fonts/arial.ttf", 40);
     heroNumber->setAnchorPoint(Vec2(0, 1));
     heroNumber->setPosition(Vec2(_origin.x, _visibleSize.height + _origin.y));
     this->addChild(heroNumber, 3);
-    
+    heroNumber->setCameraMask(2, true);
 }
 //游戏暂停
 void FightScene::gamePause()
@@ -563,6 +562,7 @@ void FightScene::gamePause()
     pauseButton_ = cocos2d::Menu::create(pauseItem, nullptr);
     pauseButton_->setPosition(cocos2d::Vec2::ZERO);
     this->addChild(pauseButton_, 2);
+    pauseButton_->setCameraMask(2, true);
 
 }
 
@@ -572,8 +572,6 @@ void FightScene::GamePauseCallback(Ref* pSender)
     Size visibleSize = Director::getInstance()->getVisibleSize();
     RenderTexture* renderTexture = RenderTexture::create(visibleSize.width, visibleSize.height);
 
-    //遍历当前类的所有子节点信息，画入renderTexture中。
-    //这里类似截图。
     renderTexture->begin();
     this->getParent()->visit();
     renderTexture->end();

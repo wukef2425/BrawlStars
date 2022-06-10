@@ -5,4 +5,14 @@
 USING_NS_CC;
 
 GameData::AllHero GameData::_hero = GameData::ShunDe;
-GameData* GameData::_instancePlayer;
+int GameData::remainingPlayer = 2;
+
+int GameData::getRemainingPlayer()
+{
+	return remainingPlayer;
+}
+
+void GameData::deleteDiedPlayer()
+{
+	remainingPlayer--;
+}

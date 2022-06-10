@@ -71,13 +71,13 @@ Hero* ShunDe::createAI()
     return nullptr;
 }
 
-void ShunDe::ultimateSkill()
+void ShunDe::ultimateSkill(Vec2 touchWorldPosition)
 {
-    auto useSkill = Sprite::create("Hero/FightHero/polar-bear.png");
+    auto useSkill = Sprite::create("Hero/Bullet/ShunDe-bullet.png");
 
-    useSkill->setPosition(this->getPosition());
+    useSkill->setPosition(touchWorldPosition);
 
     this->getParent()->addChild(useSkill);
 
-    this->clearUltimateSkillProgress();// 大招释放完毕清空进度条释放
+    this->confirm_ = false;// 大招释放完毕confirm_复原
 }

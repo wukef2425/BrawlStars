@@ -5,6 +5,7 @@
 #include "StartScene.h"
 #include "StartLoginScene.h"
 #include "cocos2d.h"
+
 USING_NS_CC;
 
 Scene* StartScene::createScene()

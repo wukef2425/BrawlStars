@@ -97,8 +97,8 @@ public:
     void FightScene::HeroCount();
 
     void smokeMove();
-    void FightScene::smokeHurt(Point position);
-    void FightScene::grassCover(Point position);
+    void FightScene::smokeHurt(Vec2 position);
+    void FightScene::grassCover(Vec2 position);
     void FightScene::gamePause();
     void FightScene::GamePauseCallback(Ref* pSender);
 

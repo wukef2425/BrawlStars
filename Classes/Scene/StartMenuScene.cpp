@@ -10,7 +10,6 @@
 #include "User/UserInfo.h"
 
 USING_NS_CC;
-using namespace std;
 
 Scene* StartMenuScene::createScene()
 {

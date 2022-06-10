@@ -103,7 +103,8 @@ void Player::ChangePosition(bool moveDecide)
         }
         if (keyPressed[E] && true == this->isUltimateSkillReady())
         {
-            ultimateSkill();
+            this->confirmToReleaseUltimateSkill();
+            this->clearUltimateSkillProgress();// 大招释放 清空进度条释放
         }
         if (keyPressed[C])
         {

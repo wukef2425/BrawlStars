@@ -9,8 +9,6 @@
 #include "Utils/GameData.h"
 #include "Scene/StartMenuScene.h"
 
-
-using namespace std;
 USING_NS_CC;
 
 Scene* ChooseHero::createScene()

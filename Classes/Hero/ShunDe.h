@@ -19,6 +19,8 @@ public:
     static ShunDe* createPlayer();
 
     static Hero* createAI();
+
+    void ultimateSkill() override;
 };
 
 #endif

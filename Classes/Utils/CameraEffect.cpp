@@ -24,7 +24,7 @@ CameraEffect * CameraEffect::create(cocos2d::Scene * scene)
 
 	newCamera->setCameraFlag(cocos2d::CameraFlag::DEFAULT);
 	newCamera->setPosition(cocos2d::Vec2(-winSize.width * 0.5f, -winSize.height * 0.5f)); // 控制镜头位置
-	newCamera->setDepth(0);// 控制在那一层
+	newCamera->setDepth(1);// 控制在那一层
 
 	cameraEffect->addChild(newCamera);
 

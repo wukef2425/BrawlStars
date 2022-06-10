@@ -23,4 +23,12 @@
 /*smokespeed*/
 #define SmokeSpeed 1
 
+/* UI */
+#define HpSliderPosY 50
+#define MpSliderPosY 45
+#define SpSliderPosY 40
+
+#define bulletFull 20
+#define ultiFull 100
+
 #endif

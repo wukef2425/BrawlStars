@@ -88,11 +88,11 @@ bool FightScene::init()
 
     initMap();//初始化地图
 
-    //initUI(); 加入ui组件，包括剩余人数，蓝条血条，设置键（音乐和音效各种东西to zyy），暂停和退出按钮（不知道是不是ui）
-
     initHero();//初始化英雄
 
     initAI();//初始化AI
+
+    initUI();// 加入ui组件，包括剩余人数，蓝条血条，设置键（音乐和音效各种东西to zyy），暂停和退出按钮（不知道是不是ui）
 
     initSmoke();
 
@@ -102,10 +102,7 @@ bool FightScene::init()
 
     //this->schedule(CC_SCHEDULE_SELECTOR(FightScene::createAI), 0.5f);// 0.5秒执行一次schedule AI会0.5秒更新一次目的地，追着你跑
 
-    //listenToUserOperation();
-
     this->scheduleUpdate();
-
 
     return true;
 }
@@ -120,6 +117,14 @@ void FightScene::update(float dt)
     this->setPlayerPosition(playerPosition);
     //考虑ai的移动是否也要加到这里，不过可能会不同步，需要调一下时间
     //this->grassCover(playerPosition);//草丛的变化也应该加到这里,但目前有点bug先注释掉
+    if (true == AI->isAlive())
+    {
+        AI->update_hp();
+    }
+
+    currentPlayer->update_hp();
+    currentPlayer->update_sp();
+    currentPlayer->update_mp();
    
 }
 
@@ -180,31 +185,49 @@ void FightScene::listenToUserOperation()
 
 bool FightScene::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* unusedEvent)
 {
-    /* 创造currentBullet并设置初始位置 */
-    auto currentBullet = Sprite::create("Hero/Bullet/polar-bear-bullet.png");// 因为子弹是打一个删一个的，所以只能放在onTouchBegan内部
-    currentBullet->setPosition(this->currentPlayer->getPosition());// 初始位置是从currentPlayer出发
-
-    /* 给currentBullet绑定物理躯干 */
-    bindPhysicsBodyAndTag(currentBullet, PlayerBulletAndEnemyBitmask, PlayerBulletTag);
-
-    /* 加入渲染树 */
-    this->addChild(currentBullet);
+    int bulletRemain = currentPlayer->currentBullet();
 
     /* touch转世界坐标 */
     cocos2d::Size winSize = Director::getInstance()->getVisibleSize();
     Vec2 touchWorldPosition = touch->getLocation() + currentPlayer->getPosition() - Vec2(winSize.width * 0.5f, winSize.height * 0.5f);
 
-    Vec2 offset = touchWorldPosition - this->currentPlayer->getPosition();
-    offset.normalize();// currentPlayer位置指向鼠标touch位置的单位向量
+    if (0 <= bulletRemain && false == currentPlayer->isUltimateSkillReady())
+    {
+        /* 创造currentBullet并设置初始位置 */
+        auto currentBullet = Sprite::create("Hero/Bullet/polar-bear-bullet.png");// 因为子弹是打一个删一个的，所以只能放在onTouchBegan内部
+        currentBullet->setPosition(this->currentPlayer->getPosition());// 初始位置是从currentPlayer出发
 
-    /* 定义一些动作 */
-    auto actionMove = MoveBy::create(1.5f, offset * ShootSpeed);// 1.5秒到达目的地
-    auto actionRemove = RemoveSelf::create();// 删掉自身
+        /* 给currentBullet绑定物理躯干 */
+        bindPhysicsBodyAndTag(currentBullet, PlayerBulletAndEnemyBitmask, PlayerBulletTag);
 
-    /* 让currentBullet完成上面的一系列动作 */
-    currentBullet->runAction(Sequence::create(actionMove, actionRemove, nullptr));
+        /* 加入渲染树 */
+        this->addChild(currentBullet);
 
-    return true;
+        Vec2 offset = touchWorldPosition - this->currentPlayer->getPosition();
+        offset.normalize();// currentPlayer位置指向鼠标touch位置的单位向量
+
+        /* 定义一些动作 */
+        auto actionMove = MoveBy::create(1.5f, offset * ShootSpeed);// 1.5秒到达目的地
+        auto actionRemove = RemoveSelf::create();// 删掉自身
+
+        /* 让currentBullet完成上面的一系列动作 */
+        currentBullet->runAction(Sequence::create(actionMove, actionRemove, nullptr));
+    }
+    else if (true == currentPlayer->isUltimateSkillReady())
+    {
+        ;
+    }
+    else
+    {
+        auto noBullet = Sprite::create("Hero/Bullet/nobullet.png");
+        noBullet->setPosition(touchWorldPosition);
+        this->addChild(noBullet);
+        auto scaleTo = ScaleTo::create(0.5f, 1.5f, 1.5f);
+        auto actionRemove = RemoveSelf::create();
+        noBullet->runAction(Sequence::create(scaleTo, actionRemove, nullptr));
+    }
+
+    return false;
 }
 
 bool FightScene::onContactBegin(cocos2d::PhysicsContact& contact)
@@ -216,32 +239,35 @@ bool FightScene::onContactBegin(cocos2d::PhysicsContact& contact)
     /* 火花特效 & 删除标记为BulletTag的那个node(就是之前标记的currentBullet) */
     if (nodeA && nodeB)
     {
+        auto currentHero = dynamic_cast<Hero*>(currentPlayer);
         if (nodeA->getTag() == PlayerBulletTag && nodeB->getTag() == EnemyTag)
         {
             showSpark("Hero/Bullet/spiky-eclipse.png", nodeA);
-            AI->receiveDamage(20,AI);// 我随便写的 后面可以随英雄变化
+            AI->receiveDamage(currentPlayer->dealDamage(), AI, currentHero);
         }
         else if (nodeB->getTag() == PlayerBulletTag && nodeA->getTag() == EnemyTag)
         {
             showSpark("Hero/Bullet/spiky-eclipse.png", nodeB);
-            AI->receiveDamage(20,AI);// 我随便写的 后面可以随英雄变化
+            AI->receiveDamage(currentPlayer->dealDamage(), AI, currentHero);
         }
         else if (nodeA->getTag() == EnemyBulletTag && nodeB->getTag() == PlayerTag)
         {
             showSpark("Hero/Bullet/enemy-spiky-eclipse.png", nodeA);
+            currentPlayer->receiveDamage(AI->dealDamage(), currentHero, AI);
         }
         else if (nodeB->getTag() == EnemyBulletTag && nodeA->getTag() == PlayerTag)
         {
             showSpark("Hero/Bullet/enemy-spiky-eclipse.png", nodeB);
+            currentPlayer->receiveDamage(AI->dealDamage(), currentHero, AI);
         }
-        else if (nodeA->getTag() == PlayerTag && nodeB->getTag() == EnergyTag)
-        {
-            nodeB->removeFromParentAndCleanup(true);
-        }
-        else if (nodeB->getTag() == PlayerTag && nodeA->getTag() == EnergyTag)
-        {
-            nodeA->removeFromParentAndCleanup(true);
-        }
+        //else if (nodeA->getTag() == PlayerTag && nodeB->getTag() == EnergyTag)
+        //{
+            //nodeB->removeFromParentAndCleanup(true);
+        //}
+        //else if (nodeB->getTag() == PlayerTag && nodeA->getTag() == EnergyTag)
+        //{
+            //nodeA->removeFromParentAndCleanup(true);
+        //}
 
     }
 
@@ -290,7 +316,7 @@ void FightScene::createAI(float delta)
 
     if (!AI->isAlive())
     {
-        AI->removeFromParentAndCleanup(true);
+        AI->removeFromParentAndCleanup(true);// 这句会让AI造成的伤害清零，player满血
         this->unschedule(CC_SCHEDULE_SELECTOR(FightScene::createAI));
     }
 }
@@ -370,7 +396,13 @@ void FightScene::initAI()
 
 void FightScene::initUI()
 {
+    currentPlayer->initHpSlider();
+    currentPlayer->initMpSlider();
+    currentPlayer->initSpSlider();
 
+    AI->initHpSlider();
+    AI->initMpSlider();
+    AI->initSpSlider();
 }
 
 /***********************************瓦片地图初始化（毒烟、草坪、障碍物）**********************************************/
@@ -380,9 +412,9 @@ void FightScene::initSmoke()
 
     _smoke = _tileMap->getLayer("Smoke");//毒烟
     _xSmokeMin = 0,
-        _xSmokeMax = _tileMap->getMapSize().width,
-        _ySmokeMin = 0,
-        _ySmokeMax = _tileMap->getMapSize().height;
+    _xSmokeMax = _tileMap->getMapSize().width,
+    _ySmokeMin = 0,
+    _ySmokeMax = _tileMap->getMapSize().height;
     this->smokeMove();
     //不能直接false _smoke->setVisible(false);
 

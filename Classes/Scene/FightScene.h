@@ -9,6 +9,7 @@
 
 #include "Entity/Player.h"
 
+#include "Scene/Gamepause.h"
 #include "Utils/GameData.h"
 #include "Utils/CameraEffect.h"
 
@@ -32,11 +33,15 @@ private:
     Size _visibleSize;
     Vec2 _origin;
 
-
+    
     Player* currentPlayer;
 
     Hero* AI;
 
+    /* UI层 */
+    Layer* _UILayer;
+    Label* heroNumber;				//剩余英雄数
+    MenuItem* _suspendButton;	//暂停按钮
 
     /* 地图信息汇总 */
     cocos2d::TMXTiledMap* _tileMap;
@@ -60,9 +65,15 @@ public:
     static FightScene* create(TMXTiledMap* map);
     FightScene(TMXTiledMap* map);
 
-    //static cocos2d::Scene* createScene();
 
+    cocos2d::Menu* pauseButton_;
     virtual bool init();
+
+    void FightScene::initMap();
+    void FightScene::initHero();
+    void FightScene::initAI();
+    void FightScene::initUI();
+    void FightScene::initSmoke();
 
     void listenToUserOperation();
 
@@ -71,38 +82,29 @@ public:
     void createAI(float delta);
 
     bool onContactBegin(cocos2d::PhysicsContact& contact);
-    
+
     void bindPhysicsBodyAndTag(cocos2d::Sprite*& sprite, int bitmask, int tag);
 
     void showSpark(const std::string& filename, cocos2d::Node*& node);
 
-    //void bindPlayer(Player* player);
-
-    void smokeMove();
+    //void FightScene::bindPlayer(const std::string& heroname);
 
     void setCamera();
-    
-    void FightScene::initMap();
-
-    void FightScene::initHero();
-
-    void FightScene::initAI();
-
-    void FightScene::initUI();
-
-    void FightScene::initSmoke();
-
-    //void FightScene::smokeHurt();
-
-    //CREATE_FUNC(FightScene);
-    void FightScene::update(float dt);
 
     Vec2 tilePosition(const Vec2& position);
-
-    void FightScene::smokeHurt(Point position);
-
-    void FightScene::grassCover(Point position);
     void FightScene::setPlayerPosition(Point position);
+
+    void FightScene::HeroCount();
+
+    void smokeMove();
+    void FightScene::smokeHurt(Point position);
+    void FightScene::grassCover(Point position);
+    void FightScene::gamePause();
+    void FightScene::GamePauseCallback(Ref* pSender);
+
+    void FightScene::GameOver();
+
+    void FightScene::update(float dt);
   
 };
 

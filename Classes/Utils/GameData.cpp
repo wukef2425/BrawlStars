@@ -5,4 +5,4 @@
 USING_NS_CC;
 
 GameData::AllHero GameData::_hero = GameData::ShunDe;
-GameData* GameData::_instancePlayer = 0;
+GameData* GameData::_instancePlayer;

@@ -48,7 +48,7 @@ FightScene* FightScene::create(TMXTiledMap* map)
 Scene* FightScene::createScene()
 {
     auto scene = Scene::createWithPhysics();
-
+   
     if (scene != nullptr)
     {
         scene->addChild(this, 0);
@@ -60,31 +60,19 @@ Scene* FightScene::createScene()
     return nullptr;
 }
 
-/*
-void FightScene::bindPlayer(Player* player)
-{
-    if (player != nullptr && currentPlayer == nullptr)
-    {
-        this->currentPlayer = player;
-        this->addChild(player);
-    }
-    this->setCamera();
-    this->setOperationListener();
-    this->setUI();
-}
-*/
-
-
 /* 界面初始化函数 */
 bool FightScene::init()
 {
-
     if (!Scene::init()|| !Scene::initWithPhysics())
     {
         return false;
     }
 
+    
     //to zyy 游戏加载的时候加入音乐组件
+
+    _visibleSize = Director::getInstance()->getVisibleSize();
+    _origin = Director::getInstance()->getVisibleOrigin();
 
     initMap();//初始化地图
 
@@ -93,6 +81,8 @@ bool FightScene::init()
     initAI();//初始化AI
 
     initUI();// 加入ui组件，包括剩余人数，蓝条血条，设置键（音乐和音效各种东西to zyy），暂停和退出按钮（不知道是不是ui）
+
+    gamePause();
 
     initSmoke();
 
@@ -110,12 +100,10 @@ bool FightScene::init()
 /* 需要添加的信息有：镜头的跟随、人物的移动、草坪的状态、人物移动要注意是否有障碍物 */
 void FightScene::update(float dt)
 {
-    //this->setViewPointCenter(playerPos);//to wkf 设置镜头跟随可以加到这里
-    // //人物移动的跟随应该放置在update中
     //更新玩家的位置
     Vec2 playerPosition = currentPlayer->getPosition();
     this->setPlayerPosition(playerPosition);
-    //考虑ai的移动是否也要加到这里，不过可能会不同步，需要调一下时间
+
     //this->grassCover(playerPosition);//草丛的变化也应该加到这里,但目前有点bug先注释掉
     if (true == AI->isAlive())
     {
@@ -350,7 +338,7 @@ void FightScene::initMap()
 
     _grass = _tileMap->getLayer("Grass");//草丛
 
-
+    HeroCount();//记录英雄人数
 }
 //绑定指定人物
 void FightScene::initHero()
@@ -403,18 +391,20 @@ void FightScene::initUI()
     AI->initHpSlider();
     AI->initMpSlider();
     AI->initSpSlider();
+
+
+    
 }
 
 /***********************************瓦片地图初始化（毒烟、草坪、障碍物）**********************************************/
-
 void FightScene::initSmoke()
 {
 
     _smoke = _tileMap->getLayer("Smoke");//毒烟
     _xSmokeMin = 0,
-    _xSmokeMax = _tileMap->getMapSize().width,
-    _ySmokeMin = 0,
-    _ySmokeMax = _tileMap->getMapSize().height;
+        _xSmokeMax = _tileMap->getMapSize().width,
+        _ySmokeMin = 0,
+        _ySmokeMax = _tileMap->getMapSize().height;
     this->smokeMove();
     //不能直接false _smoke->setVisible(false);
 
@@ -422,18 +412,17 @@ void FightScene::initSmoke()
     {
         for (int Y = _ySmokeMin; Y < _ySmokeMax; Y++)
         {
-            if (_smoke->getTileAt(Vec2(X, Y))) //如果通过tile坐标能够访问指定毒烟单元格
+            if (_smoke->getTileAt(Vec2(X, Y))) 
             {
                 _smokeCell = _smoke->getTileAt(Vec2(X, Y));
                 _smokeCell->setVisible(false);
             }
         }
     }
-    //毒烟的移动，一共会移动30次，每20秒移动一次，游戏一共6min
-    //to wkf 不知道这个函数是什么个用法，要是有其它调用方式可以更改一下
-    //this->schedule([=](float dt) {				//每20秒刷新
-    //    smokeMove();
-     //   }, SmokeSpeed, "smoke move");
+
+    this->schedule([=](float dt) {				//每20秒刷新
+        smokeMove();
+        }, SmokeSpeed, "smoke move");
 
 
 }
@@ -466,7 +455,7 @@ void FightScene::smokeMove()
             _smokeCell->setVisible(true);
         }
     }
-      
+
     _xSmokeMin++;
     _xSmokeMax--;
     _ySmokeMin++;
@@ -544,12 +533,56 @@ void FightScene::grassCover(Point position)
 
 
 }
-/***********************************ui组件初始化（剩余人数、血量、蓝量）**********************************************/
+/***********************************ui组件初始化（剩余人数、时间）**********************************************/
 
+//to myself 记得加上第二个层，要不没法做
+//to wkf 每当消灭一个英雄，在消灭英雄函数内执行减一操作，然后在执行计分板操作
+void FightScene::HeroCount()//计分板
+{
+    //想给计分板加个板子
+    //要做到在屏幕上位置不变，需要格外加个图层,但目前我不太会先留着明天
+    heroNumber = Label::createWithTTF(StringUtils::format("Brawler Left: %d", GameData::_instancePlayer).c_str(), "fonts/arial.ttf", 40);
+    heroNumber->setAnchorPoint(Vec2(0, 1));
+    heroNumber->setPosition(Vec2(_origin.x, _visibleSize.height + _origin.y));
+    this->addChild(heroNumber, 3);
+    
+}
+//游戏暂停
+void FightScene::gamePause()
+{
+    //初始化gamepause的按钮，当点击的时候，执行转换函数，注意场景应该是pop
+    //注意时间的暂停！！！
+    auto pauseItem = cocos2d::MenuItemImage::create(
+        "Button/PauseNormal.png",
+        "Button/PauseSelected.png",
+        CC_CALLBACK_1(FightScene::GamePauseCallback, this));
 
+    pauseItem->setPosition(Vec2(_visibleSize.width - pauseItem->getContentSize().width / 2,
+        _visibleSize.height - pauseItem->getContentSize().height / 2));
 
+    pauseButton_ = cocos2d::Menu::create(pauseItem, nullptr);
+    pauseButton_->setPosition(cocos2d::Vec2::ZERO);
+    this->addChild(pauseButton_, 2);
 
-/**********************************游戏状态记录，人物是否死亡、游戏是否结束*************************************************/
+}
+
+void FightScene::GamePauseCallback(Ref* pSender)
+{
+    
+    Size visibleSize = Director::getInstance()->getVisibleSize();
+    RenderTexture* renderTexture = RenderTexture::create(visibleSize.width, visibleSize.height);
+
+    //遍历当前类的所有子节点信息，画入renderTexture中。
+    //这里类似截图。
+    renderTexture->begin();
+    this->getParent()->visit();
+    renderTexture->end();
+
+    Director::getInstance()->pushScene(Gamepause::scene(renderTexture));
+    
+}
+
+/*****************************游戏状态记录，人物是否死亡、游戏是否结束**********************************************/
 
 void FightScene::setCamera()
 {
@@ -558,4 +591,14 @@ void FightScene::setCamera()
     {
         this->fightCamera->FollowPlayer(currentPlayer);
     }
+}
+
+void FightScene::GameOver()
+{
+    //游戏结束的条件
+    //玩家死亡or剩余英雄为（只有玩家）or定时器时间到（可以不用考虑）-》把定时器的时间设置为毒雾蔓延＋人物血量减毒雾伤害
+    //转到游戏结算界面
+
+
+
 }

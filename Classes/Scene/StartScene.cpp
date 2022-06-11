@@ -30,7 +30,7 @@ bool StartScene::init()
     initTermLabel();//Animation of entrance
 
     scheduleOnce(SEL_SCHEDULE(&StartScene::ChangeScene), 1.0f);//switch scene
-    
+
     //由于游戏资源还蛮多的，所以在考虑要不要提前预加载一下，时间够就预加载
     //到时候这里可以加个进度条伪装一下
     return true;
@@ -55,7 +55,7 @@ void StartScene::initTermLabel()
 
         this->addChild(label, 0);
     }
-   
+
     //and some weird hints
 }
 

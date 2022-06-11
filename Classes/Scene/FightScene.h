@@ -94,7 +94,7 @@ public:
     Vec2 tilePosition(const Vec2& position);
     void setPlayerPosition(Point position);
 
-    void HeroCount();
+    void FightScene::HeroCount();
 
     void smokeMove();
     void smokeHurt(Vec2 position);
@@ -102,7 +102,8 @@ public:
     void gamePause();
     void GamePauseCallback(Ref* pSender);
 
-    void GameOver();
+    void FightScene::GameOver();
+    void FightScene::GameOverScene(float dt);
 
     void update(float dt);
     void updateCharacterUI(Hero* hero);

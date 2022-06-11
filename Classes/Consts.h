@@ -8,7 +8,12 @@
 
 /* 人数 */
 #define OriginalPlayerNum 2
-
+/* 人物 */
+#define YunHeNumber 1
+#define ChangYiNumber 2
+#define HaoQingNumber 3
+#define ShunDeNumber 4
+#define SanYueNumber 5
 
 /* bitmasks */
 #define PlayerBulletAndEnemyBitmask  0x1 //0001

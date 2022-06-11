@@ -9,6 +9,7 @@ HaoQing* HaoQing::createPlayer()
     {
         return nullptr;
     }
+    player->dieTag_ = PlayerDieTag;
 
     player->health_ = HaoQingHealthInit;//µ±Ç°ÉúÃü
 

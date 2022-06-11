@@ -16,7 +16,7 @@ bool Hero::isAlive()
 	return isAlive_;
 }
 /* killer使injuredSprite受到damage点伤害 */
-void Hero::receiveDamage(int damage, Hero*& injuredSprite, Hero*& killer)
+void Hero::receiveDamage(float damage, Hero*& injuredSprite, Hero*& killer)
 {
 	injuredSprite->health_ -= (damage - defend_);
 
@@ -28,7 +28,7 @@ void Hero::receiveDamage(int damage, Hero*& injuredSprite, Hero*& killer)
 	}
 }
 /* receiveDamage重载 injuredSprite受伤 毒雾可用 */
-void Hero::receiveDamage(int damage, Hero*& injuredSprite)
+void Hero::receiveDamage(float damage, Hero*& injuredSprite)
 {
 	injuredSprite->health_ -= (damage - defend_);
 
@@ -40,25 +40,31 @@ void Hero::receiveDamage(int damage, Hero*& injuredSprite)
 /* killer杀死了diedSprite */
 void Hero::die(Hero*& diedSprite, Hero*& killer)
 {
-	auto energy = Hero::createEnergy(diedSprite, killer);
-
-	diedSprite->getParent()->addChild(energy);
-
-	isAlive_ = false;
-
-	if (diedSprite->dieTag_ == HeroDieTag)
+	if (true == isAlive_)// 免得死很多次人数变负的
 	{
-		GameData::deleteDiedPlayer();
+		auto energy = Hero::createEnergy(diedSprite, killer);
+
+		diedSprite->getParent()->addChild(energy);
+
+		isAlive_ = false;
+
+		if (diedSprite->dieTag_ == AIDieTag)
+		{
+			GameData::deleteDiedPlayer();
+		}
 	}
 }
 /* die重载 diedSprite死了 毒雾可用 */
 void Hero::die(Hero*& diedSprite)
 {
-	isAlive_ = false;
-
-	if (diedSprite->dieTag_ == HeroDieTag)
+	if (true == isAlive_)// 免得死很多次人数变负的
 	{
-		GameData::deleteDiedPlayer();
+		isAlive_ = false;
+
+		if (diedSprite->dieTag_ == AIDieTag)
+		{
+			GameData::deleteDiedPlayer();
+		}
 	}
 }
 /* energyGenerator产生能量给energyReceiver */
@@ -90,7 +96,6 @@ Hero* Hero::createEnergy(Hero*& energyGenerator, Hero*& energyReceiver)
 		energyReceiver->attack_ += EnergyAttackBonus;
 		energyReceiver->defend_ += EnergyDefendBonus;
 
-
 		energy->autorelease();
 
 		return energy;
@@ -110,14 +115,18 @@ void Hero::recoverHealth()
 /******************************************攻击状态*************************************************/
 
 /* 返回普攻数值 */
-int Hero::dealDamage()
+float Hero::dealDamage()
 {
 	return attack_;
 }
 /* 返回当前子弹数目 */
 float Hero::currentBullet()
 {
-	if (bullet_ > -1)
+	if (0 < bullet_ && bullet_ < 1.f)
+	{
+		bullet_ = 0;
+	}
+	else if (1.f < bullet_)
 	{
 		bullet_--;
 	}
@@ -129,7 +138,7 @@ bool Hero::isUltimateSkillReady()
 	return ultimateReady_;
 }
 /* 给大招充能charge点能量 */
-void Hero::chargeForUlitmateSkill(int charge)
+void Hero::chargeForUlitmateSkill(float charge)
 {
 	if (false == ultimateReady_)// 大招还没好时可以继续充能，不释放没法充能
 	{

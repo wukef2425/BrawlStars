@@ -9,6 +9,7 @@ SanYue* SanYue::createPlayer()
     {
         return nullptr;
     }
+    player->dieTag_ = PlayerDieTag;
 
     player->health_ = SanYueHealthInit;//µ±Ç°ÉúÃü
 

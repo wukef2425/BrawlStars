@@ -106,6 +106,11 @@ void FightScene::update(float dt)
 
     updateCharacterUI(currentPlayer);
 
+    if (true == energyBox->isAlive())
+    {
+        energyBox->update_hp();
+    }
+
     HeroCount();//记录英雄人数
 
     smokeHurt(currentPlayer->getPosition());
@@ -182,14 +187,14 @@ void FightScene::listenToUserOperation()
 
 bool FightScene::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* unusedEvent)
 {
-    int bulletRemain = currentPlayer->currentBullet();
+    float bulletRemain = currentPlayer->currentBullet();
 
     /* touch转世界坐标 */
     cocos2d::Size winSize = Director::getInstance()->getVisibleSize();
     Vec2 touchWorldPosition = touch->getLocation() + currentPlayer->getPosition() - Vec2(winSize.width * 0.5f, winSize.height * 0.5f);
 
 
-    if (0 <= bulletRemain && false == currentPlayer->isReleaseConfirmed())
+    if (0 < bulletRemain && false == currentPlayer->isReleaseConfirmed())
     {
         /* 创造currentBullet并设置初始位置 */
         auto currentBullet = Sprite::create("Hero/Bullet/polar-bear-bullet.png");// 因为子弹是打一个删一个的，所以只能放在onTouchBegan内部
@@ -211,11 +216,11 @@ bool FightScene::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* unusedEvent
         /* 让currentBullet完成上面的一系列动作 */
         currentBullet->runAction(Sequence::create(actionMove, actionRemove, nullptr));
     }
-    else if (0 <= bulletRemain && true == currentPlayer->isReleaseConfirmed())
+    else if (0 < bulletRemain && true == currentPlayer->isReleaseConfirmed())
     {
         currentPlayer->ultimateSkill(touchWorldPosition);
     }
-    else if (0 > bulletRemain)
+    else if (0 >= bulletRemain)
     {
         auto noBullet = Sprite::create("Hero/Bullet/nobullet.png");
         noBullet->setPosition(touchWorldPosition);
@@ -252,6 +257,17 @@ bool FightScene::onContactBegin(cocos2d::PhysicsContact& contact)
             showSpark("Hero/Bullet/spiky-eclipse.png", nodeB);
             AI->receiveDamage(currentPlayer->dealDamage(), AI, currentHero);
         }
+        /* player打box */
+        else if (nodeA->getTag() == PlayerBulletTag && nodeB->getTag() == EnergyBoxTag)
+        {
+            showSpark("Hero/Bullet/spiky-eclipse.png", nodeA);
+            energyBox->receiveDamage(currentPlayer->dealDamage(), energyBox, currentHero);
+        }
+        else if (nodeB->getTag() == PlayerBulletTag && nodeA->getTag() == EnergyBoxTag)
+        {
+            showSpark("Hero/Bullet/spiky-eclipse.png", nodeB);
+            energyBox->receiveDamage(currentPlayer->dealDamage(), energyBox, currentHero);
+        }
         /* AI打player */
         else if (nodeA->getTag() == EnemyBulletTag && nodeB->getTag() == PlayerTag)
         {
@@ -264,29 +280,15 @@ bool FightScene::onContactBegin(cocos2d::PhysicsContact& contact)
             currentPlayer->receiveDamage(AI->dealDamage(), currentHero, AI);
         }
         /* YunHe大招 */
-        else if (nodeA->getTag() == YunHeUtimateSkillTag)
+        else if (nodeA->getTag() == YunHeUtimateSkillTag && nodeB->getTag() == EnemyTag)
         {
             showSpark("Hero/Bullet/YunHe-bullet.png", nodeA);
-            if (nodeB->getTag() == EnemyTag)
-            {
-                AI->receiveDamage(50, AI, currentHero);// YunHe大招直接造成50点伤害
-            }
-            else if (nodeB->getTag() == EnergyBoxTag)
-            {
-                ;//currentBox->receiveDamage(50, currentBox, currentHero);// YunHe大招直接造成50点伤害
-            }
+            AI->receiveDamage(50, AI, currentHero);// YunHe大招直接造成50点伤害
         }
-        else if (nodeB->getTag() == YunHeUtimateSkillTag)
+        else if (nodeB->getTag() == YunHeUtimateSkillTag && nodeA->getTag() == EnemyTag)
         {
             showSpark("Hero/Bullet/YunHe-bullet.png", nodeB);
-            if (nodeA->getTag() == EnemyTag)
-            {
-                AI->receiveDamage(50, AI, currentHero);// YunHe大招直接造成50点伤害
-            }
-            else if (nodeA->getTag() == EnergyBoxTag)
-            {
-                ;//currentBox->receiveDamage(50, currentBox, currentHero);// YunHe大招直接造成50点伤害
-            }
+            AI->receiveDamage(50, AI, currentHero);// YunHe大招直接造成50点伤害
         }
     }
 
@@ -335,7 +337,7 @@ void FightScene::createAI(float delta)
 
     if (!AI->isAlive())
     {
-        AI->removeFromParentAndCleanup(true);// 这句会让AI造成的伤害清零，player满血
+        AI->removeFromParentAndCleanup(true);
         this->unschedule(CC_SCHEDULE_SELECTOR(FightScene::createAI));
     }
 }
@@ -368,7 +370,8 @@ void FightScene::initMap()
 
     _grass = _tileMap->getLayer("Grass");//草丛
 
-    //this->addChild(EnergyBox::createBox(Vec2(90, 100)));
+    energyBox = EnergyBox::createBox(Vec2(100, 100));//添加宝箱
+    this->addChild(energyBox);
 }
 //绑定指定人物
 void FightScene::initHero()
@@ -379,24 +382,24 @@ void FightScene::initHero()
     {
     case ChangYiNumber:
         this->currentPlayer = ChangYi::createPlayer();
-
         break;
+
     case YunHeNumber:
         this->currentPlayer = YunHe::createPlayer();
-
         break;
+
     case HaoQingNumber:
         this->currentPlayer = HaoQing::createPlayer();
-
         break;
+
     case SanYueNumber:
         this->currentPlayer = SanYue::createPlayer();
-
         break;
+
     case ShunDeNumber:
         this->currentPlayer = ShunDe::createPlayer();
-
         break;
+
     default:
         break;
     }
@@ -407,6 +410,8 @@ void FightScene::initHero()
 void FightScene::initAI()
 {
     AI = PolarBear::createAI();
+
+
 
     this->addChild(AI);
 
@@ -423,7 +428,7 @@ void FightScene::initUI()
     AI->initMpSlider();
     AI->initSpSlider();
 
-    //energyBox1->initHpSlider();
+    energyBox->initHpSlider();
 }
 
 /***********************************瓦片地图初始化（毒烟、草坪、障碍物）**********************************************/
@@ -502,6 +507,7 @@ void FightScene::smokeHurt(Vec2 position)
         {
             auto currentHero = dynamic_cast<Hero*>(currentPlayer);
             currentPlayer->receiveDamage(SmokeDamage, currentHero);
+            AI->receiveDamage(SmokeDamage, AI);
         }
     }
 }
@@ -606,7 +612,7 @@ void FightScene::GameOver()
     //转到游戏结算界面
     //如果剩余英雄为1或者玩家死亡则跳转到end界面
     log("%d", GameData::getRemainingPlayer());
-    if (GameData::getRemainingPlayer() == 1 || !currentPlayer->isAlive())//to wkf 加一个或者是人物的生命状态为0，人物死亡
+    if (GameData::getRemainingPlayer() == 1 || !currentPlayer->isAlive())
     {
 
 

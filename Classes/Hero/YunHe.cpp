@@ -9,6 +9,7 @@ YunHe* YunHe::createPlayer()
     {
         return nullptr;
     }
+    player->dieTag_ = PlayerDieTag;
 
     player->health_ = YunHeHealthInit;//µ±Ç°ÉúÃü
 

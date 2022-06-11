@@ -10,6 +10,7 @@ ChangYi* ChangYi::createPlayer()
     {
         return nullptr;
     }
+    player->dieTag_ = PlayerDieTag;
 
     player->health_ = ChangYiHealthInit;//µ±Ç°ÉúÃü
 

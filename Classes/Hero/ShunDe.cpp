@@ -9,6 +9,7 @@ ShunDe* ShunDe::createPlayer()
     {
         return nullptr;
     }
+    player->dieTag_ = PlayerDieTag;
 
     player->health_ = ShunDeHealthInit;//µ±Ç°ÉúÃü
 

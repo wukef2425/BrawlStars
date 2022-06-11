@@ -37,6 +37,7 @@ private:
     
     Player* currentPlayer;
     Hero* AI;
+    Hero* energyBox;
 
     /* UI层 */
     Layer* _UILayer;

@@ -40,22 +40,10 @@ void SetScene::initDecoration()
 
     //ÉèÖÃ±³¾°Í¼Æ¬
     auto* setScene = Sprite::create("Scene/SetScene.jpg");        //ÉèÖÃÀà±³¾°Í¼
-    setScene->setScale(1.05f);
+    setScene->setScale(0.8f);
     setScene->setPosition(visibleSize.width / 2, visibleSize.height / 2);        //ÈÃ±³¾°Í¼Ïñ¾ÓÖÐÏÔÊ¾
     addChild(setScene, 0);
-    //±êÇ©
-    auto setLabel = Label::createWithTTF("Setting", "fonts/arial.ttf", 60);
-    setLabel->enableGlow(Color4B::BLUE);
-    if (setLabel == nullptr)
-    {
-        problemLoading("'fonts/Marker Felt.ttf'");
-    }
-    else
-    {
-        setLabel->setPosition(Vec2(origin.x + visibleSize.width / 2,
-            origin.y + visibleSize.height - setLabel->getContentSize().height));
-        this->addChild(setLabel, 1);
-    }
+
 }
 
 void SetScene::initRuleBooks()

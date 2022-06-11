@@ -64,3 +64,4 @@ void StartScene::ChangeScene(float dt)
 {
     Director::getInstance()->replaceScene(TransitionFade::create(1.0f, StartLoginScene::createScene()));
 }
+

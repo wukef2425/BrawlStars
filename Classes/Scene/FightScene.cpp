@@ -9,11 +9,11 @@
 #include "Consts.h"
 #include "FightScene.h"
 #include "Scene/ChooseHero.h"
+#include "Scene/GameOverScene.h"
 #include "Hero/EnergyBox.h"
 
 USING_NS_CC;
 
-GameData::AllHero GameData::_hero = GameData::YunHe;
 
 static void problemLoading(const char* filename)
 {
@@ -109,6 +109,8 @@ void FightScene::update(float dt)
     HeroCount();//记录英雄人数
 
     smokeHurt(currentPlayer->getPosition());
+
+    GameOver();//to wkf 比较奇怪，按理说人数变少后这个函数就可以实现，但是实际上好像没实现
    
 }
 
@@ -132,12 +134,6 @@ Vec2 FightScene::tilePosition(const Vec2& position)
     Size tileSize = _tileMap->getTileSize();    // 获取以像素点为单位的tile尺寸属性
     int x = position.x / tileSize.width;
     int y = (mapSize.height * tileSize.height - position.y) / tileSize.height;
-
-    log("mapSize.height * tileSize.height=%f", mapSize.height * tileSize.height);
-    log("position.x= %f", position.x);
-    log("x= %d", x+32);
-    log("position.y= %f", position.y);
-    log("y= %d", y-32);
 
     return Vec2(x + 32, y - 32);//校准坐标
 }
@@ -378,25 +374,26 @@ void FightScene::initMap()
 void FightScene::initHero()
 {
     //通过选择的人物来调用不同的createPlayer函数进行
-    switch (GameData::_hero)
+    int chooseHeroNumber = GameData::getChooseHero();
+    switch (chooseHeroNumber)
     {
-    case GameData::ChangYi:
+    case ChangYiNumber:
         this->currentPlayer = ChangYi::createPlayer();
 
         break;
-    case GameData::YunHe:
+    case YunHeNumber:
         this->currentPlayer = YunHe::createPlayer();
 
         break;
-    case GameData::HaoQing:
+    case HaoQingNumber:
         this->currentPlayer = HaoQing::createPlayer();
 
         break;
-    case GameData::SanYue:
+    case SanYueNumber:
         this->currentPlayer = SanYue::createPlayer();
 
         break;
-    case GameData::ShunDe:
+    case ShunDeNumber:
         this->currentPlayer = ShunDe::createPlayer();
 
         break;
@@ -508,24 +505,23 @@ void FightScene::smokeHurt(Vec2 position)
         }
     }
 }
-//草坪，这个目前会出现bug所以我准备等坐标修好了之后再来修这个
 void FightScene::grassCover(Vec2 position)
 {
-    static vector<Vec2> grassChange = {}; //储存改变的草丛
-        
-    int i; 
+    static vector<Vec2> grassChange = {};
+
+    int i;
     for (i = 0; i < grassChange.size(); i++)
     {
         Point tileCoord = this->tilePosition(grassChange[i]);
         if (_grass->getTileAt(tileCoord))
         {
-            _grassCell = _grass->getTileAt(tileCoord); //通过tile坐标访问指定草丛单元格
-            _grassCell->setOpacity(255); //将指定草丛单元格设为不透明
+            _grassCell = _grass->getTileAt(tileCoord);
+            _grassCell->setOpacity(255);
         }
     }
 
     Vec2 tileSize = _tileMap->getTileSize(); //获得单个瓦片尺寸
-    
+    position.x = position.x - tileSize.x;
     //将玩家及其周围所在草丛变透明
     grassChange =
     {
@@ -534,19 +530,18 @@ void FightScene::grassCover(Vec2 position)
         Vec2(position.x - tileSize.x, position.y),
         Vec2(position.x, position.y + tileSize.y),
         Vec2(position.x, position.y - tileSize.y)
-    }; 
+    };
 
     for (i = 0; i < grassChange.size(); i++)
     {
         Vec2 tileCoord = this->tilePosition(grassChange[i]);
-        if (_grass->getTileAt(tileCoord))
+        Vec2 hero_tileCoord = this->tilePosition(grassChange[1]);
+        if (_grass->getTileAt(tileCoord) && _grass->getTileAt(hero_tileCoord))
         {
-            _grassCell = _grass->getTileAt(tileCoord); 
-            _grassCell->setOpacity(100); //将指定草丛单元格变透明
+            _grassCell = _grass->getTileAt(tileCoord);
+            _grassCell->setOpacity(100);
         }
     }
-    
-    
 
 }
 /***********************************ui组件初始化（剩余人数、时间）**********************************************/
@@ -609,7 +604,21 @@ void FightScene::GameOver()
     //游戏结束的条件
     //玩家死亡or剩余英雄为（只有玩家）or定时器时间到（可以不用考虑）-》把定时器的时间设置为毒雾蔓延＋人物血量减毒雾伤害
     //转到游戏结算界面
+    //如果剩余英雄为1或者玩家死亡则跳转到end界面
+    log("%d", GameData::getRemainingPlayer());
+    if (GameData::getRemainingPlayer() == 1 || !currentPlayer->isAlive())//to wkf 加一个或者是人物的生命状态为0，人物死亡
+    {
 
 
-
+        //关掉音乐
+        //to wkf 直接转的话，会黑屏一下，黑屏好像也是因为双摄像头的原因
+        //如果用schedule很神奇的是转不出来
+        Director::getInstance()->replaceScene(TransitionFade::create(1.0f, GameOverScene::createScene()));
+        //scheduleOnce(SEL_SCHEDULE(&FightScene::GameOverScene), 1.0f);
+    }
+}
+void FightScene::GameOverScene(float dt)
+{
+    log("%d", GameData::getRemainingPlayer()+10);
+    
 }

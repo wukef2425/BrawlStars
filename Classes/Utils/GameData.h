@@ -10,27 +10,25 @@ class GameData
 {
 public:
 
-	enum AllHero
-	{
-		ChangYi,
-		YunHe,
-		HaoQing,
-		SanYue,
-		ShunDe
-	};
-
-	static AllHero _hero;		 // 用来控制currentPlayer选谁
-
 	static int getRemainingPlayer();
 
 	static void deleteDiedPlayer();
 
 	static void resetPlayerNum();
 
+	static int GameData::getChooseHero();
+
+	static void ChangeHeroToShunDe();
+	static void ChangeHeroToHaoQing();
+	static void ChangeHeroToChangYi();
+	static void ChangeHeroToYunHe();
+	static void ChangeHeroToSanYue();
+
 private:
 
 	static int remainingPlayer;  // 当前人数
 
+	static int _chooseHero;
 };
 
 #endif // !_GAME_DATA_

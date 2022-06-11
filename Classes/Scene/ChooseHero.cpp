@@ -29,8 +29,7 @@ bool ChooseHero::init()
 		return false;
 	}
 
-	preLoadingFightScene();
-
+	
 	initButton();
 
 	initHeroButton();
@@ -137,6 +136,7 @@ void ChooseHero::startGame(Ref* pSender)
 
 	//fightScene_->bindPlayer(Player::create("heroArray[cur_hero_index].name"));
 	cocos2d::Director::getInstance()->getOpenGLView()->setCursorVisible(true);
+	preLoadingFightScene();
 
 	cocos2d::Director::getInstance()->replaceScene(fightScene_->createScene());
 }
@@ -155,31 +155,37 @@ void ChooseHero::backToMenu(Ref* pSender)
 //顺德
 void ChooseHero::menuShunDeCallback(cocos2d::Ref* pSender)
 {
-	GameData::_hero = GameData::AllHero::ShunDe;
+	GameData::ChangeHeroToShunDe();
+	//GameData::_hero = GameData::AllHero::ShunDe;
 }
 
 //昊青
 void ChooseHero::menuHaoQingCallback(cocos2d::Ref* pSender)
 {
-	GameData::_hero = GameData::AllHero::HaoQing;
+	GameData::ChangeHeroToHaoQing();
+	//GameData::_hero = GameData::AllHero::HaoQing;
 }
 
 //云禾
 void ChooseHero::menuYunHeCallback(cocos2d::Ref* pSender)
 {
 	
-	GameData::_hero = GameData::AllHero::YunHe;
+	GameData::ChangeHeroToYunHe();
+	//GameData::_hero = GameData::AllHero::YunHe;
 }
 
 //长意
 void ChooseHero::menuChangYiCallback(cocos2d::Ref* pSender)
 {
-	GameData::_hero = GameData::AllHero::ChangYi;
+	GameData::ChangeHeroToChangYi();
+	//GameData::_hero = GameData::AllHero::ChangYi;
 }
 
 //三月
 void ChooseHero::menuSanYueCallback(cocos2d::Ref* pSender)
 {
-	GameData::_hero = GameData::AllHero::SanYue;
+	
+	GameData::ChangeHeroToSanYue();
+	//GameData::_hero = GameData::AllHero::SanYue;
 }
 

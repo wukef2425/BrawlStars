@@ -4,7 +4,7 @@
 */
 #include "SetScene.h"
 #include "StartMenuScene.h"
-
+#include "GameOverScene.h"
 USING_NS_CC;
 
 Scene* SetScene::createScene()
@@ -61,8 +61,8 @@ void SetScene::initRuleBooks()
     }
     else
     {
-        float x = origin.x + (visibleSize.width*2)/5-ruleButton->getContentSize().width / 3;
-        float y = origin.y + (visibleSize.height*2)/3;
+        float x = origin.x + (visibleSize.width * 2) / 5 - ruleButton->getContentSize().width / 3;
+        float y = origin.y + (visibleSize.height * 2) / 3;
         ruleButton->setScale(0.9f);
         ruleButton->setPosition(cocos2d::Vec2(x, y));
     }
@@ -105,7 +105,7 @@ void SetScene::initVolumeSound()
 void SetScene::volumeSoundCallback(Ref* pSender)
 {
     //摁下按钮，考虑不切换新界面，而是出现一个可以移动的条子，然后也可以关掉
-    Director::getInstance()->replaceScene(StartMenuScene::createScene());
+    Director::getInstance()->replaceScene(GameOverScene::createScene());
 }
 
 void SetScene::initReturnMenu()
@@ -123,7 +123,7 @@ void SetScene::initReturnMenu()
     }
     else
     {
-        float x = origin.x + (visibleSize.width * 4) / 5 - returnButton->getContentSize().width/3;
+        float x = origin.x + (visibleSize.width * 4) / 5 - returnButton->getContentSize().width / 3;
         float y = origin.y + (visibleSize.height * 2) / 3;
         returnButton->setScale(0.9f);
         returnButton->setPosition(cocos2d::Vec2(x, y));
@@ -131,7 +131,7 @@ void SetScene::initReturnMenu()
     returnButton_ = cocos2d::Menu::create(returnButton, nullptr);
     returnButton_->setPosition(cocos2d::Vec2::ZERO);
     this->addChild(returnButton_, 1);
-    
+
 }
 
 void SetScene::menuReturnCallback(Ref* pSender)

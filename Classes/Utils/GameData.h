@@ -5,7 +5,6 @@
 #include "cocos2d.h"
 
 USING_NS_CC;
-using namespace std;
 
 class GameData
 {
@@ -20,18 +19,17 @@ public:
 		ShunDe
 	};
 
-	/*用来记录战斗场景的一系列属性
-	包括选择的人物、地图、人物剩余的个数人物的蓝量血量*/
-
-	static AllHero _hero;		//玩家使用的brawl
+	static AllHero _hero;		 // 用来控制currentPlayer选谁
 
 	static int getRemainingPlayer();
 
 	static void deleteDiedPlayer();
 
+	static void resetPlayerNum();
+
 private:
 
-	static int remainingPlayer;//当前人数
+	static int remainingPlayer;  // 当前人数
 
 };
 

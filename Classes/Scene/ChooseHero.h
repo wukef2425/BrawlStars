@@ -6,7 +6,6 @@
 
 
 USING_NS_CC;
-using namespace std;
 
 class ChooseHero : public cocos2d::Scene
 {
@@ -26,11 +25,11 @@ public:
 	void ChooseHero::startGame(cocos2d::Ref* pSender);
 	void ChooseHero::backToMenu(cocos2d::Ref* pSender);
 	//Ó¢ÐÛ»Øµ÷º¯Êý
-	void ChooseHero::menuShunDeCallback(cocos2d::Ref* pSender);
-	void ChooseHero::menuHaoQingCallback(cocos2d::Ref* pSender);
-	void ChooseHero::menuYunHeCallback(cocos2d::Ref* pSender);
-	void ChooseHero::menuChangYiCallback(cocos2d::Ref* pSender);
-	void ChooseHero::menuSanYueCallback(cocos2d::Ref* pSender);
+	void menuShunDeCallback(cocos2d::Ref* pSender);
+	void menuHaoQingCallback(cocos2d::Ref* pSender);
+	void menuYunHeCallback(cocos2d::Ref* pSender);
+	void menuChangYiCallback(cocos2d::Ref* pSender);
+	void menuSanYueCallback(cocos2d::Ref* pSender);
 
 	CREATE_FUNC(ChooseHero);
 

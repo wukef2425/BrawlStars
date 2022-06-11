@@ -155,14 +155,12 @@ void ChooseHero::backToMenu(Ref* pSender)
 //顺德
 void ChooseHero::menuShunDeCallback(cocos2d::Ref* pSender)
 {
-	/* 记录选择英雄信息的一个东西，但貌似记录的不是很成功 */
 	GameData::_hero = GameData::AllHero::ShunDe;
 }
 
 //昊青
 void ChooseHero::menuHaoQingCallback(cocos2d::Ref* pSender)
 {
-	//FightScene::initHero(0);
 	GameData::_hero = GameData::AllHero::HaoQing;
 }
 

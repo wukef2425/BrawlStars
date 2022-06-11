@@ -4,8 +4,7 @@
 
 USING_NS_CC;
 
-GameData::AllHero GameData::_hero = GameData::YunHe;
-int GameData::remainingPlayer = 2;
+int GameData::remainingPlayer = OriginalPlayerNum;
 
 int GameData::getRemainingPlayer()
 {
@@ -15,4 +14,9 @@ int GameData::getRemainingPlayer()
 void GameData::deleteDiedPlayer()
 {
 	remainingPlayer--;
+}
+
+void GameData::resetPlayerNum()
+{
+	remainingPlayer = OriginalPlayerNum;
 }

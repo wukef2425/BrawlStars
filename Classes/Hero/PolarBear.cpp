@@ -19,7 +19,7 @@ PolarBear* PolarBear::createPlayer()
 
     player->healthInit_ = 100;//最大生命
 
-    player->attack_ = 11;//攻击值
+    player->attack_ = 25;//攻击值
 
     player->defend_ = 10;//防御值
 
@@ -37,7 +37,7 @@ PolarBear* PolarBear::createPlayer()
 
         return player;
     }
-
+    
     return nullptr;
 }
 
@@ -54,7 +54,7 @@ Hero* PolarBear::createAI()
 
     player->healthInit_ = 100;//最大生命
 
-    player->attack_ = 15;//攻击值
+    player->attack_ = 20;//攻击值
 
     player->defend_ = 10;//防御值
 

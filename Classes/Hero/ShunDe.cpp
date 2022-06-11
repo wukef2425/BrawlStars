@@ -10,13 +10,13 @@ ShunDe* ShunDe::createPlayer()
         return nullptr;
     }
 
-    player->health_ = 100;//当前生命
+    player->health_ = ShunDeHealthInit;//当前生命
 
-    player->healthInit_ = 100;//最大生命
+    player->healthInit_ = ShunDeHealthInit;//最大生命
 
-    player->attack_ = 25;//攻击值
+    player->attack_ = ShunDeAttack;//攻击值
 
-    player->defend_ = 10;//防御值
+    player->defend_ = ShunDeDefend;//防御值
 
     auto chosenHero = Sprite::create("Hero/FightHero/ShunDe.png");
 
@@ -45,13 +45,13 @@ Hero* ShunDe::createAI()
         return nullptr;
     }
 
-    player->health_ = 100;//当前生命
+    player->health_ = ShunDeHealthInit;//当前生命
 
-    player->healthInit_ = 100;//最大生命
+    player->healthInit_ = ShunDeHealthInit;//最大生命
 
-    player->attack_ = 35;//攻击值
+    player->attack_ = ShunDeAttack;//攻击值
 
-    player->defend_ = 0;//防御值
+    player->defend_ = ShunDeDefend;//防御值
 
     auto chosenHero = Sprite::create("Hero/FightHero/ShunDe.png");
 

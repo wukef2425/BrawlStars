@@ -21,6 +21,7 @@
 #include "Hero/HaoQing.h"
 
 #include "cocos2d.h"
+
 using namespace std;
 
 class FightScene : public cocos2d::Scene
@@ -35,7 +36,6 @@ private:
 
     
     Player* currentPlayer;
-
     Hero* AI;
 
     /* UI层 */
@@ -92,19 +92,20 @@ public:
     void setCamera();
 
     Vec2 tilePosition(const Vec2& position);
-    void FightScene::setPlayerPosition(Point position);
+    void setPlayerPosition(Point position);
 
-    void FightScene::HeroCount();
+    void HeroCount();
 
     void smokeMove();
-    void FightScene::smokeHurt(Vec2 position);
-    void FightScene::grassCover(Vec2 position);
-    void FightScene::gamePause();
-    void FightScene::GamePauseCallback(Ref* pSender);
+    void smokeHurt(Vec2 position);
+    void grassCover(Vec2 position);
+    void gamePause();
+    void GamePauseCallback(Ref* pSender);
 
-    void FightScene::GameOver();
+    void GameOver();
 
-    void FightScene::update(float dt);
+    void update(float dt);
+    void updateCharacterUI(Hero* hero);
   
 };
 

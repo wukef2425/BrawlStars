@@ -93,6 +93,7 @@ void Gamepause::menuContinueCallback(Ref* pSender)
 //重新开始游戏
 void Gamepause::menuRestartCallback(Ref* pSender)
 {
+	GameData::resetPlayerNum();
 	Director::getInstance()->replaceScene(ChooseHero::createScene());
 }
 //回主界面

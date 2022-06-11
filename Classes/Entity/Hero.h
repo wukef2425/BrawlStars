@@ -18,6 +18,8 @@ class Hero :public cocos2d::Sprite
 {
 protected:
 
+	int dieTag_ = HeroDieTag;// 区分计分板是否要减人
+
 	bool isAlive_ = true;// 是否存活
 
 	bool ultimateReady_ = false;// 大招好了没

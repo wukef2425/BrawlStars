@@ -9,8 +9,11 @@
 #include "Consts.h"
 #include "FightScene.h"
 #include "Scene/ChooseHero.h"
+#include "Hero/EnergyBox.h"
 
 USING_NS_CC;
+
+GameData::AllHero GameData::_hero = GameData::YunHe;
 
 static void problemLoading(const char* filename)
 {
@@ -98,26 +101,27 @@ void FightScene::update(float dt)
     this->setPlayerPosition(playerPosition);
 
     this->grassCover(playerPosition);//草丛的变化也应该加到这里,但目前有点bug先注释掉
-    if (true == AI->isAlive())
-    {
-        AI->update_hp();
-    }
 
-    if (true == currentPlayer->isAlive())
-    {
-        currentPlayer->update_hp();
-    }
-    currentPlayer->update_sp();
-    currentPlayer->update_mp();
+    updateCharacterUI(AI);
+
+    updateCharacterUI(currentPlayer);
 
     HeroCount();//记录英雄人数
 
-    currentPlayer->recoverHealth();
-    AI->recoverHealth();
-
-    currentPlayer->recoverBullet();
-    AI->recoverBullet();
+    smokeHurt(currentPlayer->getPosition());
    
+}
+
+void FightScene::updateCharacterUI(Hero* hero)
+{
+    if (true == hero->isAlive())
+    {
+        hero->update_hp();
+        hero->update_sp();
+        hero->update_mp();
+        hero->recoverHealth();
+        hero->recoverBullet();
+    }
 }
 
 /*****************************人物移动**************************************************/
@@ -183,12 +187,12 @@ void FightScene::listenToUserOperation()
 bool FightScene::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* unusedEvent)
 {
     int bulletRemain = currentPlayer->currentBullet();
-    
+
     /* touch转世界坐标 */
     cocos2d::Size winSize = Director::getInstance()->getVisibleSize();
     Vec2 touchWorldPosition = touch->getLocation() + currentPlayer->getPosition() - Vec2(winSize.width * 0.5f, winSize.height * 0.5f);
 
-       
+
     if (0 <= bulletRemain && false == currentPlayer->isReleaseConfirmed())
     {
         /* 创造currentBullet并设置初始位置 */
@@ -215,7 +219,7 @@ bool FightScene::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* unusedEvent
     {
         currentPlayer->ultimateSkill(touchWorldPosition);
     }
-    else if(0 > bulletRemain)
+    else if (0 > bulletRemain)
     {
         auto noBullet = Sprite::create("Hero/Bullet/nobullet.png");
         noBullet->setPosition(touchWorldPosition);
@@ -224,6 +228,8 @@ bool FightScene::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* unusedEvent
         auto actionRemove = RemoveSelf::create();
         noBullet->runAction(Sequence::create(scaleTo, actionRemove, nullptr));
     }
+
+    unusedEvent->stopPropagation();// 执行了以上任意一个分支后，停止事件传播，避免按下去抬起来执行两次
 
     return false;// 不把事件向下层分发
 }
@@ -238,6 +244,8 @@ bool FightScene::onContactBegin(cocos2d::PhysicsContact& contact)
     if (nodeA && nodeB)
     {
         auto currentHero = dynamic_cast<Hero*>(currentPlayer);
+        //auto currentBox = dynamic_cast<Hero*>(energyBox1);
+        /* player打AI */
         if (nodeA->getTag() == PlayerBulletTag && nodeB->getTag() == EnemyTag)
         {
             showSpark("Hero/Bullet/spiky-eclipse.png", nodeA);
@@ -248,6 +256,7 @@ bool FightScene::onContactBegin(cocos2d::PhysicsContact& contact)
             showSpark("Hero/Bullet/spiky-eclipse.png", nodeB);
             AI->receiveDamage(currentPlayer->dealDamage(), AI, currentHero);
         }
+        /* AI打player */
         else if (nodeA->getTag() == EnemyBulletTag && nodeB->getTag() == PlayerTag)
         {
             showSpark("Hero/Bullet/enemy-spiky-eclipse.png", nodeA);
@@ -258,22 +267,38 @@ bool FightScene::onContactBegin(cocos2d::PhysicsContact& contact)
             showSpark("Hero/Bullet/enemy-spiky-eclipse.png", nodeB);
             currentPlayer->receiveDamage(AI->dealDamage(), currentHero, AI);
         }
-        //else if (nodeA->getTag() == PlayerTag && nodeB->getTag() == EnergyTag)
-        //{
-            //nodeB->removeFromParentAndCleanup(true);
-        //}
-        //else if (nodeB->getTag() == PlayerTag && nodeA->getTag() == EnergyTag)
-        //{
-            //nodeA->removeFromParentAndCleanup(true);
-        //}
-
+        /* YunHe大招 */
+        else if (nodeA->getTag() == YunHeUtimateSkillTag)
+        {
+            showSpark("Hero/Bullet/YunHe-bullet.png", nodeA);
+            if (nodeB->getTag() == EnemyTag)
+            {
+                AI->receiveDamage(50, AI, currentHero);// YunHe大招直接造成50点伤害
+            }
+            else if (nodeB->getTag() == EnergyBoxTag)
+            {
+                ;//currentBox->receiveDamage(50, currentBox, currentHero);// YunHe大招直接造成50点伤害
+            }
+        }
+        else if (nodeB->getTag() == YunHeUtimateSkillTag)
+        {
+            showSpark("Hero/Bullet/YunHe-bullet.png", nodeB);
+            if (nodeA->getTag() == EnemyTag)
+            {
+                AI->receiveDamage(50, AI, currentHero);// YunHe大招直接造成50点伤害
+            }
+            else if (nodeA->getTag() == EnergyBoxTag)
+            {
+                ;//currentBox->receiveDamage(50, currentBox, currentHero);// YunHe大招直接造成50点伤害
+            }
+        }
     }
 
     return true;
 
 }
 
-void FightScene::showSpark(const std::string& filename, cocos2d::Node*& node)
+void FightScene::showSpark(const std::string& filename, cocos2d::Node*& node)// 创造图片为filename的火花，删除节点node
 {
     auto spark = Sprite::create(filename);
     spark->setPosition(node->getPosition());
@@ -346,6 +371,8 @@ void FightScene::initMap()
     _collidable->setVisible(false);
 
     _grass = _tileMap->getLayer("Grass");//草丛
+
+    //this->addChild(EnergyBox::createBox(Vec2(90, 100)));
 }
 //绑定指定人物
 void FightScene::initHero()
@@ -377,7 +404,7 @@ void FightScene::initHero()
         break;
     }
 
-    this->addChild(this->currentPlayer);// 好像要先加到player里再加到scene里？？？
+    this->addChild(this->currentPlayer);
 }
 
 void FightScene::initAI()
@@ -398,6 +425,8 @@ void FightScene::initUI()
     AI->initHpSlider();
     AI->initMpSlider();
     AI->initSpSlider();
+
+    //energyBox1->initHpSlider();
 }
 
 /***********************************瓦片地图初始化（毒烟、草坪、障碍物）**********************************************/
@@ -522,11 +551,8 @@ void FightScene::grassCover(Vec2 position)
 }
 /***********************************ui组件初始化（剩余人数、时间）**********************************************/
 
-
-//to wkf 每当消灭一个英雄，在消灭英雄函数内执行减一操作，然后在执行计分板操作
 void FightScene::HeroCount()//计分板
-{// 有个问题就是放到update里会有重叠 然后touch会执行多次 by wkf
-
+{
     heroNumber = Label::createWithTTF(StringUtils::format("Brawler Left: %d", GameData::getRemainingPlayer()).c_str(), "fonts/arial.ttf", 40);
     heroNumber->setAnchorPoint(Vec2(0, 1));
     heroNumber->setPosition(Vec2(_origin.x, _visibleSize.height + _origin.y));

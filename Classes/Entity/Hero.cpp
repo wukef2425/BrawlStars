@@ -18,7 +18,7 @@ bool Hero::isAlive()
 /* killer使injuredSprite受到damage点伤害 */
 void Hero::receiveDamage(int damage, Hero*& injuredSprite, Hero*& killer)
 {
-	injuredSprite->health_ -= (damage - defend_);// 这数据似乎不太对35的攻击打一下就死了？
+	injuredSprite->health_ -= (damage - defend_);
 
 	killer->chargeForUlitmateSkill(damage - injuredSprite->defend_);
 
@@ -30,7 +30,7 @@ void Hero::receiveDamage(int damage, Hero*& injuredSprite, Hero*& killer)
 /* receiveDamage重载 injuredSprite受伤 毒雾可用 */
 void Hero::receiveDamage(int damage, Hero*& injuredSprite)
 {
-	injuredSprite->health_ -= (damage - defend_);// 这数据似乎不太对35的攻击打一下就死了？
+	injuredSprite->health_ -= (damage - defend_);
 
 	if (health_ <= 0)
 	{
@@ -46,14 +46,20 @@ void Hero::die(Hero*& diedSprite, Hero*& killer)
 
 	isAlive_ = false;
 
-	GameData::deleteDiedPlayer();
+	if (diedSprite->dieTag_ == HeroDieTag)
+	{
+		GameData::deleteDiedPlayer();
+	}
 }
 /* die重载 diedSprite死了 毒雾可用 */
 void Hero::die(Hero*& diedSprite)
 {
 	isAlive_ = false;
 
-	GameData::deleteDiedPlayer();
+	if (diedSprite->dieTag_ == HeroDieTag)
+	{
+		GameData::deleteDiedPlayer();
+	}
 }
 /* energyGenerator产生能量给energyReceiver */
 Hero* Hero::createEnergy(Hero*& energyGenerator, Hero*& energyReceiver)
@@ -69,8 +75,6 @@ Hero* Hero::createEnergy(Hero*& energyGenerator, Hero*& energyReceiver)
 
 	if (tmp != nullptr)
 	{
-		//energy->bindPhysicsBodyAndTag(tmp, EnemyBulletAndPlayerBitmask, PlayerTag);// 加了物理特性position不对
-
 		energy->setPosition(energyGenerator->getPosition());
 
 		energy->addChild(tmp);
@@ -81,6 +85,11 @@ Hero* Hero::createEnergy(Hero*& energyGenerator, Hero*& energyReceiver)
 
 		auto blink = cocos2d::Blink::create(0.5f, 3);
 		energyReceiver->runAction(blink);
+
+		energyReceiver->healthInit_ += EnergyHealthBonus;
+		energyReceiver->attack_ += EnergyAttackBonus;
+		energyReceiver->defend_ += EnergyDefendBonus;
+
 
 		energy->autorelease();
 
@@ -108,7 +117,7 @@ int Hero::dealDamage()
 /* 返回当前子弹数目 */
 float Hero::currentBullet()
 {
-	if (bullet_ >= -1)
+	if (bullet_ > -1)
 	{
 		bullet_--;
 	}

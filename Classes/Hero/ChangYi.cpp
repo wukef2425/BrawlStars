@@ -11,13 +11,13 @@ ChangYi* ChangYi::createPlayer()
         return nullptr;
     }
 
-    player->health_ = 100;//当前生命
+    player->health_ = ChangYiHealthInit;//当前生命
 
-    player->healthInit_ = 100;//最大生命
+    player->healthInit_ = ChangYiHealthInit;//最大生命
 
-    player->attack_ = 15;//攻击值
+    player->attack_ = ChangYiAttack;//攻击值
 
-    player->defend_ = 10;//防御值
+    player->defend_ = ChangYiDefend;//防御值
 
     auto chosenHero = Sprite::create("Hero/FightHero/ChangYi.png");
 
@@ -46,13 +46,13 @@ Hero* ChangYi::createAI()
         return nullptr;
     }
 
-    player->health_ = 100;//当前生命
+    player->health_ = ChangYiHealthInit;//当前生命
 
-    player->healthInit_ = 100;//最大生命
+    player->healthInit_ = ChangYiHealthInit;//最大生命
 
-    player->attack_ = 15;//攻击值
+    player->attack_ = ChangYiAttack;//攻击值
 
-    player->defend_ = 10;//防御值
+    player->defend_ = ChangYiDefend;//防御值
 
     auto chosenHero = Sprite::create("Hero/FightHero/ChangYi.png");
 

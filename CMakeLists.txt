@@ -75,6 +75,7 @@ list(APPEND GAME_SOURCE
      Classes/Hero/ShunDe.cpp
      Classes/Hero/HaoQing.cpp
      Classes/Hero/SanYue.cpp
+     Classes/Hero/EnergyBox.cpp
          
      Classes/User/UserInfo.cpp
      
@@ -101,6 +102,7 @@ list(APPEND GAME_HEADER
      Classes/Hero/ShunDe.h
      Classes/Hero/HaoQing.h
      Classes/Hero/SanYue.h
+     Classes/Hero/EnergyBox.h
 
      Classes/User/UserInfo.h
      Classes/Utils/GameData.h

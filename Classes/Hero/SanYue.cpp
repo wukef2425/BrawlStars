@@ -10,13 +10,13 @@ SanYue* SanYue::createPlayer()
         return nullptr;
     }
 
-    player->health_ = 100;//当前生命
+    player->health_ = SanYueHealthInit;//当前生命
 
-    player->healthInit_ = 100;//最大生命
+    player->healthInit_ = SanYueHealthInit;//最大生命
 
-    player->attack_ = 15;//攻击值
+    player->attack_ = SanYueAttack;//攻击值
 
-    player->defend_ = 10;//防御值
+    player->defend_ = SanYueDefend;//防御值
 
     auto chosenHero = Sprite::create("Hero/FightHero/SanYue.png");
 
@@ -45,13 +45,13 @@ Hero* SanYue::createAI()
         return nullptr;
     }
 
-    player->health_ = 100;//当前生命
+    player->health_ = SanYueHealthInit;//当前生命
 
-    player->healthInit_ = 100;//最大生命
+    player->healthInit_ = SanYueHealthInit;//最大生命
 
-    player->attack_ = 15;//攻击值
+    player->attack_ = SanYueAttack;//攻击值
 
-    player->defend_ = 10;//防御值
+    player->defend_ = SanYueDefend;//防御值
 
     auto chosenHero = Sprite::create("Hero/FightHero/SanYue.png");
 

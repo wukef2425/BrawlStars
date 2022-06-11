@@ -18,7 +18,7 @@ class Hero :public cocos2d::Sprite
 {
 protected:
 
-	int dieTag_ = HeroDieTag;// 区分计分板是否要减人
+	int dieTag_ = AIDieTag;// 区分计分板是否要减人
 
 	bool isAlive_ = true;// 是否存活
 
@@ -26,9 +26,9 @@ protected:
 
 	bool confirm_ = false;// 是否确认施放大招
 
-	int attack_;// 攻击值
+	float attack_;// 攻击值
 
-	int defend_;// 防御值
+	float defend_;// 防御值
 
 	ControlSlider* _hpSlider;//血条
 	float health_;// 当前生命
@@ -48,9 +48,9 @@ public:
 
 	bool isAlive();
 
-	void receiveDamage(int damage, Hero*& injuredSprite, Hero*& killer);
+	void receiveDamage(float damage, Hero*& injuredSprite, Hero*& killer);
 
-	void receiveDamage(int damage, Hero*& injuredSprite);
+	void receiveDamage(float damage, Hero*& injuredSprite);
 
 	void die(Hero*& diedSprite, Hero*& killer);
 
@@ -62,13 +62,13 @@ public:
 
 	/* 攻击状态 */
 
-	int dealDamage();
+	float dealDamage();
 
 	float currentBullet();
 
 	bool isUltimateSkillReady();
 
-	void chargeForUlitmateSkill(int charge);
+	void chargeForUlitmateSkill(float charge);
 
 	void confirmToReleaseUltimateSkill();
 

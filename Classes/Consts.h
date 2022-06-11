@@ -19,8 +19,6 @@
 #define PlayerBulletAndEnemyBitmask  0x1 //0001
 #define EnemyBulletAndPlayerBitmask  0x2 //0010
 
-
-
 /* tags */
 #define PlayerBulletTag 1
 #define EnemyBulletTag 2
@@ -36,8 +34,9 @@
 
 
 /* 调用die的时候用于区分计分板要不要减人 */
-#define HeroDieTag 101
+#define AIDieTag 101// AI死了减去剩余的人
 #define EnergyBoxDieTag 102
+#define PlayerDieTag 103// Player死了不减人
 
 
 
@@ -49,7 +48,7 @@
 
 /* smoke数据 */
 #define SmokeSpeed 10.f
-#define SmokeDamage 10.f
+#define SmokeDamage 10.3f
 
 
 
@@ -68,14 +67,14 @@
 #define ultiFull 100.f
 
 #define EnergyBoxHealthInit 100
-#define EnergyBoxDefend 10
+#define EnergyBoxDefend 0
 
 #define ChangYiHealthInit 80
 #define ChangYiAttack 35
 #define ChangYiDefend 2
 
 #define HaoQingHealthInit 200
-#define HaoQingAttack 12
+#define HaoQingAttack 20
 #define HaoQingDefend 10
 
 #define SanYueHealthInit 120

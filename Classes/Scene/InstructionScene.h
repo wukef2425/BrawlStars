@@ -12,6 +12,14 @@ public:
     virtual bool init();
 
     CREATE_FUNC(InstructionScene);
+
+    void InstructionScene::initReturnMenu();//·µ»ØÖ÷Ò³Ãæ
+
+protected:
+
+    void InstructionScene::menuReturnCallback(Ref* pSender);
+
+    cocos2d::Menu* returnButton_;
 };
 
 #endif // #define __INSTRUCTION_SCENE_H__

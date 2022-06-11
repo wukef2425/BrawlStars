@@ -2,8 +2,6 @@
 * @file FightScene.cpp
 * @author wukef & wyf
 */
-
-
 #include "cocos2d.h"
 #include <vector>
 #include <string>
@@ -11,7 +9,6 @@
 #include "Consts.h"
 #include "FightScene.h"
 #include "Scene/ChooseHero.h"
-
 
 USING_NS_CC;
 
@@ -100,7 +97,7 @@ void FightScene::update(float dt)
     Vec2 playerPosition = currentPlayer->getPosition();
     this->setPlayerPosition(playerPosition);
 
-    //this->grassCover(playerPosition);//草丛的变化也应该加到这里,但目前有点bug先注释掉
+    this->grassCover(playerPosition);//草丛的变化也应该加到这里,但目前有点bug先注释掉
     if (true == AI->isAlive())
     {
         AI->update_hp();
@@ -121,10 +118,9 @@ void FightScene::update(float dt)
 }
 
 /*****************************人物移动**************************************************/
-// OpenGL坐标转成格子坐标，但这个目前的转换不太成功
+// OpenGL坐标转成瓦片地图坐标
 Vec2 FightScene::tilePosition(const Vec2& position)
-{
-    
+{ 
     Size mapSize = _tileMap->getMapSize();      // 获取以tiles数量为单位的地图尺寸
     Size tileSize = _tileMap->getTileSize();    // 获取以像素点为单位的tile尺寸属性
     int x = position.x / tileSize.width;
@@ -136,19 +132,19 @@ Vec2 FightScene::tilePosition(const Vec2& position)
     log("position.y= %f", position.y);
     log("y= %d", y-32);
 
-    return Vec2(x + 32, y - 32);
+    return Vec2(x + 32, y - 32);//校准坐标
 }
 
 void FightScene::setPlayerPosition(Point position)
 {
     Point tileCoord = this->tilePosition(position);
-    /*
+    
     //边界范围限制
-    if (!(tileCoord.x < 32 && tileCoord.y < 96 && tileCoord.x > -32 && tileCoord.y > 32))
+    if (!(tileCoord.x < 64 && tileCoord.y < 64 && tileCoord.x > 0 && tileCoord.y > 0))
     {
         this->currentPlayer->ChangePosition(false);
         return;
-    }*/
+    }
     //barrier限制
     if (_collidable->getTileAt(tileCoord))
     {

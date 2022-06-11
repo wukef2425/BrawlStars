@@ -71,3 +71,14 @@ Hero* ChangYi::createAI()
 
     return nullptr;
 }
+
+void ChangYi::ultimateSkill(Vec2 touchWorldPosition)
+{
+    auto useSkill = Sprite::create("Hero/Bullet/ChangYi-bullet.png");
+
+    useSkill->setPosition(touchWorldPosition);
+
+    this->getParent()->addChild(useSkill);
+
+    this->confirm_ = false;// 大招释放完毕confirm_复原
+}

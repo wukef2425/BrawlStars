@@ -14,7 +14,7 @@ YunHe* YunHe::createPlayer()
 
     player->healthInit_ = 100;//最大生命
 
-    player->attack_ = 15;//攻击值
+    player->attack_ = 20;//攻击值
 
     player->defend_ = 10;//防御值
 
@@ -69,4 +69,15 @@ Hero* YunHe::createAI()
     }
 
     return nullptr;
+}
+
+void YunHe::ultimateSkill(Vec2 touchWorldPosition)
+{
+    auto useSkill = Sprite::create("Hero/Bullet/YunHe-bullet.png");
+
+    useSkill->setPosition(touchWorldPosition);
+
+    this->getParent()->addChild(useSkill);
+
+    this->confirm_ = false;// 大招释放完毕confirm_复原
 }

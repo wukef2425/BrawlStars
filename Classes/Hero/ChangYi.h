@@ -19,6 +19,8 @@ public:
     static ChangYi* createPlayer();
 
     static Hero* createAI();
+
+    void ultimateSkill(Vec2 touchWorldPosition) override;
 };
 
 #endif

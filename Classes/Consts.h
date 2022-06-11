@@ -21,7 +21,7 @@
 #define ShootSpeed 1000
 
 /*smokespeed*/
-#define SmokeSpeed 1
+#define SmokeSpeed 10
 #define SmokeDamage 10
 
 /* UI */

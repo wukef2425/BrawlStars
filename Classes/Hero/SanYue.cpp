@@ -70,3 +70,14 @@ Hero* SanYue::createAI()
 
     return nullptr;
 }
+
+void SanYue::ultimateSkill(Vec2 touchWorldPosition)
+{
+    auto useSkill = Sprite::create("Hero/Bullet/SanYue-bullet.png");
+
+    useSkill->setPosition(touchWorldPosition);
+
+    this->getParent()->addChild(useSkill);
+
+    this->confirm_ = false;// 大招释放完毕confirm_复原
+}

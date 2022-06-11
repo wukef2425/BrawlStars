@@ -4,7 +4,7 @@
 
 USING_NS_CC;
 
-GameData::AllHero GameData::_hero = GameData::ShunDe;
+GameData::AllHero GameData::_hero = GameData::YunHe;
 int GameData::remainingPlayer = 2;
 
 int GameData::getRemainingPlayer()

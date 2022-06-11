@@ -66,8 +66,7 @@ bool FightScene::init()
     {
         return false;
     }
-
-    
+   
     //to zyy 游戏加载的时候加入音乐组件
 
     _visibleSize = Director::getInstance()->getVisibleSize();
@@ -79,17 +78,15 @@ bool FightScene::init()
 
     initAI();//初始化AI
 
-    initUI();// 加入ui组件，包括剩余人数，蓝条血条，设置键（音乐和音效各种东西to zyy），暂停和退出按钮（不知道是不是ui）
+    initUI();// 加入ui组件
 
     gamePause();
 
     initSmoke();
 
-    listenToUserOperation();//监听用户操作，相当于一个战斗管控器，但感觉只要有监听就可以，这个可以放在战斗类里？？？
+    listenToUserOperation();
 
     setCamera();
-
-    //this->schedule(CC_SCHEDULE_SELECTOR(FightScene::createAI), 0.5f);// 0.5秒执行一次schedule AI会0.5秒更新一次目的地，追着你跑
 
     this->scheduleUpdate();
 
@@ -123,33 +120,39 @@ void FightScene::update(float dt)
    
 }
 
+/*****************************人物移动**************************************************/
 // OpenGL坐标转成格子坐标，但这个目前的转换不太成功
 Vec2 FightScene::tilePosition(const Vec2& position)
 {
+    
     Size mapSize = _tileMap->getMapSize();      // 获取以tiles数量为单位的地图尺寸
     Size tileSize = _tileMap->getTileSize();    // 获取以像素点为单位的tile尺寸属性
-
     int x = position.x / tileSize.width;
     int y = (mapSize.height * tileSize.height - position.y) / tileSize.height;
 
-    return Vec2(x, y);
+    log("mapSize.height * tileSize.height=%f", mapSize.height * tileSize.height);
+    log("position.x= %f", position.x);
+    log("x= %d", x+32);
+    log("position.y= %f", position.y);
+    log("y= %d", y-32);
+
+    return Vec2(x + 32, y - 32);
 }
-/*****************************人物移动**************************************************/
+
 void FightScene::setPlayerPosition(Point position)
 {
     Point tileCoord = this->tilePosition(position);
-    //首先判断能否移动，注意这个判断的是上一个的内容，如果不能的话返回上一步
-    // 比如，人物移动到了一个障碍物处，然后下一步就是人物不能动了，此时恢复原状态
+    /*
     //边界范围限制
-    if (!(tileCoord.x <= 62 && tileCoord.y <= 62 && tileCoord.x >= 3 && tileCoord.y >= 3))
+    if (!(tileCoord.x < 32 && tileCoord.y < 96 && tileCoord.x > -32 && tileCoord.y > 32))
     {
-        this->currentPlayer->ChangePosition(false);//最后全改成false
+        this->currentPlayer->ChangePosition(false);
         return;
-    }
+    }*/
     //barrier限制
     if (_collidable->getTileAt(tileCoord))
     {
-        this->currentPlayer->ChangePosition(false);//最后改成false
+        this->currentPlayer->ChangePosition(false);
 
         return;
     }
@@ -181,11 +184,12 @@ void FightScene::listenToUserOperation()
 bool FightScene::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* unusedEvent)
 {
     int bulletRemain = currentPlayer->currentBullet();
-
+    
     /* touch转世界坐标 */
     cocos2d::Size winSize = Director::getInstance()->getVisibleSize();
     Vec2 touchWorldPosition = touch->getLocation() + currentPlayer->getPosition() - Vec2(winSize.width * 0.5f, winSize.height * 0.5f);
 
+       
     if (0 <= bulletRemain && false == currentPlayer->isReleaseConfirmed())
     {
         /* 创造currentBullet并设置初始位置 */
@@ -325,13 +329,12 @@ void FightScene::bindPhysicsBodyAndTag(cocos2d::Sprite*& sprite, int bitmask, in
     sprite->setPhysicsBody(physicsBody);
     sprite->setTag(tag);
 }
+
 /******************************************界面初始化*************************************************/
 /*初始化地图，添加障碍物/草坪/毒烟/宝箱/人物及ai坐标*/
 void FightScene::initMap()
 {
-    //添加地图,记得添加地图的选择
-    //mapChoose界面，将选择的地图传入参数中
-    
+
     this->addChild(_tileMap, 0);//map是已经预加载好的
 
     //分属性添加内容
@@ -408,7 +411,6 @@ void FightScene::initSmoke()
         _ySmokeMin = 0,
         _ySmokeMax = _tileMap->getMapSize().height;
     this->smokeMove();
-    //不能直接false _smoke->setVisible(false);
 
     for (int X = _xSmokeMin; X < _xSmokeMax; X++)
     {
@@ -422,10 +424,9 @@ void FightScene::initSmoke()
         }
     }
 
-    this->schedule([=](float dt) {				//每20秒刷新
+    this->schedule([=](float dt) {				
         smokeMove();
         }, SmokeSpeed, "smoke move");
-
 
 }
 //毒烟的移动
@@ -482,12 +483,8 @@ void FightScene::smokeHurt(Vec2 position)
 //草坪，这个目前会出现bug所以我准备等坐标修好了之后再来修这个
 void FightScene::grassCover(Vec2 position)
 {
-    //草坪的操作模式是->检测人物碰撞->变透明->人物离开->恢复颜色
-    //所以要储存好坐标，走过去和走回来
-
     static vector<Vec2> grassChange = {}; //储存改变的草丛
-
-    //将之前位置的草丛恢复
+        
     int i; 
     for (i = 0; i < grassChange.size(); i++)
     {
@@ -520,26 +517,17 @@ void FightScene::grassCover(Vec2 position)
             _grassCell->setOpacity(100); //将指定草丛单元格变透明
         }
     }
-
-    /*英雄在草丛里半透明
-    Point tileCoord = this->tileCoordForPosition(position);
-    if (_grass->getTileAt(tileCoord))
-    {
-        _player->getBrawler()->getSprite()->setOpacity(100);
-    }
-    else
-    {
-        _player->getBrawler()->getSprite()->setOpacity(255);
-    }*/
-
+    
+    
 
 }
 /***********************************ui组件初始化（剩余人数、时间）**********************************************/
 
-//to myself 记得加上第二个层，要不没法做
+
 //to wkf 每当消灭一个英雄，在消灭英雄函数内执行减一操作，然后在执行计分板操作
 void FightScene::HeroCount()//计分板
 {// 有个问题就是放到update里会有重叠 然后touch会执行多次 by wkf
+
     heroNumber = Label::createWithTTF(StringUtils::format("Brawler Left: %d", GameData::getRemainingPlayer()).c_str(), "fonts/arial.ttf", 40);
     heroNumber->setAnchorPoint(Vec2(0, 1));
     heroNumber->setPosition(Vec2(_origin.x, _visibleSize.height + _origin.y));

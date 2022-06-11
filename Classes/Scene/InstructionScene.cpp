@@ -27,8 +27,8 @@ bool InstructionScene::init()
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
     //…Ë÷√±≥æ∞Õº∆¨
-    auto* setScene = Sprite::create("Scene/SetScene.jpg");        //…Ë÷√¿‡±≥æ∞Õº
-    setScene->setScale(1.05f);
+    auto* setScene = Sprite::create("Scene/introductionScene.png");        //…Ë÷√¿‡±≥æ∞Õº
+    setScene->setScale(0.67f);
     setScene->setPosition(visibleSize.width / 2, visibleSize.height / 2);        //»√±≥æ∞ÕºœÒæ”÷–œ‘ æ
     addChild(setScene, 0);
    

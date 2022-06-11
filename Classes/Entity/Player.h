@@ -17,7 +17,7 @@ private:
     bool keyPressed[6] = {};
     
     /* 设置步长 */
-    float step = 10.f;
+    float step = PlayerStep;
 
     /* 获取屏幕大小并按比例设置player位置 */
     cocos2d::Size winSize = Director::getInstance()->getVisibleSize();
@@ -34,8 +34,6 @@ public:
     void listenToKeyReleases(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
 
     void Player::ChangePosition(bool moveDecide);
-    //void update(float delta) override;
-    //Vec2 Player::returnPosition();
 };
 
 #endif // #define __PLAYER_H__

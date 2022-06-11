@@ -103,7 +103,10 @@ void FightScene::update(float dt)
         AI->update_hp();
     }
 
-    currentPlayer->update_hp();
+    if (true == currentPlayer->isAlive())
+    {
+        currentPlayer->update_hp();
+    }
     currentPlayer->update_sp();
     currentPlayer->update_mp();
 
@@ -222,7 +225,7 @@ bool FightScene::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* unusedEvent
         noBullet->runAction(Sequence::create(scaleTo, actionRemove, nullptr));
     }
 
-    return false;
+    return false;// 不把事件向下层分发
 }
 
 bool FightScene::onContactBegin(cocos2d::PhysicsContact& contact)
@@ -383,7 +386,7 @@ void FightScene::initAI()
 
     this->addChild(AI);
 
-    this->schedule(CC_SCHEDULE_SELECTOR(FightScene::createAI), 0.5f);// 0.5秒执行一次schedule AI会0.5秒更新一次目的地，追着你跑
+    this->schedule(CC_SCHEDULE_SELECTOR(FightScene::createAI), AIShootCycle);// AIShootCycle秒执行一次schedule AI会AIShootCycle秒更新一次目的地，追着你跑
 }
 
 void FightScene::initUI()

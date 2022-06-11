@@ -106,9 +106,12 @@ int Hero::dealDamage()
 	return attack_;
 }
 /* 返回当前子弹数目 */
-int Hero::currentBullet()
+float Hero::currentBullet()
 {
-	bullet_--;
+	if (bullet_ >= -1)
+	{
+		bullet_--;
+	}
 	return bullet_;
 }
 /* 大招好了没 */

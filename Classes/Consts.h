@@ -19,10 +19,11 @@
 
 /* shootspeed */
 #define ShootSpeed 1000
+#define AIShootCycle 1.f
 
 /*smokespeed*/
-#define SmokeSpeed 10
-#define SmokeDamage 10
+#define SmokeSpeed 10.f
+#define SmokeDamage 10.f
 
 /* UI */
 #define HpSliderPosY 50
@@ -34,6 +35,7 @@
 
 /* HERO */
 #define HealthRecovery 0.1
-#define BulletRecovery 0.1
+#define BulletRecovery 0.05
+#define PlayerStep 15.f
 
 #endif

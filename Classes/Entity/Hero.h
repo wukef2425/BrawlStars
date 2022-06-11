@@ -29,16 +29,16 @@ protected:
 	int defend_;// 防御值
 
 	ControlSlider* _hpSlider;//血条
-	int health_;// 当前生命
-	int healthInit_;//初始生命
+	float health_;// 当前生命
+	float healthInit_;//初始生命
 
 	ControlSlider* _mpSlider;// 蓝条
-	int bullet_ = bulletFull;// 当前弹药
-	int bulletInit_ = bulletFull;// 初始弹药
+	float bullet_ = bulletFull;// 当前弹药
+	float bulletInit_ = bulletFull;// 初始弹药
 
 	ControlSlider* _spSlider;// 技能条
-	int skill_ = 0;// 当前积攒怒气值
-	int skillInit_ = ultiFull;// 最大技能值
+	float skill_ = 0;// 当前积攒怒气值
+	float skillInit_ = ultiFull;// 最大技能值
 
 public:
 
@@ -62,7 +62,7 @@ public:
 
 	int dealDamage();
 
-	int currentBullet();
+	float currentBullet();
 
 	bool isUltimateSkillReady();
 

@@ -18,7 +18,7 @@ class Hero :public cocos2d::Sprite
 {
 protected:
 
-	int dieTag_ = AIDieTag;// 区分计分板是否要减人
+	int dieTag_ = AIDieTag;// 区分计分板是否要减人默认AI
 
 	bool isAlive_ = true;// 是否存活
 
@@ -42,8 +42,18 @@ protected:
 	float skill_ = 0;// 当前积攒怒气值
 	float skillInit_ = ultiFull;// 最大技能值
 
-public:
+	/* 设置步长 */
+    float step = PlayerStep;
 
+	/* 获取屏幕大小并按比例设置player位置 */
+	cocos2d::Size winSize = Director::getInstance()->getVisibleSize();
+
+	float x = winSize.width * 0.5f;
+	float initX = winSize.width * 0.5f;
+	float y = winSize.height * 0.5f;
+	float initY = winSize.height * 0.5f;
+
+public:
 	/* 生命状态 */
 
 	bool isAlive();
@@ -59,6 +69,10 @@ public:
 	Hero* createEnergy(Hero*& energyGenerator, Hero*& energyReceiver);
 
 	void recoverHealth();
+
+	void recoverHealth(Hero* heroToBerecovered, float recoverAmount);
+
+	int getDieTag();
 
 	/* 攻击状态 */
 
@@ -78,9 +92,11 @@ public:
 
 	void clearUltimateSkillProgress();
 
-	void bindPhysicsBodyAndTag(cocos2d::Sprite*& sprite, int bitmask, int tag);
+	static void bindPhysicsBodyAndTag(cocos2d::Sprite*& sprite, int bitmask, int tag);
 
 	void recoverBullet();
+
+	void recoverBulletAndUpgrade(Hero* heroToBeRecovered, float attackUp, float ultiUp);
 	
 	/* UI */
 	

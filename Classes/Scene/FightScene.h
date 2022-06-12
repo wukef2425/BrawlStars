@@ -36,6 +36,7 @@ private:
 
     
     Player* currentPlayer;
+
     Hero* AI;
     Hero* energyBox;
 
@@ -88,14 +89,12 @@ public:
 
     void showSpark(const std::string& filename, cocos2d::Node*& node);
 
-    //void FightScene::bindPlayer(const std::string& heroname);
-
     void setCamera();
 
     Vec2 tilePosition(const Vec2& position);
-    void setPlayerPosition(Point position);
+    void setPlayerPosition(Vec2 position);
 
-    void FightScene::HeroCount();
+    void HeroCount();
 
     void smokeMove();
     void smokeHurt(Vec2 position);
@@ -103,7 +102,7 @@ public:
     void gamePause();
     void GamePauseCallback(Ref* pSender);
 
-    void FightScene::GameOver();
+    static void FightScene::GameOver(Hero* hero);
     void FightScene::GameOverScene(float dt);
 
     void update(float dt);

@@ -29,7 +29,11 @@
 #define EnergyTag 5
 #define EnergyBoxTag 6
 
-#define YunHeUtimateSkillTag 7
+#define ChangYiUtimateSkillTag 7
+#define HaoQingUtimateSkillTag 8
+#define SanYueUtimateSkillTag 9
+#define ShunDeUtimateSkillTag 10
+#define YunHeUtimateSkillTag 11
 
 
 

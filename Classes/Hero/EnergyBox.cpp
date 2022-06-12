@@ -24,7 +24,7 @@ Hero* EnergyBox::createBox(Vec2 position)
     {
         player->setPosition(position);
 
-        player->bindPhysicsBodyAndTag(chosenHero, PlayerBulletAndEnemyBitmask, EnemyTag);
+        player->bindPhysicsBodyAndTag(chosenHero, PlayerBulletAndEnemyBitmask, EnergyBoxTag);
 
         player->addChild(chosenHero);
 

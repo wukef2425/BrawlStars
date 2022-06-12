@@ -78,12 +78,7 @@ void YunHe::ultimateSkill(Vec2 touchWorldPosition)
 
     useSkill->setPosition(touchWorldPosition);
 
-    auto physicsBody = PhysicsBody::createBox(useSkill->getContentSize(), PhysicsMaterial(0.f, 0.f, 0.f));
-    physicsBody->setDynamic(false);
-    physicsBody->setCategoryBitmask(PlayerBulletAndEnemyBitmask);// bitmask是碰撞的body种类 这一句是设置种类
-    physicsBody->setContactTestBitmask(PlayerBulletAndEnemyBitmask);// 这一句是在这个种类碰撞的时候通知
-    useSkill->setPhysicsBody(physicsBody);
-    useSkill->setTag(YunHeUtimateSkillTag);
+    Hero::bindPhysicsBodyAndTag(useSkill, PlayerBulletAndEnemyBitmask, YunHeUtimateSkillTag);
 
     this->getParent()->addChild(useSkill);
 

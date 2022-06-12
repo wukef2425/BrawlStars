@@ -114,9 +114,6 @@ void FightScene::update(float dt)
     HeroCount();//记录英雄人数
 
     smokeHurt(currentPlayer->getPosition());
-
-    GameOver();//to wkf 比较奇怪，按理说人数变少后这个函数就可以实现，但是实际上好像没实现
-   
 }
 
 void FightScene::updateCharacterUI(Hero* hero)
@@ -143,7 +140,7 @@ Vec2 FightScene::tilePosition(const Vec2& position)
     return Vec2(x + 32, y - 32);//校准坐标
 }
 
-void FightScene::setPlayerPosition(Point position)
+void FightScene::setPlayerPosition(Vec2 position)
 {
     Point tileCoord = this->tilePosition(position);
     
@@ -157,7 +154,6 @@ void FightScene::setPlayerPosition(Point position)
     if (_collidable->getTileAt(tileCoord))
     {
         this->currentPlayer->ChangePosition(false);
-
         return;
     }
 
@@ -283,12 +279,68 @@ bool FightScene::onContactBegin(cocos2d::PhysicsContact& contact)
         else if (nodeA->getTag() == YunHeUtimateSkillTag && nodeB->getTag() == EnemyTag)
         {
             showSpark("Hero/Bullet/YunHe-bullet.png", nodeA);
-            AI->receiveDamage(50, AI, currentHero);// YunHe大招直接造成50点伤害
+            AI->receiveDamage(currentPlayer->dealDamage() * 2, AI, currentHero);// YunHe大招直接造成两倍攻击的伤害
         }
         else if (nodeB->getTag() == YunHeUtimateSkillTag && nodeA->getTag() == EnemyTag)
         {
             showSpark("Hero/Bullet/YunHe-bullet.png", nodeB);
-            AI->receiveDamage(50, AI, currentHero);// YunHe大招直接造成50点伤害
+            AI->receiveDamage(currentPlayer->dealDamage() * 2, AI, currentHero);// YunHe大招直接造成两倍攻击的伤害
+        }
+        /* ChangYi大招 */
+        else if (nodeA->getTag() == ChangYiUtimateSkillTag && nodeB->getTag() == PlayerTag)
+        {
+            showSpark("Hero/Bullet/ChangYi-bullet.png", nodeA);
+            currentPlayer->recoverHealth(currentHero, 50.f);// ChangYi大招为友方恢复50点生命
+        }
+        else if (nodeB->getTag() == ChangYiUtimateSkillTag && nodeA->getTag() == EnemyTag)
+        {
+            showSpark("Hero/Bullet/ChangYi-bullet.png", nodeB);
+            currentPlayer->recoverHealth(currentHero, 50.f);// ChangYi大招为友方恢复50点生命
+        }
+        /* SanYue大招 */
+        else if (nodeA->getTag() == SanYueUtimateSkillTag && nodeB->getTag() == PlayerTag)
+        {
+            showSpark("Hero/Bullet/SanYue-bullet.png", nodeA);
+            currentPlayer->recoverHealth(currentHero, 30.f);// SanYue大招为友方恢复30点生命
+        }
+        else if (nodeB->getTag() == SanYueUtimateSkillTag && nodeA->getTag() == PlayerTag)
+        {
+            showSpark("Hero/Bullet/SanYue-bullet.png", nodeB);
+            currentPlayer->recoverHealth(currentHero, 30.f);// SanYue大招为友方恢复30点生命
+        }
+        else if (nodeA->getTag() == SanYueUtimateSkillTag && nodeB->getTag() == EnemyTag)
+        {
+            showSpark("Hero/Bullet/SanYue-bullet.png", nodeA);
+            AI->receiveDamage(20.f, AI, currentHero);// 或者对敌方直接造成20点伤害
+        }
+        else if (nodeB->getTag() == SanYueUtimateSkillTag && nodeA->getTag() == EnemyTag)
+        {
+            showSpark("Hero/Bullet/SanYue-bullet.png", nodeB);
+            AI->receiveDamage(20.f, AI, currentHero);// 或者对敌方造成20点伤害
+        }
+        /* HaoQing大招 */
+        else if (nodeA->getTag() == HaoQingUtimateSkillTag && nodeB->getTag() == PlayerTag)
+        {
+            showSpark("Hero/Bullet/HaoQing-bullet.png", nodeA);
+            currentPlayer->recoverBulletAndUpgrade(currentHero,1.f,20.f);// 升级充能50%概率加1.f的攻击，大招充能20%
+        }
+        else if (nodeB->getTag() == HaoQingUtimateSkillTag && nodeA->getTag() == PlayerTag)
+        {
+            showSpark("Hero/Bullet/HaoQing-bullet.png", nodeB);
+            currentPlayer->recoverBulletAndUpgrade(currentHero, 5.f, 1.f);// 升级充能50%概率加5.f的攻击，大招充能1%
+        }
+        /* ShunDe大招 */
+        else if (nodeA->getTag() == ShunDeUtimateSkillTag && nodeB->getTag() == EnemyTag)
+        {
+            showSpark("Hero/Bullet/ShunDe-bullet.png", nodeA);
+            AI->receiveDamage(15.f, AI, currentHero);// ShunDe大招为对敌方直接造成15点伤害
+            currentPlayer->recoverHealth(currentHero, 15.f);// 同时吸血
+        }
+        else if (nodeB->getTag() == ShunDeUtimateSkillTag && nodeA->getTag() == EnemyTag)
+        {
+            showSpark("Hero/Bullet/ShunDe-bullet.png", nodeB);
+            AI->receiveDamage(15.f, AI, currentHero);// ShunDe大招为对敌方直接造成15点伤害
+            currentPlayer->recoverHealth(currentHero, 15.f);// 同时吸血
         }
     }
 
@@ -334,12 +386,6 @@ void FightScene::createAI(float delta)
 
     /* 让currentBullet完成上面的一系列动作 */
     currentBullet->runAction(Sequence::create(actionMove, actionRemove, nullptr));
-
-    if (!AI->isAlive())
-    {
-        AI->removeFromParentAndCleanup(true);
-        this->unschedule(CC_SCHEDULE_SELECTOR(FightScene::createAI));
-    }
 }
 
 void FightScene::bindPhysicsBodyAndTag(cocos2d::Sprite*& sprite, int bitmask, int tag)// 传引用，否则会被释放掉
@@ -605,14 +651,14 @@ void FightScene::setCamera()
     }
 }
 
-void FightScene::GameOver()
+void FightScene::GameOver(Hero* hero)
 {
     //游戏结束的条件
     //玩家死亡or剩余英雄为（只有玩家）or定时器时间到（可以不用考虑）-》把定时器的时间设置为毒雾蔓延＋人物血量减毒雾伤害
     //转到游戏结算界面
     //如果剩余英雄为1或者玩家死亡则跳转到end界面
     log("%d", GameData::getRemainingPlayer());
-    if (GameData::getRemainingPlayer() == 1 || !currentPlayer->isAlive())
+    if (GameData::getRemainingPlayer() == 1 || (!hero->isAlive() && hero->getDieTag() == PlayerDieTag))
     {
 
 

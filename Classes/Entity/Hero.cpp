@@ -48,11 +48,17 @@ void Hero::die(Hero*& diedSprite, Hero*& killer)
 
 		isAlive_ = false;
 
-		if (diedSprite->dieTag_ == AIDieTag)
+		if (diedSprite->dieTag_ == AIDieTag)// AI死了人数减一
 		{
 			GameData::deleteDiedPlayer();
+			diedSprite->getParent()->unschedule(CC_SCHEDULE_SELECTOR(FightScene::createAI));
+		}
+		if (diedSprite->dieTag_ != PlayerDieTag)// 不是player的死了都删了
+		{
+			diedSprite->removeFromParentAndCleanup(true);
 		}
 	}
+	FightScene::GameOver(diedSprite);
 }
 /* die重载 diedSprite死了 毒雾可用 */
 void Hero::die(Hero*& diedSprite)
@@ -64,8 +70,14 @@ void Hero::die(Hero*& diedSprite)
 		if (diedSprite->dieTag_ == AIDieTag)
 		{
 			GameData::deleteDiedPlayer();
+			diedSprite->getParent()->unschedule(CC_SCHEDULE_SELECTOR(FightScene::createAI));
+		}
+		if (diedSprite->dieTag_ != PlayerDieTag)
+		{
+			diedSprite->removeFromParentAndCleanup(true);
 		}
 	}
+	FightScene::GameOver(diedSprite);
 }
 /* energyGenerator产生能量给energyReceiver */
 Hero* Hero::createEnergy(Hero*& energyGenerator, Hero*& energyReceiver)
@@ -103,13 +115,26 @@ Hero* Hero::createEnergy(Hero*& energyGenerator, Hero*& energyReceiver)
 
 	return nullptr;
 }
+/* 恢复生命 */
 void Hero::recoverHealth()
 {
 	if (health_ < healthInit_ && true == isAlive_)
 	{
 		health_ += HealthRecovery;
 	}
-
+}
+/* 定点恢复生命 */
+void Hero::recoverHealth(Hero* heroToBerecovered, float recoverAmount)
+{
+	if (heroToBerecovered->health_ < heroToBerecovered->healthInit_ && true == isAlive_)
+	{
+		heroToBerecovered->health_ += recoverAmount;
+	}
+}
+/* 获取标签dietag */
+int Hero::getDieTag()
+{
+	return dieTag_;
 }
 
 /******************************************攻击状态*************************************************/
@@ -173,20 +198,30 @@ void Hero::clearUltimateSkillProgress()
 /* 绑定物理躯干并tag */
 void Hero::bindPhysicsBodyAndTag(cocos2d::Sprite*& sprite, int bitmask, int tag)// 传引用，否则会被释放掉
 {
-	auto physicsBody = PhysicsBody::createBox(sprite->getContentSize() * 0.5f, PhysicsMaterial(0.f, 0.f, 0.f));
+	auto physicsBody = PhysicsBody::createBox(sprite->getContentSize(), PhysicsMaterial(0.f, 0.f, 0.f));
 	physicsBody->setDynamic(false);
 	physicsBody->setCategoryBitmask(bitmask);// bitmask是碰撞的body种类 这一句是设置种类
 	physicsBody->setContactTestBitmask(bitmask);// 这一句是在这个种类碰撞的时候通知
 	sprite->setPhysicsBody(physicsBody);
 	sprite->setTag(tag);
 }
+/* 恢复子弹 */
 void Hero::recoverBullet()
 {
 	if (bullet_ < bulletInit_ && true == isAlive_)
 	{
 		bullet_ += BulletRecovery;
 	}
-
+}
+/* 定点恢复全部子弹并加攻击attackUp 为大招充能ultiUp */
+void Hero::recoverBulletAndUpgrade(Hero* heroToBeRecovered, float attackUp, float ultiUp)
+{
+	if (heroToBeRecovered->bullet_ < heroToBeRecovered->bulletInit_ && true == heroToBeRecovered->isAlive_)
+	{
+		heroToBeRecovered->bullet_ = heroToBeRecovered->bulletInit_;
+	}
+	heroToBeRecovered->attack_ += attackUp;
+	heroToBeRecovered->chargeForUlitmateSkill(ultiUp);
 }
 
 /************************************************血条和蓝条**********************************************************************/

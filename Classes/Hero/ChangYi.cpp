@@ -79,6 +79,8 @@ void ChangYi::ultimateSkill(Vec2 touchWorldPosition)
 
     useSkill->setPosition(touchWorldPosition);
 
+    Hero::bindPhysicsBodyAndTag(useSkill, PlayerBulletAndEnemyBitmask, ChangYiUtimateSkillTag);
+
     this->getParent()->addChild(useSkill);
 
     this->confirm_ = false;// 大招释放完毕confirm_复原

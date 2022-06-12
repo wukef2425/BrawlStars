@@ -69,6 +69,7 @@ list(APPEND GAME_SOURCE
 
      Classes/Entity/Hero.cpp
      Classes/Entity/Player.cpp
+     Classes/Entity/AI.cpp
 
      Classes/Hero/PolarBear.cpp
      Classes/Hero/ChangYi.cpp
@@ -97,7 +98,8 @@ list(APPEND GAME_HEADER
      Classes/Scene/GameOverScene.h
 
      Classes/Entity/Hero.h
-     Classes/Entity/Player.h     
+     Classes/Entity/Player.h
+     Classes/Entity/AI.h     
      
      Classes/Hero/PolarBear.h
      Classes/Hero/ChangYi.h

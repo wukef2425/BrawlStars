@@ -610,12 +610,7 @@ void FightScene::gamePause()
 void FightScene::GamePauseCallback(Ref* pSender)
 {
 
-
-    //本来想加个背景板
-    //但由于分层的原因，只能读取到摄像机2
-    //所以准备加个背景板
     Director::getInstance()->pushScene(Gamepause::scene());
-
 }
 
 /*****************************游戏状态记录，人物是否死亡、游戏是否结束**********************************************/
@@ -631,26 +626,11 @@ void FightScene::setCamera()
 
 void FightScene::GameOver(Hero* hero)
 {
-    //游戏结束的条件
-    //玩家死亡or剩余英雄为（只有玩家）or定时器时间到（可以不用考虑）-》把定时器的时间设置为毒雾蔓延＋人物血量减毒雾伤害
-    //转到游戏结算界面
-    //如果剩余英雄为1或者玩家死亡则跳转到end界面
+
     if (GameData::getRemainingPlayer() == 1 || (!hero->isAlive() && hero->getDieTag() == PlayerDieTag))
     {
-
-
-        //先来个好看的图片，表示游戏结束，当当当一下
-        //关掉音乐
-        //to wkf 直接转的话，会黑屏一下，黑屏好像也是因为双摄像头的原因
-        //如果用schedule很神奇的是转不出来
-        // 知道原因了-》因为一直在update-》所以会一直更新，注意看看能不能换个位置
-        //要不就会很突然变化了，最后改！！！！
-        Director::getInstance()->replaceScene(GameOverScene::createScene());
-        //scheduleOnce(SEL_SCHEDULE(&FightScene::GameOverScene), 1.0f);
+        //本来想高级点，但是静态成员函数里不能用取消计时器，所以就算了
+        Director::getInstance()->replaceScene(GameOverScene::createScene());//转到结算界面
     }
 }
-void FightScene::GameOverScene(float dt)
-{
-    log("%d", GameData::getRemainingPlayer()+10);
-    
-}
+

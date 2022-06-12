@@ -6,6 +6,7 @@ USING_NS_CC;
 
 int GameData::remainingPlayer = OriginalPlayerNum;
 int GameData::_chooseHero=ChangYiNumber;
+int GameData::_trophy = 0;
 
 int GameData::getRemainingPlayer()
 {
@@ -26,6 +27,7 @@ int GameData::getChooseHero()
 {
 	return _chooseHero;
 }
+
 //修改人物，非常无奈的笨办法
 void GameData::ChangeHeroToShunDe()
 {
@@ -52,3 +54,4 @@ void GameData::ChangeHeroToSanYue()
 	log("SanYue");
 	_chooseHero = SanYueNumber;
 }
+

@@ -18,6 +18,8 @@ public:
 
 	static int GameData::getChooseHero();
 
+	static int _trophy;//奖杯
+	
 	static void ChangeHeroToShunDe();
 	static void ChangeHeroToHaoQing();
 	static void ChangeHeroToChangYi();
@@ -29,6 +31,8 @@ private:
 	static int remainingPlayer;  // 当前人数
 
 	static int _chooseHero;
+
+	
 };
 
 #endif // !_GAME_DATA_

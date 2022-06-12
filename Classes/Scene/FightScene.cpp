@@ -100,7 +100,7 @@ void FightScene::update(float dt)
     Vec2 playerPosition = currentPlayer->getPosition();
     this->setPlayerPosition(playerPosition);
 
-    this->grassCover(playerPosition);//草丛的变化也应该加到这里,但目前有点bug先注释掉
+    this->grassCover(playerPosition);
 
     updateCharacterUI(AI);
 
@@ -301,7 +301,7 @@ bool FightScene::onContactBegin(cocos2d::PhysicsContact& contact)
         else if (nodeB->getTag() == SanYueUtimateSkillTag && nodeA->getTag() == PlayerTag)
         {
             showSpark("Hero/Bullet/SanYue-bullet.png", nodeB);
-            currentPlayer->recoverHealth(currentHero, 60.f);// SanYue大招0%概率为友方恢复30点生命
+            currentPlayer->recoverHealth(currentHero, 60.f);// SanYue大招50%概率为友方恢复60点生命
         }
         /* HaoQing大招 */
         else if (nodeA->getTag() == HaoQingUtimateSkillTag && nodeB->getTag() == PlayerTag)

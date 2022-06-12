@@ -3,6 +3,7 @@
 * @author wyf
 */
 #include "StartScene.h"
+#include "audio/include/AudioEngine.h"
 #include "StartLoginScene.h"
 #include "cocos2d.h"
 
@@ -82,11 +83,16 @@ void StartScene::preLoadingResources()
     Director::getInstance()->getTextureCache()->addImage("Hero/Bullet/enemy-spiky-eclipse.png");
     Director::getInstance()->getTextureCache()->addImage("Hero/Bullet/HaoQing-bullet.png");
     Director::getInstance()->getTextureCache()->addImage("Hero/Bullet/nobullet.png");
-    Director::getInstance()->getTextureCache()->addImage("Hero/Bullet/polar-bear-bullet.png");
     Director::getInstance()->getTextureCache()->addImage("Hero/Bullet/SanYue-bullet.png");
     Director::getInstance()->getTextureCache()->addImage("Hero/Bullet/ShunDe-bullet.png");
     Director::getInstance()->getTextureCache()->addImage("Hero/Bullet/spiky-eclipse.png");
     Director::getInstance()->getTextureCache()->addImage("Hero/Bullet/YunHe-bullet.png");
+
+    Director::getInstance()->getTextureCache()->addImage("Hero/Bullet/ChangYi-bullet-usual.png");
+    Director::getInstance()->getTextureCache()->addImage("Hero/Bullet/HaoQing-bullet-usual.png");
+    Director::getInstance()->getTextureCache()->addImage("Hero/Bullet/SanYue-bullet-usual.png");
+    Director::getInstance()->getTextureCache()->addImage("Hero/Bullet/ShunDe-bullet-usual.png");
+    Director::getInstance()->getTextureCache()->addImage("Hero/Bullet/YunHe-bullet-usual.png");
     /* ”¢–€µƒ¥ÛÕ∑œÒ */
     Director::getInstance()->getTextureCache()->addImage("Hero/ChooseHero/ChangYiAfter.jpg");
     Director::getInstance()->getTextureCache()->addImage("Hero/ChooseHero/ChangYiBefore.jpg");
@@ -129,5 +135,6 @@ void StartScene::preLoadingResources()
     Director::getInstance()->getTextureCache()->addImage("Button/SetReturn.png");
     Director::getInstance()->getTextureCache()->addImage("Button/Start.png");
     Director::getInstance()->getTextureCache()->addImage("Button/VolumeSound.png");
-
+    /* “Ù¿÷ */
+    AudioEngine::preload("BGM.mp3");
 }

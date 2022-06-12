@@ -25,23 +25,19 @@ bool GameOverScene::init()
 	{
 		return false;
 	}
-	//加入人物肖像->注意，通过人物的数量就能够判断是否胜利
-	//当结束的时候，如果人物数量是1，说明只有玩家存活下来；大于1则玩家死亡
-	//奖杯数也是根据人物个数，看看能不能界面好看点
-	//单纯奖杯数应该不是很难，画个图，然后这个界面存在三秒直接转到主界面
-	//根据人物的胜负颁个奖
+
 	_visibleSize = Director::getInstance()->getVisibleSize();
 
 	_origin = Director::getInstance()->getVisibleOrigin();
-	//设置背景图片
-	auto* setScene = Sprite::create("Scene/GameOverScene.png");        //设置类背景图
+
+	auto* setScene = Sprite::create("Scene/GameOverScene.png");      
 	setScene->setScale(0.8f);
-	setScene->setPosition(_visibleSize.width / 2, _visibleSize.height / 2);        //让背景图像居中显示
+	setScene->setPosition(_visibleSize.width / 2, _visibleSize.height / 2);     
 	addChild(setScene, 0);
 
 	initTrophy();
 
-	initHero();//加入英雄图片
+	initHero();
 	
 	scheduleOnce(SEL_SCHEDULE(&GameOverScene::ChangeScene), 3.0f);
 

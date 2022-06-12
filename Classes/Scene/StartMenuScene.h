@@ -1,4 +1,4 @@
-#pragma once
+
 #ifndef __STARTMENU_SCENE_H__
 #define __STARTMENU_SCENE_H__
 
@@ -32,8 +32,6 @@ public:
 
 	void StartMenuScene::exitCallback(cocos2d::Ref* pSender);
 
-	//void StartMenuScene::preLoadingFightScene();
-
 	CREATE_FUNC(StartMenuScene);
 
 protected:
@@ -47,8 +45,6 @@ protected:
 	cocos2d::Menu* setButton_;
 
 	cocos2d::Menu* userButton_;
-
-	//FightScene* fightScene_;
 
 };
 

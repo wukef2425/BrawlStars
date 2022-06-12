@@ -72,7 +72,6 @@ list(APPEND GAME_SOURCE
      Classes/Entity/Player.cpp
      Classes/Entity/AI.cpp
 
-     Classes/Hero/PolarBear.cpp
      Classes/Hero/ChangYi.cpp
      Classes/Hero/YunHe.cpp
      Classes/Hero/ShunDe.cpp
@@ -103,7 +102,6 @@ list(APPEND GAME_HEADER
      Classes/Entity/Player.h
      Classes/Entity/AI.h     
      
-     Classes/Hero/PolarBear.h
      Classes/Hero/ChangYi.h
      Classes/Hero/YunHe.h
      Classes/Hero/ShunDe.h

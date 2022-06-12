@@ -1,4 +1,4 @@
-#pragma once
+
 #ifndef __Gamepause__H__
 #define __Gamepause__H__
 #include "cocos2d.h"

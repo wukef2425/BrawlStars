@@ -1,4 +1,4 @@
-#pragma once
+
 #ifndef __INSTRUCTION_SCENE_H__
 #define __INSTRUCTION_SCENE_H__
 

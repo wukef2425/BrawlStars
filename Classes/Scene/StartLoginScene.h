@@ -1,4 +1,4 @@
-#pragma once
+
 #ifndef __STARTLOGIN_SCENE_H__
 #define __STARTLOGIN_SCENE_H__
 
@@ -21,8 +21,6 @@ public:
 
     static void StartLoginScene::BGMContinue();//ºÃ–¯≤•∑≈±≥æ∞“Ù¿÷
 
-
-    // implement the "static create()" method manually
     CREATE_FUNC(StartLoginScene);
 };
 

@@ -1,4 +1,4 @@
-#pragma once
+
 #ifndef __VOLUME_SCENE__H__
 #define __VOLUME_SCENE__H__
 #include "cocos2d.h"

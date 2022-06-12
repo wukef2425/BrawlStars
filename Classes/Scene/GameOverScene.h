@@ -1,4 +1,4 @@
-#pragma once
+
 #ifndef __GAMEOVER_SCENE__H__
 #define __GAMEOVER_SCENE__H__
 #include "cocos2d.h"

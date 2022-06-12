@@ -4,7 +4,7 @@
 */
 #include "StartLoginScene.h"
 #include "StartMenuScene.h"
-
+#include "AudioEngine.h"
 USING_NS_CC;
 
 Scene* StartLoginScene::createScene()
@@ -27,7 +27,7 @@ bool StartLoginScene::init()
 
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
-    
+
     auto* background = Sprite::create("Scene/MyLoginScene.jpg");        //创建精灵类，背景图片为background.jpg
     background->setScale(1.05f);
     background->setPosition(visibleSize.width / 2, visibleSize.height / 2);        //让背景图像居中显示
@@ -41,19 +41,19 @@ bool StartLoginScene::init()
     }
     else
     {
-        agetip->setPosition(visibleSize.width - (agetip->getContentSize().width*2)/3, visibleSize.height - (agetip->getContentSize().height * 2) / 3);        //让适龄提示在右上角
+        agetip->setPosition(visibleSize.width - (agetip->getContentSize().width * 2) / 3, visibleSize.height - (agetip->getContentSize().height * 2) / 3);        //让适龄提示在右上角
         addChild(agetip, 1);
     }
-    
+
     auto* gamelogo = Sprite::create("GameLogo.png");        //logo
-    
+
     if (gamelogo == nullptr)
     {
         problemLoading("'GameLogo.png'");
     }
     else
     {
-        gamelogo->setPosition((2 * gamelogo->getContentSize().width) / 3, visibleSize.height - (2*gamelogo->getContentSize().height) / 3);        //让游戏logo在左上角
+        gamelogo->setPosition((2 * gamelogo->getContentSize().width) / 3, visibleSize.height - (2 * gamelogo->getContentSize().height) / 3);        //让游戏logo在左上角
         addChild(gamelogo, 2);
     }
 
@@ -71,17 +71,36 @@ bool StartLoginScene::init()
     }
     else
     {
-        float x = origin.x + visibleSize.width/2 ;
-        float y = origin.y + visibleSize.height/5;
+        float x = origin.x + visibleSize.width / 2;
+        float y = origin.y + visibleSize.height / 5;
         LoginItem->setPosition(Vec2(x, y));
     }
+
+    BGMOn();
 
     auto menu = Menu::create(LoginItem, NULL);
     menu->setPosition(Vec2::ZERO);
     this->addChild(menu, 1);
-    
+
     return true;
 }
+
+void StartLoginScene::BGMOn()
+{
+    BGM_ID = AudioEngine::play2d("BGM.mp3", true, 0.5f);
+}
+
+void StartLoginScene::BGMOff()
+{
+    AudioEngine::pause(BGM_ID);
+}
+
+void StartLoginScene::BGMContinue()
+{
+    AudioEngine::preload("BGM.mp3");
+    AudioEngine::resume(BGM_ID);
+}
+
 
 void StartLoginScene::menuCloseCallback(Ref* pSender)
 {

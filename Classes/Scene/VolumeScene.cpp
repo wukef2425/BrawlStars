@@ -1,8 +1,10 @@
 #include "VolumeScene.h"
-
-USING_NS_CC;
-
+#include "ui/CocosGUI.h"
 #include "Scene/SetScene.h"
+#include "AudioEngine.h"
+#include "StartLoginScene.h"
+USING_NS_CC;
+using namespace ui;
 
 static void problemLoading(const char* filename)
 {
@@ -20,8 +22,8 @@ Scene* VolumeScene::scene()
 
 	Sprite* back_spr = Sprite::create("Scene/VolumeScene.png");
 	back_spr->setScale(0.8f);
-	back_spr->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2)); 
-    
+	back_spr->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
+
 	scene->addChild(back_spr);
 	return scene;
 }
@@ -32,6 +34,8 @@ bool VolumeScene::init()
 	{
 		return false;
 	}
+
+	initVolumeControl();
 
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 
@@ -44,7 +48,7 @@ bool VolumeScene::init()
 		"Button/ReturnSet.png",
 		CC_CALLBACK_1(VolumeScene::settingSceneCallback, this));
 
-	pReturnItem->setPosition(Vec2(8*visibleSize.width/10, 7*visibleSize.height/9));
+	pReturnItem->setPosition(Vec2(8 * visibleSize.width / 10, 7 * visibleSize.height / 9));
 
 
 	pMenu = cocos2d::Menu::create(pReturnItem, nullptr);
@@ -53,6 +57,32 @@ bool VolumeScene::init()
 	this->addChild(pMenu, 2);
 
 	return true;
+}
+
+void VolumeScene::initVolumeControl()
+{
+	auto visibleSize = Director::getInstance()->getVisibleSize();
+	//创建一个滑块条
+	auto sl = cocos2d::ui::Slider::create();
+	sl->loadBarTexture("NormalSlider.png");
+	sl->loadSlidBallTextures("NormalSliderBall.png", "PressedSliderBall.png", "DisabledSliderBall.png");
+	sl->loadProgressBarTexture("DarkSlider.png");
+	sl->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 4));
+	sl->setPercent(AudioEngine::getVolume(BGM_ID) * 100);
+	sl->addEventListener([=](Ref* pSender, Slider::EventType type) {
+		//当滑块的百分比发生变化的时候
+		if (type == Slider::EventType::ON_PERCENTAGE_CHANGED) {
+			//获得滑动条的百分比
+			int percent = sl->getPercent();
+			AudioEngine::setVolume(BGM_ID, float(percent) / 100);
+		}
+		});
+	this->addChild(sl);
+
+	auto soundtext = Text::create("Volume", "arial.ttf", 30);
+	soundtext->setPosition(Vec2(visibleSize.width * 0.3, visibleSize.height / 4));
+	this->addChild(soundtext);
+
 }
 
 //回设置界面

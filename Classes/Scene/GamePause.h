@@ -10,7 +10,7 @@ class Gamepause : public cocos2d::Scene
 public:
     virtual bool init();
 
-    static cocos2d::Scene* scene(RenderTexture* sqr);
+    static cocos2d::Scene* scene();
 
     //¼ÌÐøÓÎÏ·
     void Gamepause::menuContinueCallback(Ref* pSender);
@@ -20,7 +20,7 @@ public:
     void Gamepause::menuLoginCallback(Ref* pSender);
 
     CREATE_FUNC(Gamepause);
-    
+
 
 private:
 

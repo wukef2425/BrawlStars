@@ -11,6 +11,8 @@ public:
 
     virtual bool init();
 
+    void StartScene::preLoadingResources();
+
     void StartScene::ChangeScene(float dt);
 
     void StartScene::initTermLabel();

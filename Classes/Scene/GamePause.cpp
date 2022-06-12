@@ -5,19 +5,16 @@ USING_NS_CC;
 #include "Scene/ChooseHero.h"
 #include "Scene/StartMenuScene.h"
 
-Scene* Gamepause::scene(RenderTexture* sqr)
+Scene* Gamepause::scene()
 {
-
 	Scene* scene = Scene::create();
 	Gamepause* layer = Gamepause::create();
 	scene->addChild(layer, 1);
-	//增加部分：使用Game界面中截图的sqr纹理图片创建Sprite
-  //并将Sprite添加到GamePause场景层中
-  //得到窗口的大小
+
 	Size visibleSize = Director::getInstance()->getVisibleSize();
-	Sprite* back_spr = Sprite::createWithTexture(sqr->getSprite()->getTexture());
-	back_spr->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2)); //放置位置,这个相对于中心位置。
-	back_spr->setFlippedY(true);            //翻转，因为UI坐标和OpenGL坐标不同
+	Sprite* back_spr = Sprite::create("Scene/HeroChooseScene.jpg");
+	back_spr->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
+	back_spr->setScale(1.1f);
 	back_spr->setColor(Color3B::GRAY); //图片颜色变灰色
 	scene->addChild(back_spr);
 	return scene;
@@ -29,24 +26,24 @@ bool Gamepause::init()
 	{
 		return false;
 	}
-	
+
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
-	
+
 	//图片框框
 	auto* background = Sprite::create("Button/pause_background.png");
 	background->setScale(1.2f);
-	background->setPosition(visibleSize.width / 2, visibleSize.height / 2+50);
+	background->setPosition(visibleSize.width / 2, visibleSize.height / 2 + 50);
 	addChild(background, 1);
-	
+
 	//继续游戏按钮
 	auto pContinueItem = cocos2d::MenuItemImage::create(
 		"Button/pause_continue.png",
 		"Button/pause_continue.png",
 		CC_CALLBACK_1(Gamepause::menuContinueCallback, this));
 
-	pContinueItem->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2-50));
+	pContinueItem->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2 - 50));
 
 	pMenu = cocos2d::Menu::create(pContinueItem, nullptr);
 	pMenu->setScale(1.6f);
@@ -74,7 +71,7 @@ bool Gamepause::init()
 		"Button/pause_login.png",
 		CC_CALLBACK_1(Gamepause::menuLoginCallback, this));
 
-	pLoginItem->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2+50));
+	pLoginItem->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2 + 50));
 
 
 	pMenu = cocos2d::Menu::create(pLoginItem, nullptr);

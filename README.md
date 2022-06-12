@@ -21,9 +21,12 @@
 |    |交互界面|
 |6.1|	设计封装了player类以及hero类|
 |6.4|	英雄选择界面|
+|6.6| 键盘及鼠标监听|
 |6.7|	添加不同英雄|
+|6.7|	物理碰撞|
 |6.9|	更新完整地图与障碍物|
 ||毒烟效果|
+||死亡机制|
 |6.10|初步实现摄像机类|
 ||草丛效果|
 ||增加血条、蓝条、能量值UI|
@@ -41,17 +44,19 @@
 ## 分工
 |姓名|	完成项|
 |---|---|
-|吴可非	|Hero类设计、物理碰撞、键盘及鼠标监听、普攻大招设计、死亡机制、camera设计、随机AI、|
-|王一凡	|美工、瓦片地图制作使用、整体场景设计与切换、菜单、渲染机制、交互体验设计、UI设计、英雄信息全局协调|
+|吴可非	|Hero类设计、物理碰撞、键盘及鼠标监听、普攻大招设计、死亡机制、camera设计、随机AI、PPT及release版本|
+|王一凡	|美工、瓦片地图制作使用、整体场景设计与切换、菜单、渲染机制、交互体验设计、UI设计、英雄信息全局协调、项目文档|
 |张逸旸	|音量音乐控制|
 
 ## 游戏整体架构
-![image](https://github.com/xxx/xxx/blob/master/xxx/xxx.png)
-
+![image](https://github.com/wukef2425/ING_BrawlStars/blob/main/Frame.png)
+## 类设计
+![image](https://github.com/wukef2425/ING_BrawlStars/blob/main/Class.png)
 ## 主要难点与解决
 1.	零基础学it，小白哭啼啼。还好各路神仙来帮忙，助教哥哥慷慨施援手。组长read me把路引，学长代码解疑惑。通过阅读学长发的几本cocos2dx电子书以及csdn上的代码，才慢慢对游戏大体的构建有所了解。但因为版本的问题有很多也不适用，靠着个人的摸索以及组内的交流，终于实现了现在所看到的项目。
 2.	Update的刷新帧率以及渲染方面会使界面出现卡顿，通过完善代码的执行效率以及预先加载游戏素材来解决问题
-
+3.  函数不同的调用顺序会导致运行结果不同，以及update的调用停止的合适位置、人物死亡的合适位置，通过log调试解决
+4.  瓦片地图与openl地图的坐标转换以及瓦片地图的读取
 ## 功能点完成度
 ### 基本功能
 - [x] 游戏开始界面，背景音乐，音量控制，暂停及恢复功能，退出功能
@@ -73,9 +78,9 @@
 * 自行绘制的原创地图和精美UI
 ## 项目运行截图
 ### 菜单界面
-![image](https://github.com/xxx/xxx/blob/master/xxx/xxx.png)
+![image](https://github.com/wukef2425/ING_BrawlStars/blob/main/menu.png)
 ### 英雄选择界面
-![image](https://github.com/xxx/xxx/blob/master/xxx/xxx.png)
+![image](https://github.com/wukef2425/ING_BrawlStars/blob/main/chooseHero.png)
 ### 游戏界面
 ![image](https://github.com/wukef2425/ING_BrawlStars/blob/main/FightHero.png)
 ### 结算界面

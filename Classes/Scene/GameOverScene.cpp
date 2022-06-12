@@ -90,6 +90,14 @@ void GameOverScene::initTrophy()
 			break;
 	}
 
+	GameData::_trophy = GameData::_trophy + trophy;
+	if (ranking == 1)
+	{
+		auto victory= Sprite::create("Scene/Victory.png");
+		victory->setPosition(_origin.x + 4*_visibleSize.width / 7, _origin.y + _visibleSize.height / 5);
+		addChild(victory, 1);
+
+	}
 	auto _ranking = Label::createWithTTF(StringUtils::format("Ranking: %d", GameData::getRemainingPlayer()).c_str(), "fonts/arial.ttf", 55);
 	_ranking->setColor(Color3B::YELLOW);
 	_ranking->enableShadow();

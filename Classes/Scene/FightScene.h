@@ -60,7 +60,6 @@ private:
     Sprite* _smokeCell;		            //毒烟单元格
 
 
-
 public:
 
     cocos2d::Scene* createScene();
@@ -103,7 +102,6 @@ public:
     void GamePauseCallback(Ref* pSender);
 
     static void FightScene::GameOver(Hero* hero);
-    void FightScene::GameOverScene(float dt);
 
     void update(float dt);
     void updateCharacterUI(Hero* hero);

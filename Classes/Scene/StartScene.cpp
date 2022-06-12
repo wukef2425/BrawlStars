@@ -76,6 +76,7 @@ void StartScene::preLoadingResources()
     Director::getInstance()->getTextureCache()->addImage("Scene/MyLoginScene.jpg");
     Director::getInstance()->getTextureCache()->addImage("Scene/SetScene.jpg");
     Director::getInstance()->getTextureCache()->addImage("Scene/VolumeScene.png");
+    Director::getInstance()->getTextureCache()->addImage("Scene/UserScene.png");
     /* Ó¢ÐÛÎäÆ÷Àà */
     Director::getInstance()->getTextureCache()->addImage("Hero/Bullet/ChangYi-bullet.png");
     Director::getInstance()->getTextureCache()->addImage("Hero/Bullet/enemy-bullet.png");

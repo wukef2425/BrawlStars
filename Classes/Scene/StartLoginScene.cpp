@@ -86,6 +86,6 @@ bool StartLoginScene::init()
 void StartLoginScene::menuCloseCallback(Ref* pSender)
 {
     //switch to menu
-    Director::getInstance()->replaceScene(TransitionFade::create(2.0f, StartMenuScene::createScene()));
+    Director::getInstance()->replaceScene(TransitionFade::create(1.5f, StartMenuScene::createScene()));
 
 }

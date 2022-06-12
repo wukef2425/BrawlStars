@@ -4,6 +4,8 @@
 
 #include "cocos2d.h"
 
+USING_NS_CC;
+
 class UserInfo : public cocos2d::Scene
 {
 public:
@@ -13,15 +15,21 @@ public:
 
     void initDecoration();
 
+    void UserInfo::initTrophy();
+
     void initReturnMenu();//·µ»ØÖ÷Ò³Ãæ
 
     void menuReturnCallback(Ref* pSender);
 
+    void UserInfo::initHero();
     CREATE_FUNC(UserInfo);
 
 protected:
 
-    cocos2d::Menu* returnButton_;
+    cocos2d::Menu* pMenu;
+
+    Size visibleSize;
+    Vec2 origin;
 
 };
 

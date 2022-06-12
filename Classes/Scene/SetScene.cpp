@@ -5,6 +5,7 @@
 #include "SetScene.h"
 #include "StartMenuScene.h"
 #include "GameOverScene.h"
+
 USING_NS_CC;
 
 Scene* SetScene::createScene()
@@ -30,6 +31,7 @@ bool SetScene::init()
     initRuleBooks();
     initVolumeSound();
     initReturnMenu();
+
     return true;
 }
 
@@ -104,8 +106,9 @@ void SetScene::initVolumeSound()
 
 void SetScene::volumeSoundCallback(Ref* pSender)
 {
-    //摁下按钮，考虑不切换新界面，而是出现一个可以移动的条子，然后也可以关掉
-    Director::getInstance()->replaceScene(GameOverScene::createScene());
+    //将游戏界面暂停，压入场景堆栈。并切换到VolumeScene界面
+    Director::getInstance()->pushScene(VolumeScene::scene());
+
 }
 
 void SetScene::initReturnMenu()

@@ -600,10 +600,19 @@ void FightScene::grassCover(Vec2 position)
 
 void FightScene::HeroCount()//计分板
 {
+    //给计分板加个框框
+    auto* scoreBoard = Sprite::create("Scene/ScoreBoard.png");
+    scoreBoard->setAnchorPoint(Vec2(0, 1));
+    scoreBoard->setScale(0.8f);
+    scoreBoard->setPosition(Vec2(_origin.x, _visibleSize.height + _origin.y));
+    this->addChild(scoreBoard);
+    scoreBoard->setCameraMask(2, true);
+    //分数
     heroNumber = Label::createWithTTF(StringUtils::format("Brawler Left: %d", GameData::getRemainingPlayer()).c_str(), "fonts/arial.ttf", 40);
     heroNumber->setAnchorPoint(Vec2(0, 1));
-    heroNumber->setPosition(Vec2(_origin.x, _visibleSize.height + _origin.y));
-    this->addChild(heroNumber, 3);
+    heroNumber->setPosition(Vec2(_origin.x + (heroNumber->getContentSize().width / 5), _visibleSize.height + _origin.y - (heroNumber->getContentSize().height)));
+
+    this->addChild(heroNumber);
     heroNumber->setCameraMask(2, true);
 }
 //游戏暂停
@@ -628,16 +637,13 @@ void FightScene::gamePause()
 
 void FightScene::GamePauseCallback(Ref* pSender)
 {
-    
-    Size visibleSize = Director::getInstance()->getVisibleSize();
-    RenderTexture* renderTexture = RenderTexture::create(visibleSize.width, visibleSize.height);
 
-    renderTexture->begin();
-    this->getParent()->visit();
-    renderTexture->end();
 
-    Director::getInstance()->pushScene(Gamepause::scene(renderTexture));
-    
+    //本来想加个背景板
+    //但由于分层的原因，只能读取到摄像机2
+    //所以准备加个背景板
+    Director::getInstance()->pushScene(Gamepause::scene());
+
 }
 
 /*****************************游戏状态记录，人物是否死亡、游戏是否结束**********************************************/
@@ -657,15 +663,17 @@ void FightScene::GameOver(Hero* hero)
     //玩家死亡or剩余英雄为（只有玩家）or定时器时间到（可以不用考虑）-》把定时器的时间设置为毒雾蔓延＋人物血量减毒雾伤害
     //转到游戏结算界面
     //如果剩余英雄为1或者玩家死亡则跳转到end界面
-    log("%d", GameData::getRemainingPlayer());
     if (GameData::getRemainingPlayer() == 1 || (!hero->isAlive() && hero->getDieTag() == PlayerDieTag))
     {
 
 
+        //先来个好看的图片，表示游戏结束，当当当一下
         //关掉音乐
         //to wkf 直接转的话，会黑屏一下，黑屏好像也是因为双摄像头的原因
         //如果用schedule很神奇的是转不出来
-        Director::getInstance()->replaceScene(TransitionFade::create(1.0f, GameOverScene::createScene()));
+        // 知道原因了-》因为一直在update-》所以会一直更新，注意看看能不能换个位置
+        //要不就会很突然变化了，最后改！！！！
+        Director::getInstance()->replaceScene(GameOverScene::createScene());
         //scheduleOnce(SEL_SCHEDULE(&FightScene::GameOverScene), 1.0f);
     }
 }

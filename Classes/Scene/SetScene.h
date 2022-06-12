@@ -4,6 +4,8 @@
 
 #include "cocos2d.h"
 #include "Scene/InstructionScene.h"
+#include "Scene/VolumeScene.h"
+using namespace std;
 
 class SetScene : public cocos2d::Scene
 {
@@ -35,6 +37,8 @@ protected:
     cocos2d::Menu* vosoButton_;
 
     cocos2d::Menu* returnButton_;
+
+    RenderTexture* renderTexture;
 
 };
 

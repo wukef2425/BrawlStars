@@ -66,6 +66,7 @@ list(APPEND GAME_SOURCE
      Classes/Scene/InstructionScene.cpp
      Classes/Scene/GamePause.cpp
      Classes/Scene/GameOverScene.cpp
+     Classes/Scene/VolumeScene.cpp
 
      Classes/Entity/Hero.cpp
      Classes/Entity/Player.cpp
@@ -96,6 +97,7 @@ list(APPEND GAME_HEADER
      Classes/Scene/InstructionScene.h
      Classes/Scene/GamePause.h
      Classes/Scene/GameOverScene.h
+     Classes/Scene/VolumeScene.h
 
      Classes/Entity/Hero.h
      Classes/Entity/Player.h

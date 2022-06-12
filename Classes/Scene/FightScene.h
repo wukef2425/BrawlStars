@@ -94,7 +94,7 @@ public:
     Vec2 tilePosition(const Vec2& position);
     void setPlayerPosition(Vec2 position);
 
-    void HeroCount();
+    void FightScene::HeroCount();
 
     void smokeMove();
     void smokeHurt(Vec2 position);

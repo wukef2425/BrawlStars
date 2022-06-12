@@ -10,8 +10,10 @@ public:
     virtual bool init();
 
     static cocos2d::Scene* scene();
-    
+
     void VolumeScene::settingSceneCallback(Ref* pSender);
+
+    void VolumeScene::initVolumeControl();//“Ù¡øª¨Ãı
 
     CREATE_FUNC(VolumeScene);
 
@@ -23,3 +25,4 @@ private:
 };
 
 #endif // __Gamepause_H__
+

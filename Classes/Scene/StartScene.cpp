@@ -26,7 +26,6 @@ bool StartScene::init()
         return false;
     }
 
-    //to zyy 进入时加入音效，就是那种进游戏dang一下，显得比较高级一点
     initTermLabel();//Animation of entrance
 
     preLoadingResources();
@@ -42,7 +41,7 @@ void StartScene::initTermLabel()
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
     //The entry animation shows the name of our group
-    auto label = Label::createWithTTF("COOL\nWZW\nTERM", "fonts/Marker Felt.ttf", 60);
+    auto label = Label::createWithTTF("COOL\nWZW\nTEAM", "fonts/Marker Felt.ttf", 60);
 
     if (label == nullptr)
     {

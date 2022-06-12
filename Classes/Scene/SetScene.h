@@ -1,4 +1,4 @@
-#pragma once
+
 #ifndef __SET_SCENE_H__
 #define __SET_SCENE_H__
 

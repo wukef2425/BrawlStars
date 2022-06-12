@@ -68,7 +68,7 @@ void YunHe::ultimateSkill(Vec2 touchWorldPosition)
 void YunHe::attackHero(Vec2 playerPosition, Vec2 touchWorldPosition)
 {
     /* 创造currentBullet并设置初始位置 */
-    auto currentBullet = Sprite::create("Hero/Bullet/polar-bear-bullet.png");// 因为子弹是打一个删一个的，所以只能放在onTouchBegan内部
+    auto currentBullet = Sprite::create("Hero/Bullet/YunHe-bullet-usual.png");// 因为子弹是打一个删一个的，所以只能放在onTouchBegan内部
     currentBullet->setPosition(playerPosition);// 初始位置是从currentPlayer出发
 
     /* 给currentBullet绑定物理躯干 */

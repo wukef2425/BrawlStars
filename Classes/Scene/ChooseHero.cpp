@@ -90,7 +90,6 @@ void ChooseHero::initHeroButton()
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 	
-	//using vector to record repeat steps
 	Vector<MenuItem*> HeroMenuVector;
 
 	vector<string> NameMenuVector = { "ShunDe","ChangYi","YunHe", "HaoQing","SanYue" };
@@ -130,62 +129,45 @@ void ChooseHero::initHeroButton()
 	menu->setPosition(Vec2::ZERO);
 	this->addChild(menu, 1);
 }
-//start game
+
 void ChooseHero::startGame(Ref* pSender)
 {
-
-	//fightScene_->bindPlayer(Player::create("heroArray[cur_hero_index].name"));
 	cocos2d::Director::getInstance()->getOpenGLView()->setCursorVisible(true);
 	preLoadingFightScene();
 
 	cocos2d::Director::getInstance()->replaceScene(fightScene_->createScene());
 }
 
-//switch to menu
 void ChooseHero::backToMenu(Ref* pSender)
 {
-
 	Director::getInstance()->replaceScene(StartMenuScene::createScene());
 }
 /******************************************************Hero************************************************************/
 
-//to zyy 选择英雄点击的时候播放属于个人英雄的语音怎么样？显得比较高级一点
-// 如果要加的话就全加到这几个函数中吧，素材问我要就行
-// 素材包全都放在一个地方？方便一些
-//顺德
 void ChooseHero::menuShunDeCallback(cocos2d::Ref* pSender)
 {
 	GameData::ChangeHeroToShunDe();
-	//GameData::_hero = GameData::AllHero::ShunDe;
 }
 
-//昊青
 void ChooseHero::menuHaoQingCallback(cocos2d::Ref* pSender)
 {
 	GameData::ChangeHeroToHaoQing();
-	//GameData::_hero = GameData::AllHero::HaoQing;
 }
 
-//云禾
 void ChooseHero::menuYunHeCallback(cocos2d::Ref* pSender)
 {
 	
 	GameData::ChangeHeroToYunHe();
-	//GameData::_hero = GameData::AllHero::YunHe;
 }
 
-//长意
 void ChooseHero::menuChangYiCallback(cocos2d::Ref* pSender)
 {
 	GameData::ChangeHeroToChangYi();
-	//GameData::_hero = GameData::AllHero::ChangYi;
 }
 
-//三月
 void ChooseHero::menuSanYueCallback(cocos2d::Ref* pSender)
 {
 	
 	GameData::ChangeHeroToSanYue();
-	//GameData::_hero = GameData::AllHero::SanYue;
 }
 

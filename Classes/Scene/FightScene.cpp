@@ -427,9 +427,34 @@ void FightScene::initHero()
 
 void FightScene::initAI()
 {
-    AI = PolarBear::createAI();
+    srand(static_cast<unsigned>(time(0)));
 
+    switch (rand() % 5 + 1)
+    {
+        case ChangYiNumber:
+            AI = YunHe::createAI();
+            break;
 
+        case YunHeNumber:
+            AI = ShunDe::createAI();
+            break;
+
+        case HaoQingNumber:
+            AI = SanYue::createAI();
+            break;
+
+        case SanYueNumber:
+            AI = YunHe::createAI();
+            break;
+
+        case ShunDeNumber:
+            AI = HaoQing::createAI();
+            break;
+
+        default:
+            AI = YunHe::createAI();
+            break;
+    }
 
     this->addChild(AI);
 

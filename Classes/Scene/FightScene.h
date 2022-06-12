@@ -14,7 +14,6 @@
 #include "Utils/GameData.h"
 #include "Utils/CameraEffect.h"
 
-#include "Hero/PolarBear.h"
 #include "Hero/ChangYi.h"
 #include "Hero/YunHe.h"
 #include "Hero/ShunDe.h"

@@ -8,6 +8,7 @@
 
 
 #include "Entity/Player.h"
+#include "Entity/AI.h"
 
 #include "Scene/Gamepause.h"
 #include "Utils/GameData.h"

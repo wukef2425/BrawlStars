@@ -95,7 +95,7 @@ void StartMenuScene::startCallback(cocos2d::Ref* pSender)
 	//to zyy 如果比较流水线操作的话可以给点击按钮都加个音效，位置都是在replace前，显得高级
 
 	//switch to chooseHeroScene
-	
+	GameData::resetPlayerNum();// 自动结算后重新开始要初始化
 	Director::getInstance()->replaceScene(ChooseHero::createScene());
 
 }

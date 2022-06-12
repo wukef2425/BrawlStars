@@ -18,7 +18,7 @@ bool Hero::isAlive()
 /* killer使injuredSprite受到damage点伤害 */
 void Hero::receiveDamage(float damage, Hero*& injuredSprite, Hero*& killer)
 {
-	injuredSprite->health_ -= (damage - defend_);
+	injuredSprite->health_ -= (damage - injuredSprite->defend_);
 
 	killer->chargeForUlitmateSkill(damage - injuredSprite->defend_);
 
@@ -186,6 +186,11 @@ bool Hero::isReleaseConfirmed()
 }
 /* 大招（在子类实现）*/
 void Hero::ultimateSkill(Vec2 touchWorldPosition)
+{
+	;
+}
+/* 普攻（在子类实现）*/
+void Hero::attackHero(Vec2 playerPosition, Vec2 touchWorldPosition)
 {
 	;
 }

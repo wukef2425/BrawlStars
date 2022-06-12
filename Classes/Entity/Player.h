@@ -18,6 +18,8 @@ private:
 
 public:
 
+    static Player* Player::create(const std::string& filename);
+
     /* 用于监听键盘 使player移动 */
     void listenToKeyPresses(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
     void listenToKeyReleases(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);

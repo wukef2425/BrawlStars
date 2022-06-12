@@ -192,25 +192,7 @@ bool FightScene::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* unusedEvent
 
     if (0 < bulletRemain && false == currentPlayer->isReleaseConfirmed())
     {
-        /* 创造currentBullet并设置初始位置 */
-        auto currentBullet = Sprite::create("Hero/Bullet/polar-bear-bullet.png");// 因为子弹是打一个删一个的，所以只能放在onTouchBegan内部
-        currentBullet->setPosition(this->currentPlayer->getPosition());// 初始位置是从currentPlayer出发
-
-        /* 给currentBullet绑定物理躯干 */
-        bindPhysicsBodyAndTag(currentBullet, PlayerBulletAndEnemyBitmask, PlayerBulletTag);
-
-        /* 加入渲染树 */
-        this->addChild(currentBullet);
-
-        Vec2 offset = touchWorldPosition - this->currentPlayer->getPosition();
-        offset.normalize();// currentPlayer位置指向鼠标touch位置的单位向量
-
-        /* 定义一些动作 */
-        auto actionMove = MoveBy::create(1.5f, offset * ShootSpeed);// 1.5秒到达目的地
-        auto actionRemove = RemoveSelf::create();// 删掉自身
-
-        /* 让currentBullet完成上面的一系列动作 */
-        currentBullet->runAction(Sequence::create(actionMove, actionRemove, nullptr));
+        currentPlayer->attackHero(currentPlayer->getPosition(), touchWorldPosition);
     }
     else if (0 < bulletRemain && true == currentPlayer->isReleaseConfirmed())
     {
@@ -241,7 +223,6 @@ bool FightScene::onContactBegin(cocos2d::PhysicsContact& contact)
     if (nodeA && nodeB)
     {
         auto currentHero = dynamic_cast<Hero*>(currentPlayer);
-        //auto currentBox = dynamic_cast<Hero*>(energyBox1);
         /* player打AI */
         if (nodeA->getTag() == PlayerBulletTag && nodeB->getTag() == EnemyTag)
         {
@@ -286,49 +267,6 @@ bool FightScene::onContactBegin(cocos2d::PhysicsContact& contact)
             showSpark("Hero/Bullet/YunHe-bullet.png", nodeB);
             AI->receiveDamage(currentPlayer->dealDamage() * 2, AI, currentHero);// YunHe大招直接造成两倍攻击的伤害
         }
-        /* ChangYi大招 */
-        else if (nodeA->getTag() == ChangYiUtimateSkillTag && nodeB->getTag() == PlayerTag)
-        {
-            showSpark("Hero/Bullet/ChangYi-bullet.png", nodeA);
-            currentPlayer->recoverHealth(currentHero, 50.f);// ChangYi大招为友方恢复50点生命
-        }
-        else if (nodeB->getTag() == ChangYiUtimateSkillTag && nodeA->getTag() == EnemyTag)
-        {
-            showSpark("Hero/Bullet/ChangYi-bullet.png", nodeB);
-            currentPlayer->recoverHealth(currentHero, 50.f);// ChangYi大招为友方恢复50点生命
-        }
-        /* SanYue大招 */
-        else if (nodeA->getTag() == SanYueUtimateSkillTag && nodeB->getTag() == PlayerTag)
-        {
-            showSpark("Hero/Bullet/SanYue-bullet.png", nodeA);
-            currentPlayer->recoverHealth(currentHero, 30.f);// SanYue大招为友方恢复30点生命
-        }
-        else if (nodeB->getTag() == SanYueUtimateSkillTag && nodeA->getTag() == PlayerTag)
-        {
-            showSpark("Hero/Bullet/SanYue-bullet.png", nodeB);
-            currentPlayer->recoverHealth(currentHero, 30.f);// SanYue大招为友方恢复30点生命
-        }
-        else if (nodeA->getTag() == SanYueUtimateSkillTag && nodeB->getTag() == EnemyTag)
-        {
-            showSpark("Hero/Bullet/SanYue-bullet.png", nodeA);
-            AI->receiveDamage(20.f, AI, currentHero);// 或者对敌方直接造成20点伤害
-        }
-        else if (nodeB->getTag() == SanYueUtimateSkillTag && nodeA->getTag() == EnemyTag)
-        {
-            showSpark("Hero/Bullet/SanYue-bullet.png", nodeB);
-            AI->receiveDamage(20.f, AI, currentHero);// 或者对敌方造成20点伤害
-        }
-        /* HaoQing大招 */
-        else if (nodeA->getTag() == HaoQingUtimateSkillTag && nodeB->getTag() == PlayerTag)
-        {
-            showSpark("Hero/Bullet/HaoQing-bullet.png", nodeA);
-            currentPlayer->recoverBulletAndUpgrade(currentHero,1.f,20.f);// 升级充能50%概率加1.f的攻击，大招充能20%
-        }
-        else if (nodeB->getTag() == HaoQingUtimateSkillTag && nodeA->getTag() == PlayerTag)
-        {
-            showSpark("Hero/Bullet/HaoQing-bullet.png", nodeB);
-            currentPlayer->recoverBulletAndUpgrade(currentHero, 5.f, 1.f);// 升级充能50%概率加5.f的攻击，大招充能1%
-        }
         /* ShunDe大招 */
         else if (nodeA->getTag() == ShunDeUtimateSkillTag && nodeB->getTag() == EnemyTag)
         {
@@ -341,6 +279,40 @@ bool FightScene::onContactBegin(cocos2d::PhysicsContact& contact)
             showSpark("Hero/Bullet/ShunDe-bullet.png", nodeB);
             AI->receiveDamage(15.f, AI, currentHero);// ShunDe大招为对敌方直接造成15点伤害
             currentPlayer->recoverHealth(currentHero, 15.f);// 同时吸血
+        }
+        /* ChangYi大招 */
+        else if (nodeA->getTag() == ChangYiUtimateSkillTag && nodeB->getTag() == PlayerTag)
+        {
+            showSpark("Hero/Bullet/ChangYi-bullet.png", nodeA);
+            currentPlayer->recoverHealth(currentHero, 50.f);// ChangYi大招为友方恢复50点生命
+        }
+        else if (nodeB->getTag() == ChangYiUtimateSkillTag && nodeA->getTag() == PlayerTag)
+        {
+            showSpark("Hero/Bullet/ChangYi-bullet.png", nodeB);
+            currentPlayer->recoverHealth(currentHero, 50.f);// ChangYi大招为友方恢复50点生命
+        }
+        /* SanYue大招 */
+        else if (nodeA->getTag() == SanYueUtimateSkillTag && nodeB->getTag() == PlayerTag)
+        {
+            showSpark("Hero/Bullet/SanYue-bullet.png", nodeA);
+            currentPlayer->recoverHealth(currentHero, -5.f);// SanYue大招50%概率掉血并充能
+            currentPlayer->recoverBulletAndUpgrade(currentHero, 1.f, 20.f);
+        }
+        else if (nodeB->getTag() == SanYueUtimateSkillTag && nodeA->getTag() == PlayerTag)
+        {
+            showSpark("Hero/Bullet/SanYue-bullet.png", nodeB);
+            currentPlayer->recoverHealth(currentHero, 60.f);// SanYue大招0%概率为友方恢复30点生命
+        }
+        /* HaoQing大招 */
+        else if (nodeA->getTag() == HaoQingUtimateSkillTag && nodeB->getTag() == PlayerTag)
+        {
+            showSpark("Hero/Bullet/HaoQing-bullet.png", nodeA);
+            currentPlayer->recoverBulletAndUpgrade(currentHero,1.f,20.f);// HaoQing大招升级充能50%概率加1.f的攻击，大招充能20%
+        }
+        else if (nodeB->getTag() == HaoQingUtimateSkillTag && nodeA->getTag() == PlayerTag)
+        {
+            showSpark("Hero/Bullet/HaoQing-bullet.png", nodeB);
+            currentPlayer->recoverBulletAndUpgrade(currentHero, 5.f, 1.f);// HaoQing大招升级充能50%概率加5.f的攻击，大招充能1%
         }
     }
 

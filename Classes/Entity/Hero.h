@@ -18,21 +18,13 @@ class Hero :public cocos2d::Sprite
 {
 protected:
 
-	int dieTag_ = AIDieTag;// 区分计分板是否要减人默认AI
-
 	bool isAlive_ = true;// 是否存活
 
 	bool ultimateReady_ = false;// 大招好了没
 
 	bool confirm_ = false;// 是否确认施放大招
 
-	float attack_;// 攻击值
-
-	float defend_;// 防御值
-
 	ControlSlider* _hpSlider;//血条
-	float health_;// 当前生命
-	float healthInit_;//初始生命
 
 	ControlSlider* _mpSlider;// 蓝条
 	float bullet_ = bulletFull;// 当前弹药
@@ -55,6 +47,11 @@ protected:
 
 public:
 	/* 生命状态 */
+	int dieTag_ = AIDieTag;// 区分计分板是否要减人默认AI
+	float attack_;// 攻击值
+	float defend_;// 防御值
+	float health_;// 当前生命
+	float healthInit_;//初始生命
 
 	bool isAlive();
 
@@ -89,6 +86,8 @@ public:
 	bool isReleaseConfirmed();
 	
 	virtual void ultimateSkill(Vec2 touchWorldPosition);
+
+	virtual void attackHero(Vec2 playerPosition, Vec2 touchWorldPosition);
 
 	void clearUltimateSkillProgress();
 

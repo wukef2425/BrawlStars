@@ -5,8 +5,6 @@
 
 class EnergyBox :public Hero
 {
-private:
-
 public:
 
     static Hero* createBox(Vec2 position);// 传入position在那个位置生成宝箱

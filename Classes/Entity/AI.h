@@ -10,12 +10,8 @@
 
 class AI : public Hero
 {
-private:
-
-
 public:
-
-    
+    static Hero* create(const std::string& filename);
 };
 
 #endif

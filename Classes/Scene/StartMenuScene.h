@@ -24,8 +24,6 @@ public:
 
 	void StartMenuScene::initStartButton();//普通开始按钮
 
-	void StartMenuScene::initOnlineButton();//联网开始按钮
-
 	void StartMenuScene::startCallback(cocos2d::Ref* pSender);
 
 	void StartMenuScene::initExitButton();//离开按钮
@@ -37,8 +35,6 @@ public:
 protected:
 
 	cocos2d::Menu* startButton_;
-
-	cocos2d::Menu* onlineButton_;
 
 	cocos2d::Menu* exitButton_;
 

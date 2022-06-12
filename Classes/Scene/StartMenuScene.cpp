@@ -33,9 +33,7 @@ bool StartMenuScene::init()
 	initSetButton();
 	initUserButton();
 	initStartButton();
-	initOnlineButton();
 	initExitButton();
-
 
 	cocos2d::Director::getInstance()->getOpenGLView()->setCursorVisible(true);
 
@@ -89,32 +87,6 @@ void StartMenuScene::startCallback(cocos2d::Ref* pSender)
 
 }
 
-void StartMenuScene::initOnlineButton()
-{
-	auto visibleSize = Director::getInstance()->getVisibleSize();
-	Vec2 origin = Director::getInstance()->getVisibleOrigin();
-
-	auto onlineButton = cocos2d::MenuItemImage::create("Button/OnlineStart.png", "Button/OnlineStart.png", CC_CALLBACK_1(StartMenuScene::startCallback, this));
-
-	if (onlineButton == nullptr ||
-		onlineButton->getContentSize().width <= 0 ||
-		onlineButton->getContentSize().height <= 0)
-	{
-		problemLoading("'CloseNormal.png' and 'CloseSelected.png'");
-	}
-	else
-	{
-		float x = origin.x + visibleSize.width - onlineButton->getContentSize().width;
-		float y = origin.y + onlineButton->getContentSize().height * 2;
-		onlineButton->setScale(1.3f);
-		onlineButton->setPosition(cocos2d::Vec2(x, y));
-	}
-
-	onlineButton_ = cocos2d::Menu::create(onlineButton, nullptr);
-	this->addChild(onlineButton_, 1);
-	onlineButton_->setPosition(cocos2d::Vec2::ZERO);
-}
-
 void StartMenuScene::initExitButton()
 {
 	auto visibleSize = Director::getInstance()->getVisibleSize();
@@ -130,7 +102,7 @@ void StartMenuScene::initExitButton()
 	else
 	{
 		float x = origin.x + visibleSize.width - exitBotton->getContentSize().width;
-		float y = origin.y + exitBotton->getContentSize().height;
+		float y = origin.y + exitBotton->getContentSize().height*2;
 		exitBotton->setScale(1.3f);
 		exitBotton->setPosition(cocos2d::Vec2(x, y));
 	}
